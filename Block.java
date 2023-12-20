@@ -14,7 +14,9 @@ public class Block extends Rectangle {
 		
 	}
 	
-	public 
+	public void mousePressed() {
+		
+	}
 
 	public void draw() {
 		
