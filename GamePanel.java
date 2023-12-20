@@ -12,15 +12,18 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener {
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener  {
 
 	// dimensions of window
-	public static final int GAME_WIDTH = 1000;
-	public static final int GAME_HEIGHT = 1000;
-
+	public static final int GAME_WIDTH = 900;
+	public static final int GAME_HEIGHT = 900;
+	public static final int TITLE_SIZE = 120;
+	
 	public Thread gameThread;
 	public Image image;
 	public Graphics graphics;
+	
+	public boolean mainMenu = true;
 
 	public GamePanel() {
 		this.setFocusable(true); // make everything in this class appear on the screen
@@ -59,6 +62,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// call the draw methods in each class to update positions as things move
 	public void draw(Graphics g) {
 
+		if(mainMenu) {
+			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);	
+			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
+			g.drawString("DUNGEON", 215,270);
+			g.drawString("DASH", 310,400);
+			g.drawRoundRect(330, 500, 200, 50, 50, 30); //x,y,width,height,arcWidth,arcHeight
+		}
+		
 	}
 
 	// call the move methods in other classes to update positions
@@ -146,5 +157,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		
+		
 	}
 }
