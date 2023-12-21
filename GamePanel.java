@@ -10,6 +10,8 @@ Implements Runnable interface to use "threading" - let the game do two things at
 */
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import java.util.*;
 
@@ -28,12 +30,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean mainMenu = true;
 	public boolean edit = true;
 	
-	public Block b;
+	public Block b, b2, curDragging;
 	
 	ArrayList<Block> elements;
 	
 	
-	public GamePanel() {
+	public GamePanel() throws IOException {
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
 		this.addMouseListener(this); 
@@ -41,8 +43,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		elements = new ArrayList<Block>();
 
-		b = new Block(50,50, 100,100);
-		elements.add(b);
+		b = new Portal(50,50, 80,100);
+		b2 = new Block(100,50, 100,100);
+		
+		elements.add(b); elements.add(b2);
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
@@ -78,7 +82,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if(mainMenu) {
 			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);	
-			b.draw(g);
+			b.draw(g); b2.draw(g);
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			
 			g.drawRoundRect(330, 500, 200, 50, 50, 30); //x,y,width,height,arcWidth,arcHeight
@@ -157,6 +161,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for(Block b: elements) {
 				if(b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
+					curDragging = b;
 					System.out.println("pressed");
 				}
 			}
@@ -165,8 +170,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		curDragging = null;
+		
 	}
 
 	@Override
@@ -184,13 +189,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		
-		if(edit) {
-			for(Block b: elements) {
-				if(b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
-					b.mouseDragged(e);
-					System.out.println("dragging");
-				}
-			}
+		if(edit && curDragging != null) {
+			curDragging.mouseDragged(e);
 		}
 		
 	}
