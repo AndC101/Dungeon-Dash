@@ -5,6 +5,8 @@ import javax.swing.*;
 
 public class Block extends Rectangle {
 	
+	int diffX, diffY;
+	
 	public Block(int x, int y, int l, int w){
 		super(x,y,l,w);
 	}
@@ -14,12 +16,17 @@ public class Block extends Rectangle {
 		
 	}
 	
-	public void mousePressed() {
-		
+	public void mousePressed(MouseEvent e) {
+		diffX = e.getX() - x;
+        diffY = e.getY() - y;
+	}
+	
+	public void mouseDragged(MouseEvent e) {
+		x = e.getX() - diffX; y = e.getY() - diffY;
 	}
 
-	public void draw() {
-		
+	public void draw(Graphics g) {
+		g.fillRect(x, y, width, height);
 	}
 
 }

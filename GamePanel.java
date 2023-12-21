@@ -11,6 +11,7 @@ Implements Runnable interface to use "threading" - let the game do two things at
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.*;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener  {
 
@@ -18,17 +19,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static final int GAME_WIDTH = 900;
 	public static final int GAME_HEIGHT = 900;
 	public static final int TITLE_SIZE = 120;
+	public static final int FONT_SIZE = 30;
 	
 	public Thread gameThread;
 	public Image image;
 	public Graphics graphics;
 	
 	public boolean mainMenu = true;
-
+	public boolean edit = true;
+	
+	public Block b;
+	
+	ArrayList<Block> elements;
+	
+	
 	public GamePanel() {
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
+		this.addMouseListener(this); 
+		this.addMouseMotionListener(this);
+		
+		elements = new ArrayList<Block>();
 
+		b = new Block(50,50, 100,100);
+		elements.add(b);
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
@@ -64,10 +78,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if(mainMenu) {
 			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);	
-			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
-			g.drawString("DUNGEON", 215,270);
-			g.drawString("DASH", 310,400);
+			b.draw(g);
+			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+			
 			g.drawRoundRect(330, 500, 200, 50, 50, 30); //x,y,width,height,arcWidth,arcHeight
+			g.drawString("PLAY", 405, 540);
 		}
 		
 	}
@@ -115,7 +130,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// if a key is pressed, we'll send it over to the PlayerBall class for
 	// processing
 	public void keyPressed(KeyEvent e) {
-
+		
 	}
 
 	// if a key is released, we'll send it over to the PlayerBall class for
@@ -138,7 +153,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		if(edit) {
+			for(Block b: elements) {
+				if(b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
+					b.mousePressed(e);
+					System.out.println("pressed");
+				}
+			}
+		}
 	}
 
 	@Override
@@ -161,7 +183,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
+		
+		if(edit) {
+			for(Block b: elements) {
+				if(b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
+					b.mouseDragged(e);
+					System.out.println("dragging");
+				}
+			}
+		}
 		
 	}
 
