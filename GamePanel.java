@@ -162,7 +162,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if(b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
 					curDragging = b;
-					System.out.println("pressed");
 				}
 			}
 		}
