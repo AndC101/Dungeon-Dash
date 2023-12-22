@@ -9,11 +9,12 @@ public class Portal extends Block {
 	public BufferedImage i;
 	
 	public Portal(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w, i);
+		super(x,y,l,w,i);
 	}
 	
+	//draw the image from the block class
 	public void draw(Graphics g) {
-		g.drawImage(i, x, y, width, height, null);
+		super.draw(g);
 	}
 
 }
