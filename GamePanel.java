@@ -30,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Image image;
 	public Graphics graphics;
 	public BufferedImage image2;
+	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
 
 	public boolean mainMenu = true;
 	public boolean edit = true;
@@ -80,9 +81,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		graphics = image.getGraphics();
 		draw(graphics);// update the positions of everything on the screen
 		g.drawImage(image, 0, 0, this); // move the image on the screen
-
-
-		
+	
 	}
 
 	// call the draw methods in each class to update positions as things move
@@ -93,9 +92,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			b.draw(g); 
 			b2.draw(g);
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
-			
+			g.drawImage(menuBackground, 0, 0, this);
+			g.setColor(Color.white);
 			g.drawRoundRect(330, 500, 200, 50, 50, 30); //x,y,width,height,arcWidth,arcHeight
 			g.drawString("PLAY", 405, 540);
+
 		}
 		
 	}
