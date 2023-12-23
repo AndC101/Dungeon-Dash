@@ -1,0 +1,4 @@
+made levelwidgets to save all new levels to an arraylist for easy addition and retrieval
+check out scrollpane so that if they have widgets than the screen fits, they are able to scroll to see them.
+
+--> work on the uml first

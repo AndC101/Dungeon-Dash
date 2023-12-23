@@ -49,10 +49,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	public static int alpha = 0;
 
+	//NOTE CHANGE THESE BACK TO TRUE WHEN MERGING
 	public boolean mainMenu = false;
 	public boolean edit = false;
-	public boolean alphaUp = true;
-	public boolean levelSelect = false;
+	public boolean levelSelect = true;
+	public boolean alphaUp = false;
+
+	//declare level widget variables
+	//save each new level entry into an arraylist levelWidgets. Once the user runs the program, 
+	//draw loops through the arraylist and draws each entry
+	public LevelPreview temp;
+	ArrayList<LevelPreview> levelWidgets;
 
 	public Block b, b2, curDragging;
 
@@ -69,6 +76,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		rotatedFont = font.deriveFont(affineTransform);
 
 		elements = new ArrayList<Block>();
+		levelWidgets = new ArrayList<LevelPreview>();
+
+
 
 		b = new Portal(50, 50, 80, 100, portalImage);
 		b2 = new Block(100, 50, 100, 100, openChestImage);
@@ -105,7 +115,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void draw(Graphics g) {
 
 		if (mainMenu) {
-			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 			
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
@@ -132,7 +141,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black); g.setFont(rotatedFont); 
 			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
 		
-		} else if (levelSelect)
+		} else if (levelSelect) {
+			//code for the level select menu, after main menu
+			a.draw(g);
+
+		}
 
 	}
 
@@ -185,7 +198,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				mainMenu = false;
 				edit = true;
 			}
+		} else if (levelSelect) {
+			
 		}
+
+		
 		
 	}
 
