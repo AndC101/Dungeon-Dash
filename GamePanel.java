@@ -49,9 +49,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	public static int alpha = 0;
 
-	public boolean mainMenu = true;
-	public boolean edit = true;
+	public boolean mainMenu = false;
+	public boolean edit = false;
 	public boolean alphaUp = true;
+	public boolean levelSelect = false;
 
 	public Block b, b2, curDragging;
 
@@ -63,6 +64,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		
+		//code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
 		rotatedFont = font.deriveFont(affineTransform);
 
@@ -105,18 +107,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (mainMenu) {
 			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 			
-			
-			
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(new Color(255,255,255,alpha));
 			
+			//display text for the title
+			g.drawString("Dungeon Dash", GAME_WIDTH/2 - 100, 60);
+
+			//causes the text to fade in and out by adjusting transparancy value
 			if(alphaUp) alpha+=2;
 			else alpha-=2;
 			
 			if(alpha >= 250) alphaUp = false;
 			if(alpha <= 5) alphaUp = true;
 			
+			//display text for the menu
 			g.drawString("Press Enter to Continue", 325, 350);
 			
 		}
@@ -127,7 +132,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black); g.setFont(rotatedFont); 
 			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
 		
-		}
+		} else if (levelSelect)
 
 	}
 
@@ -228,13 +233,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
