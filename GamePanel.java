@@ -10,8 +10,11 @@ Implements Runnable interface to use "threading" - let the game do two things at
 */
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
 
@@ -19,14 +22,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// dimensions of window
 	public static final int GAME_WIDTH = 900;
-	public static final int GAME_HEIGHT = 900;
+	public static final int GAME_HEIGHT = 600;
 	public static final int TITLE_SIZE = 120;
 	public static final int FONT_SIZE = 30;
 	
 	public Thread gameThread;
 	public Image image;
 	public Graphics graphics;
-	
+	public BufferedImage image2;
+	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
+
 	public boolean mainMenu = true;
 	public boolean edit = true;
 	
@@ -42,11 +47,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseMotionListener(this);
 		
 		elements = new ArrayList<Block>();
-
-		b = new Portal(50,50, 80,100);
-		b2 = new Block(100,50, 100,100);
+		image2 = ImageIO.read(new File("Images/Start_Portal.png"));
+		b = new Portal(50,50, 80, 100, image2);
+		b2 = new Block(100,50, 100,100, image2);
 		
-		elements.add(b); elements.add(b2);
+		elements.add(b); 
+		elements.add(b2);
+
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
@@ -74,7 +81,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		graphics = image.getGraphics();
 		draw(graphics);// update the positions of everything on the screen
 		g.drawImage(image, 0, 0, this); // move the image on the screen
-
+	
 	}
 
 	// call the draw methods in each class to update positions as things move
@@ -82,11 +89,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if(mainMenu) {
 			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);	
-			b.draw(g); b2.draw(g);
+			b.draw(g); 
+			b2.draw(g);
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
-			
+			g.drawImage(menuBackground, 0, 0, this);
+			g.setColor(Color.white);
 			g.drawRoundRect(330, 500, 200, 50, 50, 30); //x,y,width,height,arcWidth,arcHeight
 			g.drawString("PLAY", 405, 540);
+
 		}
 		
 	}
