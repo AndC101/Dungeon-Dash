@@ -5,6 +5,8 @@ import java.io.*;
 
 public class Portal extends Block {
 	
+	public static final int width = 80;
+	public static final int height = 100;
 	int diffX, diffY;
 	public BufferedImage i;
 	
