@@ -57,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean edit = true;
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
+	public boolean fixed = false;
 	
 	public String tabPressed = "blocks";
 
@@ -67,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	
 	ArrayList<Block> elements, sidebar;
+	Block hover = null;
 
 	public GamePanel() throws IOException {
 		this.setFocusable(true); // make everything in this class appear on the screen
@@ -104,13 +106,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		//double buffering
 		image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
 		graphics = image.getGraphics();
-		draw(graphics);// update the positions of everything on the screen
+		draw((Graphics2D) graphics);// update the positions of everything on the screen
 		g.drawImage(image, 0, 0, this); // move the image on the screen
 
 	}
 
 	// call the draw methods in each class to update positions as things move
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 
 		if (mainMenu) {
 			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);			
@@ -132,6 +134,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for(Block b: elements) {
 				b.draw(g);
 			}
+			
+			if(hover != null) {
+				Graphics2D g2d = (Graphics2D) g;
+				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+				g2d.setComposite(ac);
+				hover.draw(g2d);
+			}
+			
 		}
 
 	}
@@ -263,17 +273,50 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					elements.remove(curDragging);
 				}
 				else {
+					fixed = false;
 					//if the block is intersecting another one remove it probably add some lenicency and auto correct later
-					for(Block b: elements) {
-						if(b == curDragging) continue;
-						if(b.intersects(curDragging)) {
-							elements.remove(curDragging);
-							break;
-						}
-					}
+					
 				}
 			}
 			
+			for(int i = 0; i < elements.size(); i++) {
+				Block b = elements.get(i);
+				if(b == curDragging) continue;
+				if(curDragging.intersects(b)) {
+					if(fixed) elements.remove(curDragging);
+					int tmpX = curDragging.x; int tmpY = curDragging.y;
+					int centerX = tmpX + curDragging.width/2; int centerY = tmpY+curDragging.height/2;
+					while(curDragging.intersects(b)) {
+
+						if(Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX) && 
+								Math.abs(b.x - centerX) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
+							curDragging.x--;
+						}
+						
+						else if(Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
+							curDragging.x++;
+						}
+						
+						else if(Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX) && 
+								Math.abs(b.y - centerY) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
+							curDragging.y--;
+						}
+						
+						else if(Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
+							curDragging.y++;
+						}
+						fixed = true;
+					}
+					
+				}
+			}
+		
 		}
 		curDragging = null;
 		
@@ -309,6 +352,47 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				sidebarPressed = false;
 			}
 			curDragging.mouseDragged(e);
+			
+			for(int i = 0; i < elements.size(); i++) {
+				Block b = elements.get(i);
+				if(b == curDragging) continue;
+				if(curDragging.intersects(b)) {
+					if(fixed) elements.remove(curDragging);
+					int tmpX = curDragging.x; int tmpY = curDragging.y;
+					int centerX = tmpX + curDragging.width/2; int centerY = tmpY+curDragging.height/2;
+					if(curDragging.intersects(b)) {
+
+						if(Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX) && 
+								Math.abs(b.x - centerX) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
+							hover = new Block(b.x - curDragging.width, b.y,curDragging.width,curDragging.height,curDragging.img);
+						}
+						
+						else if(Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
+							curDragging.x++;
+							hover = new Block(b.x +  b.width, b.y,curDragging.width,curDragging.height,curDragging.img);
+						}
+						
+						else if(Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX) && 
+								Math.abs(b.y - centerY) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
+							curDragging.y--;
+							hover = new Block(b.x, b.y - curDragging.height,curDragging.width,curDragging.height,curDragging.img);
+						}
+						
+						else if(Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX) && 
+								Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY) && 
+								Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
+							curDragging.y++;
+							hover = new Block(b.x , b.y + b.height,curDragging.width,curDragging.height,curDragging.img);
+						}
+						fixed = true;
+					}
+					
+				}
+			}
 		}
 
 	}
@@ -319,7 +403,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 	
-	public void drawSidebar(Graphics g) {
+	public void drawSidebar(Graphics2D g) {
 		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
 		
 		if(tabPressed.equals("blocks")) {
