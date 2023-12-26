@@ -39,6 +39,7 @@ public class Block extends Rectangle {
 	
 	public void mouseReleased(MouseEvent e) {
 		drag = false;
+		
 	}
 	
 	public void mouseDragged(MouseEvent e) {

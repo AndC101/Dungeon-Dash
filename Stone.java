@@ -5,7 +5,7 @@ import java.io.*;
 
 public class Stone extends Block {
 	
-	public static final int width = 40;
+	public static final int width = 60;
 	public static final int height = 40;
 	
 	

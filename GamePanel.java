@@ -11,6 +11,7 @@ Implements Runnable interface to use "threading" - let the game do two things at
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		elements = new ArrayList<Block>(); sidebar = new ArrayList<Block>();
 		
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
-		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
+		tabStone = new Stone(TAB_X - 110, 400, Stone.width, Stone.height, stoneImage);
 		
 		sidebar.add(tabPortal); sidebar.add(tabStone);
 		
@@ -253,8 +254,29 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	
+		if(edit) {
+			
+			if(curDragging != null) {
+				//checks if it is still on the sidebar
+				if(curDragging.x  <= TAB_X) {
+					elements.remove(curDragging);
+				}
+				else {
+					//if the block is intersecting another one remove it probably add some lenicency and auto correct later
+					for(Block b: elements) {
+						if(b == curDragging) continue;
+						if(b.intersects(curDragging)) {
+							elements.remove(curDragging);
+							break;
+						}
+					}
+				}
+			}
+			
+		}
 		curDragging = null;
-
+		
 	}
 
 	@Override
@@ -338,9 +360,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.fillRect(TAB_X, 2*TAB_HEIGHT+20, TAB_WIDTH, TAB_HEIGHT + 40);
 			g.setColor(Color.black); g.setFont(rotatedFont); 
 			g.drawString("Powerups", GAME_WIDTH/7 + 10, 2 * TAB_HEIGHT + 30);
-		}
-		
-		
+		}	
 		
 	}
 	
