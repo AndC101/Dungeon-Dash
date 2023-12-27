@@ -16,8 +16,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.print.*;
-import javax.print.DocFlavor.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -155,7 +153,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Enter the dungeon", 325, 250);
 			g.drawString("Create your own!", 335, 320);
 
-			g.drawString("Press Enter to Continue", 325, 350);
+			// g.drawString("Press Enter to Continue", 325, 350);
 
 		} else if (edit) {
 			drawSidebar(g);
