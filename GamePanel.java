@@ -54,13 +54,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int alpha = 0;
 
 	public boolean mainMenu = true;
-	public boolean edit = true;
+	public boolean edit = false;
+	public boolean levelSelect = false;
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	
 	public String tabPressed = "blocks";
 
-	public Block curDragging;
+	//declare level widget variables
+	public int totalHeight;
+	public int numButtons = 18; // to be changed once file IO works
+
+
+
+	public Block b, b2, curDragging;
 
 	public Portal tabPortal;
 	public Stone tabStone;
@@ -74,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		
+		//code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
 		rotatedFont = font.deriveFont(affineTransform);
 
@@ -89,6 +97,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
 		// don't want to make 6 empty methods
 
+		//62 represents the amount of pixels one new level entry takes
+		totalHeight = 62 * numButtons; 
+	
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
 		// make this class run at the same time as other classes (without this each
@@ -113,25 +124,34 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void draw(Graphics g) {
 
 		if (mainMenu) {
-			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);			
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(new Color(255,255,255,alpha));
 			
+			//display text for the title
+			g.drawString("Dungeon Dash", GAME_WIDTH/2 - 100, 60);
+
+			//causes the text to fade in and out by adjusting transparancy value
 			if(alphaUp) alpha+=2;
 			else alpha-=2;
 			
 			if(alpha >= 250) alphaUp = false;
 			if(alpha <= 5) alphaUp = true;
 			
-			g.drawString("Press Enter to Continue", 325, 350);
-			
+			//display text for the menu
+			g.drawString("Enter the dungeon", 325, 250);
+			g.drawString("Create your own!", 335, 320);
+
 		}
 		else if(edit) {
-			drawSidebar(g);		
-			for(Block b: elements) {
-				b.draw(g);
-			}
+			g.fillRect(GAME_WIDTH / 7, 0, 5, GAME_HEIGHT);
+			g.setColor(Color.green);
+			g.fillRect(GAME_WIDTH/7 + 5, 0, TAB_WIDTH, TAB_HEIGHT);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
+		
+		} else if (levelSelect) {
+			//to be filled (draw the image background?)
 		}
 
 	}
@@ -185,7 +205,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				mainMenu = false;
 				edit = true;
 			}
+		} else if (edit) {
+			if(e.getKeyCode() == 10) {
+				levelSelect = true;
+				edit = false;
+			}
+
 		}
+
+		
 		
 	}
 
@@ -281,13 +309,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
