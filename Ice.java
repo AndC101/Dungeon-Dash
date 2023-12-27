@@ -5,6 +5,8 @@ import java.io.*;
 
 public class Ice extends Block {
 	
+	public static final int width = 60;
+	public static final int height = 40;
 	int diffX, diffY;
 	public BufferedImage i;
 	
@@ -13,7 +15,7 @@ public class Ice extends Block {
 	}
 	
 	//draw the image from the block class
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 		super.draw(g);
 	}
 

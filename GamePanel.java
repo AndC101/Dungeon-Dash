@@ -11,12 +11,13 @@ Implements Runnable interface to use "threading" - let the game do two things at
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.print.*;
+import javax.print.DocFlavor.*;
 import javax.swing.*;
 import java.util.*;
 
@@ -48,6 +49,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 
+	
+	public Player knight;
+
 	public int alpha = 0;
 
 	public boolean mainMenu = true;
@@ -59,27 +63,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public String tabPressed = "blocks";
 
-	//declare level widget variables
+	// declare level widget variables
 	public int totalHeight;
 	public int numButtons = 18; // to be changed once file IO works
 
-
-
-	public Block b, b2, curDragging;
+	public Block curDragging, curSelected;
 
 	public Portal tabPortal;
 	public Stone tabStone;
+	public Ice tabIce;
+	public Ladder tabLadder;
 
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
 	public GamePanel() throws IOException {
+		
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
-		//code to rotate the text for the "block" description
+		knight = new Player(200,100,20,30);
+
+		// code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
 		rotatedFont = font.deriveFont(affineTransform);
 
@@ -87,19 +94,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		sidebar = new ArrayList<Block>();
 
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
-		tabStone = new Stone(TAB_X - 110, 400, Stone.width, Stone.height, stoneImage);
+		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
+		tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
 
 		sidebar.add(tabPortal);
 		sidebar.add(tabStone);
+		sidebar.add(tabIce);
 
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
 		// don't want to make 6 empty methods
 
-		//62 represents the amount of pixels one new level entry takes
-		totalHeight = 62 * numButtons; 
-	
+		// 62 represents the amount of pixels one new level entry takes
+		totalHeight = 62 * numButtons;
+
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
 		// make this class run at the same time as other classes (without this each
@@ -124,24 +133,27 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (mainMenu) {
 
-				g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
-			g.setColor(new Color(255,255,255,alpha));
-			
-			//display text for the title
-			g.drawString("Dungeon Dash", GAME_WIDTH/2 - 100, 60);
+			g.setColor(new Color(255, 255, 255, alpha));
 
-			//causes the text to fade in and out by adjusting transparancy value
-			if(alphaUp) alpha+=2;
-			else alpha-=2;
-			
-			if(alpha >= 250) alphaUp = false;
-			if(alpha <= 5) alphaUp = true;
-			
-			//display text for the menu
+			// display text for the title
+			g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+
+			// causes the text to fade in and out by adjusting transparancy value
+			if (alphaUp)
+				alpha += 2;
+			else
+				alpha -= 2;
+
+			if (alpha >= 250)
+				alphaUp = false;
+			if (alpha <= 5)
+				alphaUp = true;
+
+			// display text for the menu
 			g.drawString("Enter the dungeon", 325, 250);
 			g.drawString("Create your own!", 335, 320);
-
 
 			g.drawString("Press Enter to Continue", 325, 350);
 
@@ -150,17 +162,27 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for (Block b : elements) {
 				b.draw(g);
 			}
-			//check if its being hovered and makes it like transparent
+			// check if its being hovered and makes it like transparent
 			if (hover != null) {
 				Graphics2D g2d = (Graphics2D) g;
 				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
 				g2d.setComposite(ac);
 				hover.draw(g2d);
 			}
-		
-		}
-		 else if (levelSelect) {
-			//to be filled (draw the image background?)
+			
+			if(curSelected != null) {
+				g.setColor(Color.yellow);
+				g.fillRect(curSelected.x, curSelected.y, curSelected.width, 3);
+				g.fillRect(curSelected.x, curSelected.y, 3, curSelected.height);
+				g.fillRect(curSelected.x + curSelected.width, curSelected.y, 3, curSelected.height + 3);
+				g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width, 3);
+			}
+			
+			//code for drawing the knight animation
+			knight.draw(g);
+
+		} else if (levelSelect) {
+			// to be filled (draw the image background?)
 
 		}
 
@@ -216,13 +238,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				edit = true;
 			}
 		} else if (edit) {
-			if(e.getKeyCode() == 10) {
+			if (e.getKeyCode() == 10) {
 				levelSelect = true;
 				edit = false;
 			}
+			else if(e.getKeyCode() == 8) {
+				if(curSelected != null) {
+					elements.remove(curSelected);
+					curSelected = null;
+				}
+			}
+						
 
 		}
-
 
 	}
 
@@ -248,21 +276,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		} else if (edit) {
 			// checks if a block is pressed then allow it to be dragged
+			boolean chosen = false;
 			for (Block b : elements) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
 					curDragging = b;
+					curSelected = b;
 					sidebarPressed = false;
+					chosen = true;
 				}
 			}
-			//checks if the block pressed is from the sidebar
+			
+			if(!chosen) curSelected = null;
+			
+			// checks if the block pressed is from the sidebar
 			for (Block b : sidebar) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
 					curDragging = b;
 					sidebarPressed = true;
+					chosen = true;
 				}
 			}
+			
+			
 
 			// checks if a tab is pressed
 			if (e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
@@ -292,26 +329,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if (curDragging.x <= TAB_X) {
 					elements.remove(curDragging);
 				} else if (hover != null) {
-					//loops through all the blocks
+					// loops through all the blocks
 					boolean works = true;
 					for (int i = 0; i < elements.size(); i++) {
 						Block b = elements.get(i);
-						//if its the one that is already being dragged continue (no point on checking it to itself)
+						// if its the one that is already being dragged continue (no point on checking
+						// it to itself)
 						if (b == curDragging)
 							continue;
-						//if the snapped piece is also going to intersect a piece then don't add it
+						// if the snapped piece is also going to intersect a piece then don't add it
 						if (hover.intersects(b)) {
 							elements.remove(curDragging);
 							works = false;
 							break;
 						}
 					}
-					//if the snapped piece does not intersect another piece then you can add it
-					if(works) {
+					// if the snapped piece does not intersect another piece then you can add it
+					if (works) {
 						elements.remove(curDragging);
 						elements.add(hover);
+						curSelected = hover;
 					}
 
+				} else if (hover == null && checkAllIntersection(curDragging)) {
+					elements.remove(curDragging);
 				}
 			}
 
@@ -334,9 +375,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void mouseDragged(MouseEvent e) {
 
 		if (edit && curDragging != null) {
-			//checks if the sidebar is being pressed
+			curSelected = curDragging;
+			// checks if the sidebar is being pressed
 			if (sidebarPressed) {
-				//checks for the element pressed and makes a new element
+				// checks for the element pressed and makes a new element
 				if (curDragging.equals(tabPortal)) {
 					try {
 						elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
@@ -345,7 +387,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					curDragging = elements.get(elements.size() - 1);
 				}
 
-				if (curDragging.equals(tabStone)) {
+				else if (curDragging.equals(tabStone)) {
 					try {
 						elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
 					} catch (IOException IOE) {
@@ -353,25 +395,33 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					curDragging = elements.get(elements.size() - 1);
 				}
 
+				else if (curDragging.equals(tabIce)) {
+					try {
+						elements.add(new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
+					} catch (IOException IOE) {
+					}
+					curDragging = elements.get(elements.size() - 1);
+				}
+
 				sidebarPressed = false;
 			}
-		
+
 			curDragging.mouseDragged(e);
-			
-			
-			//loops through all the elements
+
+			// loops through all the elements
+			boolean intersected = false;
 			for (int i = 0; i < elements.size(); i++) {
 				Block b = elements.get(i);
 				if (b == curDragging)
 					continue;
-				//checks if it is dragged onto another pece
+				// checks if it is dragged onto another piece
 				if (curDragging.intersects(b)) {
 					int tmpX = curDragging.x;
 					int tmpY = curDragging.y;
 					int centerX = tmpX + curDragging.width / 2;
 					int centerY = tmpY + curDragging.height / 2;
 
-					//looks for the nearest edge and forces it there
+					// looks for the nearest edge and forces it there
 					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
@@ -402,11 +452,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						hover = new Block(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
 								curDragging.img);
 					}
-
-				} else {
-					hover = null;
+					if (hover != null && checkAllIntersection(hover)) {
+						hover = null;
+					}
+					intersected = true;
 				}
 			}
+			if (!intersected)
+				hover = null;
 		}
 
 	}
@@ -428,6 +481,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			tabPortal.draw(g);
 			tabStone.draw(g);
+			tabIce.draw(g);
 
 		} else {
 			g.setColor(Color.green);
@@ -464,6 +518,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setFont(rotatedFont);
 			g.drawString("Powerups", GAME_WIDTH / 7 + 10, 2 * TAB_HEIGHT + 30);
 		}
+
+	}
+
+	public boolean checkAllIntersection(Block block) {
+
+		for (int i = 0; i < elements.size() - 1; i++) {
+			Block b = elements.get(i);
+			if (!block.equals(b) && block.intersects(b))
+				return true;
+		}
+		return false;
 
 	}
 
