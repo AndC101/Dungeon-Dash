@@ -29,20 +29,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static final int FONT_SIZE = 30;
 	public static final int TAB_HEIGHT = 100;
 	public static final int TAB_WIDTH = 30;
-	public static final int TAB_X = GAME_WIDTH/7 + 5;
-	
-	
-	
+	public static final int TAB_X = GAME_WIDTH / 7 + 5;
+
 	public Thread gameThread;
 	public Graphics graphics;
-	
-	
+
 	AffineTransform affineTransform = new AffineTransform();
-	Font font = new Font(null, Font.PLAIN, 25);  
+	Font font = new Font(null, Font.PLAIN, 25);
 	Font rotatedFont;
-	
+
 	Image image;
-	
+
 	public BufferedImage portalImage = ImageIO.read(new File("Images/Start_Portal.png"));
 	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
 	public BufferedImage openChestImage = ImageIO.read(new File("Images/OpenChest.png"));
@@ -50,7 +47,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
-	
+
 	public int alpha = 0;
 
 	public boolean mainMenu = true;
@@ -58,15 +55,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
-	
+
 	public String tabPressed = "blocks";
 
 	public Block curDragging;
 
 	public Portal tabPortal;
 	public Stone tabStone;
-	
-	
+
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
@@ -75,17 +71,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addKeyListener(this); // start listening for keyboard input
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		
+
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
 		rotatedFont = font.deriveFont(affineTransform);
 
-		elements = new ArrayList<Block>(); sidebar = new ArrayList<Block>();
-		
+		elements = new ArrayList<Block>();
+		sidebar = new ArrayList<Block>();
+
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
 		tabStone = new Stone(TAB_X - 110, 400, Stone.width, Stone.height, stoneImage);
-		
-		sidebar.add(tabPortal); sidebar.add(tabStone);
-		
+
+		sidebar.add(tabPortal);
+		sidebar.add(tabStone);
+
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
@@ -101,9 +99,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		gameThread.start();
 	}
 
-	
 	public void paint(Graphics g) {
-		//double buffering
+		// double buffering
 		image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
 		graphics = image.getGraphics();
 		draw((Graphics2D) graphics);// update the positions of everything on the screen
@@ -115,33 +112,36 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void draw(Graphics2D g) {
 
 		if (mainMenu) {
-			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);			
+			g.drawRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
-			g.setColor(new Color(255,255,255,alpha));
-			
-			if(alphaUp) alpha+=2;
-			else alpha-=2;
-			
-			if(alpha >= 250) alphaUp = false;
-			if(alpha <= 5) alphaUp = true;
-			
+			g.setColor(new Color(255, 255, 255, alpha));
+
+			if (alphaUp)
+				alpha += 2;
+			else
+				alpha -= 2;
+
+			if (alpha >= 250)
+				alphaUp = false;
+			if (alpha <= 5)
+				alphaUp = true;
+
 			g.drawString("Press Enter to Continue", 325, 350);
-			
-		}
-		else if(edit) {
-			drawSidebar(g);		
-			for(Block b: elements) {
+
+		} else if (edit) {
+			drawSidebar(g);
+			for (Block b : elements) {
 				b.draw(g);
 			}
-			
-			if(hover != null) {
+			//check if its being hovered and makes it like transparent
+			if (hover != null) {
 				Graphics2D g2d = (Graphics2D) g;
 				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
 				g2d.setComposite(ac);
 				hover.draw(g2d);
 			}
-			
+
 		}
 
 	}
@@ -190,13 +190,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// processing
 	public void keyPressed(KeyEvent e) {
 
-		if(mainMenu) {
-			if(e.getKeyCode() == 10) {
+		if (mainMenu) {
+			if (e.getKeyCode() == 10) {
 				mainMenu = false;
 				edit = true;
 			}
 		}
-		
+
 	}
 
 	// if a key is released, we'll send it over to the PlayerBall class for
@@ -205,17 +205,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
-
 	public void keyTyped(KeyEvent e) {
 
-		
-		
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
-	
+
 	}
 
 	@Override
@@ -223,9 +219,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (mainMenu) {
 
-			
 		} else if (edit) {
-			//checks if a block is pressed then allow it to be dragged
+			// checks if a block is pressed then allow it to be dragged
 			for (Block b : elements) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
@@ -233,7 +228,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					sidebarPressed = false;
 				}
 			}
-			
+			//checks if the block pressed is from the sidebar
 			for (Block b : sidebar) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
@@ -241,85 +236,61 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					sidebarPressed = true;
 				}
 			}
-			
-			//checks if a tab is pressed
-			if(e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
-				if(e.getY() >= 2 * TAB_HEIGHT + 20) {
-					//powerups was chosen
+
+			// checks if a tab is pressed
+			if (e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
+				if (e.getY() >= 2 * TAB_HEIGHT + 20) {
+					// powerups was chosen
 					tabPressed = "powerups";
-				}
-				else if(e.getY() >= TAB_HEIGHT) {
-					//enemies was chosen
+				} else if (e.getY() >= TAB_HEIGHT) {
+					// enemies was chosen
 					tabPressed = "enemies";
-				}
-				else {
-					//blocks was chosen
+				} else {
+					// blocks was chosen
 					tabPressed = "blocks";
 				}
 			}
-			
+
 		}
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-	
-		if(edit) {
-			
-			if(curDragging != null) {
-				//checks if it is still on the sidebar
-				if(curDragging.x  <= TAB_X) {
-					elements.remove(curDragging);
-				}
-				else {
-					fixed = false;
-					//if the block is intersecting another one remove it probably add some lenicency and auto correct later
-					
-				}
-			}
-			
-			for(int i = 0; i < elements.size(); i++) {
-				Block b = elements.get(i);
-				if(b == curDragging) continue;
-				if(curDragging.intersects(b)) {
-					if(fixed) elements.remove(curDragging);
-					int tmpX = curDragging.x; int tmpY = curDragging.y;
-					int centerX = tmpX + curDragging.width/2; int centerY = tmpY+curDragging.height/2;
-					while(curDragging.intersects(b)) {
 
-						if(Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX) && 
-								Math.abs(b.x - centerX) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
-							curDragging.x--;
+		if (edit) {
+
+			if (curDragging != null) {
+				// checks if it is still on the sidebar
+				if (curDragging.x <= TAB_X) {
+					elements.remove(curDragging);
+				} else if (hover != null) {
+					//loops through all the blocks
+					boolean works = true;
+					for (int i = 0; i < elements.size(); i++) {
+						Block b = elements.get(i);
+						//if its the one that is already being dragged continue (no point on checking it to itself)
+						if (b == curDragging)
+							continue;
+						//if the snapped piece is also going to intersect a piece then don't add it
+						if (hover.intersects(b)) {
+							elements.remove(curDragging);
+							works = false;
+							break;
 						}
-						
-						else if(Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
-							curDragging.x++;
-						}
-						
-						else if(Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX) && 
-								Math.abs(b.y - centerY) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
-							curDragging.y--;
-						}
-						
-						else if(Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
-							curDragging.y++;
-						}
-						fixed = true;
 					}
-					
+					//if the snapped piece does not intersect another piece then you can add it
+					if(works) {
+						elements.remove(curDragging);
+						elements.add(hover);
+					}
+
 				}
 			}
-		
+
 		}
 		curDragging = null;
-		
+		hover = null;
 	}
 
 	@Override
@@ -338,59 +309,77 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void mouseDragged(MouseEvent e) {
 
 		if (edit && curDragging != null) {
-			if(sidebarPressed) {
-				if(curDragging.equals(tabPortal)) {
-					try {elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));} catch(IOException IOE) {}
+			//checks if the sidebar is being pressed
+			if (sidebarPressed) {
+				//checks for the element pressed and makes a new element
+				if (curDragging.equals(tabPortal)) {
+					try {
+						elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
+					} catch (IOException IOE) {
+					}
 					curDragging = elements.get(elements.size() - 1);
 				}
-				
-				if(curDragging.equals(tabStone)) {
-					try {elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));} catch(IOException IOE) {}
+
+				if (curDragging.equals(tabStone)) {
+					try {
+						elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
+					} catch (IOException IOE) {
+					}
 					curDragging = elements.get(elements.size() - 1);
 				}
-				
+
 				sidebarPressed = false;
 			}
+		
 			curDragging.mouseDragged(e);
 			
-			for(int i = 0; i < elements.size(); i++) {
+			
+			//loops through all the elements
+			for (int i = 0; i < elements.size(); i++) {
 				Block b = elements.get(i);
-				if(b == curDragging) continue;
-				if(curDragging.intersects(b)) {
-					if(fixed) elements.remove(curDragging);
-					int tmpX = curDragging.x; int tmpY = curDragging.y;
-					int centerX = tmpX + curDragging.width/2; int centerY = tmpY+curDragging.height/2;
-					if(curDragging.intersects(b)) {
+				if (b == curDragging)
+					continue;
+				//checks if it is dragged onto another pece
+				if (curDragging.intersects(b)) {
+					int tmpX = curDragging.x;
+					int tmpY = curDragging.y;
+					int centerX = tmpX + curDragging.width / 2;
+					int centerY = tmpY + curDragging.height / 2;
 
-						if(Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX) && 
-								Math.abs(b.x - centerX) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
-							hover = new Block(b.x - curDragging.width, b.y,curDragging.width,curDragging.height,curDragging.img);
-						}
-						
-						else if(Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
-							curDragging.x++;
-							hover = new Block(b.x +  b.width, b.y,curDragging.width,curDragging.height,curDragging.img);
-						}
-						
-						else if(Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX) && 
-								Math.abs(b.y - centerY) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
-							curDragging.y--;
-							hover = new Block(b.x, b.y - curDragging.height,curDragging.width,curDragging.height,curDragging.img);
-						}
-						
-						else if(Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX) && 
-								Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY) && 
-								Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
-							curDragging.y++;
-							hover = new Block(b.x , b.y + b.height,curDragging.width,curDragging.height,curDragging.img);
-						}
-						fixed = true;
+					//looks for the nearest edge and forces it there
+					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
+							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
+							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
+						hover = new Block(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+								curDragging.img);
 					}
-					
+
+					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
+							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
+							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
+						curDragging.x++;
+						hover = new Block(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+								curDragging.img);
+					}
+
+					else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
+							&& Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
+							&& Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
+						curDragging.y--;
+						hover = new Block(curDragging.x, b.y - curDragging.height, curDragging.width,
+								curDragging.height, curDragging.img);
+					}
+
+					else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
+							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
+							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
+						curDragging.y++;
+						hover = new Block(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+								curDragging.img);
+					}
+
+				} else {
+					hover = null;
 				}
 			}
 		}
@@ -400,52 +389,57 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	@Override
 	public void mouseMoved(MouseEvent e) {
 
-
 	}
-	
+
 	public void drawSidebar(Graphics2D g) {
 		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
-		
-		if(tabPressed.equals("blocks")) {
+
+		if (tabPressed.equals("blocks")) {
 			g.setColor(Color.green);
 			g.fillRect(TAB_X, 0, TAB_WIDTH + 20, TAB_HEIGHT);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Blocks", GAME_WIDTH/7 + 20, 10);
-			
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Blocks", GAME_WIDTH / 7 + 20, 10);
+
 			tabPortal.draw(g);
 			tabStone.draw(g);
-			
-		}else {
+
+		} else {
 			g.setColor(Color.green);
 			g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Blocks", GAME_WIDTH / 7 + 10, 10);
 		}
-		
-		if(tabPressed.equals("enemies")) {
+
+		if (tabPressed.equals("enemies")) {
 			g.setColor(Color.orange);
 			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH + 20, TAB_HEIGHT + 20);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Enemies", GAME_WIDTH/7 + 20, 10 + TAB_HEIGHT);
-		}else {
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Enemies", GAME_WIDTH / 7 + 20, 10 + TAB_HEIGHT);
+		} else {
 			g.setColor(Color.orange);
 			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Enemies", GAME_WIDTH/7 + 10, 10 + TAB_HEIGHT);
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Enemies", GAME_WIDTH / 7 + 10, 10 + TAB_HEIGHT);
 		}
-		
-		if(tabPressed.equals("powerups")) {
+
+		if (tabPressed.equals("powerups")) {
 			g.setColor(Color.CYAN);
-			g.fillRect(TAB_X, 2*TAB_HEIGHT+20, TAB_WIDTH + 20, TAB_HEIGHT + 40);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Powerups", GAME_WIDTH/7 + 20, 2 * TAB_HEIGHT + 30);
-		}else {
+			g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH + 20, TAB_HEIGHT + 40);
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Powerups", GAME_WIDTH / 7 + 20, 2 * TAB_HEIGHT + 30);
+		} else {
 			g.setColor(Color.CYAN);
-			g.fillRect(TAB_X, 2*TAB_HEIGHT+20, TAB_WIDTH, TAB_HEIGHT + 40);
-			g.setColor(Color.black); g.setFont(rotatedFont); 
-			g.drawString("Powerups", GAME_WIDTH/7 + 10, 2 * TAB_HEIGHT + 30);
-		}	
-		
+			g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH, TAB_HEIGHT + 40);
+			g.setColor(Color.black);
+			g.setFont(rotatedFont);
+			g.drawString("Powerups", GAME_WIDTH / 7 + 10, 2 * TAB_HEIGHT + 30);
+		}
+
 	}
-	
+
 }
