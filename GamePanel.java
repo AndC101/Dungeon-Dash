@@ -11,6 +11,7 @@ Implements Runnable interface to use "threading" - let the game do two things at
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static final int FONT_SIZE = 30;
 	public static final int TAB_HEIGHT = 100;
 	public static final int TAB_WIDTH = 30;
-
+	public static final int TAB_X = GAME_WIDTH/7 + 5;
+	
+	
+	
 	public Thread gameThread;
 	public Graphics graphics;
 	
@@ -47,12 +51,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 	
-	public static int alpha = 0;
+	public int alpha = 0;
 
 	public boolean mainMenu = true;
 	public boolean edit = false;
 	public boolean levelSelect = false;
 	public boolean alphaUp = true;
+	public boolean sidebarPressed = false;
+	
+	public String tabPressed = "blocks";
 
 	//declare level widget variables
 	public int totalHeight;
@@ -62,7 +69,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public Block b, b2, curDragging;
 
-	ArrayList<Block> elements;
+	public Portal tabPortal;
+	public Stone tabStone;
+	
+	
+	ArrayList<Block> elements, sidebar;
 
 	public GamePanel() throws IOException {
 		this.setFocusable(true); // make everything in this class appear on the screen
@@ -74,14 +85,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
 		rotatedFont = font.deriveFont(affineTransform);
 
-		elements = new ArrayList<Block>();
-
-		b = new Portal(50, 50, 80, 100, portalImage);
-		b2 = new Block(100, 50, 100, 100, openChestImage);
-
-		elements.add(b);
-		elements.add(b2);
-
+		elements = new ArrayList<Block>(); sidebar = new ArrayList<Block>();
+		
+		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
+		tabStone = new Stone(TAB_X - 110, 400, Stone.width, Stone.height, stoneImage);
+		
+		sidebar.add(tabPortal); sidebar.add(tabStone);
+		
 		// add the MousePressed method from the MouseAdapter - by doing this we can
 		// listen for mouse input. We do this differently from the KeyListener because
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
@@ -114,7 +124,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void draw(Graphics g) {
 
 		if (mainMenu) {
-			
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(new Color(255,255,255,alpha));
@@ -234,20 +243,68 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			
 		} else if (edit) {
+			//checks if a block is pressed then allow it to be dragged
 			for (Block b : elements) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
 					b.mousePressed(e);
 					curDragging = b;
+					sidebarPressed = false;
 				}
 			}
+			
+			for (Block b : sidebar) {
+				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
+					b.mousePressed(e);
+					curDragging = b;
+					sidebarPressed = true;
+				}
+			}
+			
+			//checks if a tab is pressed
+			if(e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
+				if(e.getY() >= 2 * TAB_HEIGHT + 20) {
+					//powerups was chosen
+					tabPressed = "powerups";
+				}
+				else if(e.getY() >= TAB_HEIGHT) {
+					//enemies was chosen
+					tabPressed = "enemies";
+				}
+				else {
+					//blocks was chosen
+					tabPressed = "blocks";
+				}
+			}
+			
 		}
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+	
+		if(edit) {
+			
+			if(curDragging != null) {
+				//checks if it is still on the sidebar
+				if(curDragging.x  <= TAB_X) {
+					elements.remove(curDragging);
+				}
+				else {
+					//if the block is intersecting another one remove it probably add some lenicency and auto correct later
+					for(Block b: elements) {
+						if(b == curDragging) continue;
+						if(b.intersects(curDragging)) {
+							elements.remove(curDragging);
+							break;
+						}
+					}
+				}
+			}
+			
+		}
 		curDragging = null;
-
+		
 	}
 
 	@Override
@@ -264,6 +321,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void mouseDragged(MouseEvent e) {
 
 		if (edit && curDragging != null) {
+			if(sidebarPressed) {
+				if(curDragging.equals(tabPortal)) {
+					try {elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));} catch(IOException IOE) {}
+					curDragging = elements.get(elements.size() - 1);
+				}
+				
+				if(curDragging.equals(tabStone)) {
+					try {elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));} catch(IOException IOE) {}
+					curDragging = elements.get(elements.size() - 1);
+				}
+				
+				sidebarPressed = false;
+			}
 			curDragging.mouseDragged(e);
 		}
 
@@ -274,4 +344,50 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 
 	}
+	
+	public void drawSidebar(Graphics g) {
+		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
+		
+		if(tabPressed.equals("blocks")) {
+			g.setColor(Color.green);
+			g.fillRect(TAB_X, 0, TAB_WIDTH + 20, TAB_HEIGHT);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Blocks", GAME_WIDTH/7 + 20, 10);
+			
+			tabPortal.draw(g);
+			tabStone.draw(g);
+			
+		}else {
+			g.setColor(Color.green);
+			g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
+		}
+		
+		if(tabPressed.equals("enemies")) {
+			g.setColor(Color.orange);
+			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH + 20, TAB_HEIGHT + 20);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Enemies", GAME_WIDTH/7 + 20, 10 + TAB_HEIGHT);
+		}else {
+			g.setColor(Color.orange);
+			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Enemies", GAME_WIDTH/7 + 10, 10 + TAB_HEIGHT);
+		}
+		
+		if(tabPressed.equals("powerups")) {
+			g.setColor(Color.CYAN);
+			g.fillRect(TAB_X, 2*TAB_HEIGHT+20, TAB_WIDTH + 20, TAB_HEIGHT + 40);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Powerups", GAME_WIDTH/7 + 20, 2 * TAB_HEIGHT + 30);
+		}else {
+			g.setColor(Color.CYAN);
+			g.fillRect(TAB_X, 2*TAB_HEIGHT+20, TAB_WIDTH, TAB_HEIGHT + 40);
+			g.setColor(Color.black); g.setFont(rotatedFont); 
+			g.drawString("Powerups", GAME_WIDTH/7 + 10, 2 * TAB_HEIGHT + 30);
+		}	
+		
+	}
+	
 }
