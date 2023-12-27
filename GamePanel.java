@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
+	public boolean play = false;
 
 	public int indicatorPos = 250;
 
@@ -160,16 +161,24 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("> ", 300, indicatorPos);
 
 
-			g.drawString("Enter the dungeon", 325, 250);
+			g.drawString("Level selection", 325, 250);
 			g.drawString("Create new dungeon", 325, 320);
 
 			// g.drawString("Press Enter to Continue", 325, 350);
 
 		} else if (edit) {
+
+			//draw strings for user instruction for save and play 
+			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
+			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
+
 			drawSidebar(g);
 			for (Block b : elements) {
 				b.draw(g);
 			}
+
+
+
 			// check if its being hovered and makes it like transparent
 			if (hover != null) {
 				Graphics2D g2d = (Graphics2D) g;
@@ -188,6 +197,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			//code for drawing the knight animation
 			knight.draw(g);
+
+
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
@@ -241,7 +252,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 		if (mainMenu) {
-			if (e.getKeyCode() == 10 && indicatorPos ==250) {
+			if (e.getKeyCode() == 10 && indicatorPos == 320){
+				levelSelect = false;
+				edit = true;
+				mainMenu = false;
+			}
+			else if (e.getKeyCode() == 10 && indicatorPos ==250) {
 				//enter the levelSelect menu
 
 
@@ -259,23 +275,35 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				indicatorPos = 250;
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
 				indicatorPos = 320;
-			}
+			} 
 		} else if (levelSelect) {
 			if (e.getKeyCode() == 10) {
 				levelSelect = false;
 				edit = true;
+
+				try {
+					new GameFrame(false);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 
 		} else if (edit) {
-			if (e.getKeyCode() == 10) {
-				levelSelect = true;
-				edit = false;
-			}
-			else if(e.getKeyCode() == 8) {
+			if(e.getKeyCode() == 8) {
 				if(curSelected != null) {
 					elements.remove(curSelected);
 					curSelected = null;
 				}
+			} else if(e.getKeyCode() == KeyEvent.VK_1) {
+				//save the run to file io
+				
+
+
+			} else if (e.getKeyCode() == KeyEvent.VK_2) {
+				//enter play mode;
+				edit = false;
+				play = true;
 			}
 						
 
