@@ -160,7 +160,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("> ", 300, indicatorPos);
 
 
-			g.drawString("Enter the dungeon", 325, 250);
+			g.drawString("Level selection", 325, 250);
 			g.drawString("Create new dungeon", 325, 320);
 
 			// g.drawString("Press Enter to Continue", 325, 350);
@@ -241,7 +241,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 		if (mainMenu) {
-			if (e.getKeyCode() == 10 && indicatorPos ==250) {
+			if (e.getKeyCode() == 10 && indicatorPos == 320){
+				levelSelect = false;
+				edit = true;
+				mainMenu = false;
+			}
+			else if (e.getKeyCode() == 10 && indicatorPos ==250) {
 				//enter the levelSelect menu
 
 
@@ -259,19 +264,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				indicatorPos = 250;
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
 				indicatorPos = 320;
-			}
+			} 
 		} else if (levelSelect) {
 			if (e.getKeyCode() == 10) {
 				levelSelect = false;
 				edit = true;
+
+				try {
+					new GameFrame(false);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 
 		} else if (edit) {
-			if (e.getKeyCode() == 10) {
-				levelSelect = true;
-				edit = false;
-			}
-			else if(e.getKeyCode() == 8) {
+			if(e.getKeyCode() == 8) {
 				if(curSelected != null) {
 					elements.remove(curSelected);
 					curSelected = null;
