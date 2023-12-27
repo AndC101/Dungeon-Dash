@@ -1,8 +1,6 @@
 import java.awt.*;
-import java.awt.image.*;
 import java.io.*;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 

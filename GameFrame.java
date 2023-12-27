@@ -12,8 +12,8 @@ public class GameFrame extends JFrame{
 
   GamePanel panel;
 
-  public GameFrame() throws IOException{
-    panel = new GamePanel(); //run GamePanel constructor
+  public GameFrame(boolean levelSelect) throws IOException{
+    panel = new GamePanel(levelSelect); //run GamePanel constructor
 	this.add(panel);
 	this.setTitle("Dungeon Dash"); //set title for frame
 	this.setResizable(false); //frame can't change size
