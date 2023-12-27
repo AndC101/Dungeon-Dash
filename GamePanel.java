@@ -129,8 +129,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// call the draw methods in each class to update positions as things move
 	public void draw(Graphics2D g) {
 
-		if (mainMenu) {
-
+		if (mainMenu) {   
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(new Color(255, 255, 255, alpha));
