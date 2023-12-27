@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
+	public boolean play = false;
 
 	public int indicatorPos = 250;
 
@@ -166,10 +167,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			// g.drawString("Press Enter to Continue", 325, 350);
 
 		} else if (edit) {
+
+			//draw strings for user instruction for save and play 
+			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
+			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
+
 			drawSidebar(g);
 			for (Block b : elements) {
 				b.draw(g);
 			}
+
+
+
 			// check if its being hovered and makes it like transparent
 			if (hover != null) {
 				Graphics2D g2d = (Graphics2D) g;
@@ -188,6 +197,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			//code for drawing the knight animation
 			knight.draw(g);
+
+
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
@@ -284,6 +295,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					elements.remove(curSelected);
 					curSelected = null;
 				}
+			} else if(e.getKeyCode() == KeyEvent.VK_1) {
+				//save the run to file io
+				
+
+
+			} else if (e.getKeyCode() == KeyEvent.VK_2) {
+				//enter play mode;
+				edit = false;
+				play = true;
 			}
 						
 
