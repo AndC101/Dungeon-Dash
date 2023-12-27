@@ -59,6 +59,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
 
+	public int indicatorPos = 250;
+
 	public String tabPressed = "blocks";
 
 	// declare level widget variables
@@ -75,8 +77,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
-	public GamePanel() throws IOException {
-		
+	public GamePanel(boolean levelSelect) throws IOException {
+		if(levelSelect) {
+			this.levelSelect = true; 
+			mainMenu = false;
+			edit = false;
+		}
+
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
 		this.addMouseListener(this);
@@ -132,10 +139,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (mainMenu) {   
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
-			g.setColor(new Color(255, 255, 255, alpha));
-
+			g.setColor(Color.white);
 			// display text for the title
 			g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+			g.setColor(new Color(255, 255, 255, alpha));
+
 
 			// causes the text to fade in and out by adjusting transparancy value
 			if (alphaUp)
@@ -145,12 +153,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			if (alpha >= 250)
 				alphaUp = false;
-			if (alpha <= 5)
+			if (alpha <= 100)
 				alphaUp = true;
 
 			// display text for the menu
+			g.drawString("> ", 300, indicatorPos);
+
+
 			g.drawString("Enter the dungeon", 325, 250);
-			g.drawString("Create your own!", 335, 320);
+			g.drawString("Create new dungeon", 325, 320);
 
 			// g.drawString("Press Enter to Continue", 325, 350);
 
@@ -230,10 +241,31 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 		if (mainMenu) {
-			if (e.getKeyCode() == 10) {
+			if (e.getKeyCode() == 10 && indicatorPos ==250) {
+				//enter the levelSelect menu
+
+
 				mainMenu = false;
+				edit = false;
+				levelSelect = true;
+
+				//create a new gameframe in the levelSelect menu
+				try {
+					new GameFrame(true);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			} else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
+				indicatorPos = 250;
+			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
+				indicatorPos = 320;
+			}
+		} else if (levelSelect) {
+			if (e.getKeyCode() == 10) {
+				levelSelect = false;
 				edit = true;
 			}
+
 		} else if (edit) {
 			if (e.getKeyCode() == 10) {
 				levelSelect = true;
