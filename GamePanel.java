@@ -49,17 +49,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	public static int alpha = 0;
 
-	//NOTE CHANGE THESE BACK TO TRUE WHEN MERGING
-	public boolean mainMenu = false;
+	public boolean mainMenu = true;
 	public boolean edit = false;
-	public boolean levelSelect = true;
-	public boolean alphaUp = false;
+	public boolean levelSelect = false;
+	public boolean alphaUp = true;
 
 	//declare level widget variables
-	//save each new level entry into an arraylist levelWidgets. Once the user runs the program, 
-	//draw loops through the arraylist and draws each entry
-	public LevelPreview temp;
-	ArrayList<LevelPreview> levelWidgets;
+	public int totalHeight;
+	public int numButtons = 18; // to be changed once file IO works
+
+
 
 	public Block b, b2, curDragging;
 
@@ -76,9 +75,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		rotatedFont = font.deriveFont(affineTransform);
 
 		elements = new ArrayList<Block>();
-		levelWidgets = new ArrayList<LevelPreview>();
-
-
 
 		b = new Portal(50, 50, 80, 100, portalImage);
 		b2 = new Block(100, 50, 100, 100, openChestImage);
@@ -91,6 +87,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
 		// don't want to make 6 empty methods
 
+		//62 represents the amount of pixels one new level entry takes
+		totalHeight = 62 * numButtons; 
+	
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
 		// make this class run at the same time as other classes (without this each
@@ -131,8 +130,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(alpha <= 5) alphaUp = true;
 			
 			//display text for the menu
-			g.drawString("Press Enter to Continue", 325, 350);
-			
+			g.drawString("Enter the dungeon", 325, 250);
+			g.drawString("Create your own!", 335, 320);
+
 		}
 		else if(edit) {
 			g.fillRect(GAME_WIDTH / 7, 0, 5, GAME_HEIGHT);
@@ -142,9 +142,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Blocks", GAME_WIDTH/7 + 10, 10);
 		
 		} else if (levelSelect) {
-			//code for the level select menu, after main menu
-			a.draw(g);
-
+			//to be filled (draw the image background?)
 		}
 
 	}
@@ -198,8 +196,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				mainMenu = false;
 				edit = true;
 			}
-		} else if (levelSelect) {
-			
+		} else if (edit) {
+			if(e.getKeyCode() == 10) {
+				levelSelect = true;
+				edit = false;
+			}
+
 		}
 
 		
