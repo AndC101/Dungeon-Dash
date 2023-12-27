@@ -46,7 +46,7 @@ public class Block extends Rectangle {
 		x = e.getX() - diffX; y = e.getY() - diffY;
 	}
 
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 		g.drawImage(img, x, y, width, height, null);
 	}
 

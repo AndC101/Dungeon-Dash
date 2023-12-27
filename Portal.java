@@ -15,7 +15,7 @@ public class Portal extends Block {
 	}
 	
 	//draw the image from the block class
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 		super.draw(g);
 	}
 
