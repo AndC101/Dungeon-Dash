@@ -9,6 +9,7 @@ Implements Runnable interface to use "threading" - let the game do two things at
 
 */
 import java.awt.*;
+import java.awt.RenderingHints.Key;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -16,13 +17,16 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
+
 //imports for file io
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -87,6 +91,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
 	public String displaySaved = "LEVEL SAVED :)";
+	public ArrayList<String> levels = new ArrayList<>();
+	public String title = "";
+	public String updatedSave = "";
+	public ArrayList<String> names = new ArrayList<>();
 
 	public GamePanel(boolean levelSelect) throws IOException {
 		if(levelSelect) {
@@ -94,6 +102,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			mainMenu = false;
 			edit = false;
 		}
+		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
+		readFirstWords();
 
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
@@ -184,10 +194,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
-
-			if(levelSaved) {
-				g.drawString(displaySaved, 400,400);
-			}
 			
 			g.setColor(Color.black);
 			drawSidebar(g);
@@ -316,39 +322,59 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				//check if file is saved OR saved and played
 			} else if(e.getKeyCode() == KeyEvent.VK_1) {
-				try {
-					writer = new BufferedWriter(new FileWriter("LevelSave.txt", true));
-					
-					if(elements.isEmpty()) {
-						System.out.println("Cannot save to empty file!");
-					} else {
-						if(!levelSaved) {
-							writer.write("\n");
-							for(Block b: elements) { 
-								writer.write(" " + b.toString());
+				//save the file
+
+				updatedSave = "";
+				if (!levelSaved) {
+					// Create a JTextField for user input
+					JTextField textField = new JTextField();
+
+					// Show an input dialog with the text field
+					int option = JOptionPane.showOptionDialog(this, textField,
+							"Name your level!", JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
+					// Check if the user clicked OK
+					if (option == JOptionPane.OK_OPTION) {
+						// Get the entered name from the text field
+						title = textField.getText();
+						if(!names.contains(title)) {
+							for(Block b: elements) {
+								updatedSave += b.toString() + " ";
 							}
-							System.out.println("Successfully wrote to the file.");
+							System.out.println(title);
+							replaceLine(title, updatedSave);
+							names.add(title);
+							System.out.println(names);
+							// Display a message indicating that the level has been saved
+							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 							levelSaved = true;
 						} else {
-							//if level has already been saved before, overwrite the prev save
-							for(Block b: elements) { 
-								writer.write(" " + b.toString());
-							}
-							System.out.println("Overwrote prev save.");
-						
-
+							// Display a message indicating that the level has not been saved
+							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 						}
+
 						
+						
+						
+						
+					} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+						JOptionPane.showMessageDialog(this, "Save cancelled.", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
+
 					}
+				} else if (levelSaved) {
+					//if previously saved, then update the entry
+					for(Block b: elements) {
+						updatedSave += b.toString() + " ";
+					}
+					System.out.println(elements + "       " + updatedSave);
+					replaceLine(title, updatedSave);
+				}
+				 
 
-					// writer.write("\n" + elements);
-					
-					writer.close();
 
-				  } catch (IOException er) {
-					System.out.println("An error occurred.");
-					er.printStackTrace();
-				  }
+				
+		
 
 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
@@ -358,10 +384,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			}
 						
-
 		}
-
 	}
+		
+
+	
 
 	// if a key is released, we'll send it over to the PlayerBall class for
 	// processing
@@ -733,6 +760,75 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         return dimg;
     }
 
-						
+	public static void replaceLine(String title, String save) {
+		try {
+			// input the (modified) file content to the StringBuffer "input"
+			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+			boolean containedTitle = false;
+
+			while ((line = file.readLine()) != null) {
+
+				if(line.startsWith(title)) {
+					line = title + " " + save; // replace the line here
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+					containedTitle = true;
+				} else {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+
+			}
+
+			if(!containedTitle) {
+				line = title + " " + save; // replace the line here
+				inputBuffer.append(line);
+				inputBuffer.append('\n');
+			}
+
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+					
+	public void readFirstWords() {
+		String filePath = "levelSave.txt"; // Provide the path to your text file
+		int endIndex = -1;
+		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				// Split the line into words using space as the delimiter
+				if(line.indexOf(" ") != -1) {
+
+					for(int i = 0; i < line.length(); i++) {
+						if(Character.isDigit(line.charAt(i))){
+ 							endIndex = i; 
+							break; 
+						}
+					}
+
+					names.add(line.substring(0, endIndex));
+				} else {
+					//empty save file
+					names.add(line);
+				}
+			}
+			System.out.println(names);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+	}
+	
 
 }
