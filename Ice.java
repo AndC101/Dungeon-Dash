@@ -19,4 +19,7 @@ public class Ice extends Block {
 		super.draw(g);
 	}
 
+	public String toString() {
+		return "Ice " + super.toString();
+	}
 }
