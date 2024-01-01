@@ -783,7 +783,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			while ((line = file.readLine()) != null) {
 
 				if(line.startsWith(title)) {
-					line = title + " " + save; // replace the line here
+					line = title + ": " + save; // replace the line here
 					inputBuffer.append(line);
 					inputBuffer.append('\n');
 					containedTitle = true;
@@ -795,7 +795,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 			if(!containedTitle) {
-				line = title + " " + save; // replace the line here
+				line = title + ": " + save; // replace the line here
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
 			}
