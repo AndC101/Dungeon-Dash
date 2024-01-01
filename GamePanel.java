@@ -12,12 +12,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
+
+//imports for file io
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -46,6 +51,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
+	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
 
 	
 	public Player knight;
@@ -77,6 +83,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
+
+	public BufferedWriter writer;
+	public boolean levelSaved = false;
 
 	public GamePanel(boolean levelSelect) throws IOException {
 		if(levelSelect) {
@@ -169,9 +178,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		} else if (edit) {
 
 			//draw strings for user instruction for save and play 
+			
+			g.drawImage(resize(playBackground, GAME_WIDTH*2, GAME_HEIGHT), GAME_WIDTH/7, 0, this);
+			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
 
+			g.setColor(Color.black);
 			drawSidebar(g);
 			for (Block b : elements) {
 				b.draw(g);
@@ -295,15 +308,41 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					elements.remove(curSelected);
 					curSelected = null;
 				}
+
+				//check if file is saved OR saved and played
 			} else if(e.getKeyCode() == KeyEvent.VK_1) {
-				//save the run to file io
-				
+				try {
+					writer = new BufferedWriter(new FileWriter("LevelSave.txt", true));
+					
+					if(elements.isEmpty()) {
+						System.out.println("Cannot save to empty file!");
+					} else {
+						if(!levelSaved) {
+							writer.write("\n");
+							for(Block b: elements) { 
+								writer.write(" " + b.toString());
+							}
+							System.out.println("Successfully wrote to the file.");
+							levelSaved = true;
+						}
+						
+					}
+
+					// writer.write("\n" + elements);
+					
+					writer.close();
+
+				  } catch (IOException er) {
+					System.out.println("An error occurred.");
+					er.printStackTrace();
+				  }
 
 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
 				//enter play mode;
 				edit = false;
 				play = true;
+
 			}
 						
 
@@ -588,5 +627,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		return false;
 
 	}
+
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
+    }
+
 
 }
