@@ -1,9 +1,1 @@
-test Ice 369 202 60 40 
-e3st1
-tes1t2
-te23st3
-tes4t4
-2test5
-te2st
-sdfsdf
-andrew's game 
+andrew's level Stone 317 179 60 40 Ice 372 219 60 40 Ice 488 168 60 40 

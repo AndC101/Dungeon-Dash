@@ -337,14 +337,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					// Check if the user clicked OK
 					if (option == JOptionPane.OK_OPTION) {
 						// Get the entered name from the text field
-						title = textField.getText();
+						title = textField.getText().stripTrailing(); // get the info from text box without whitespace
 						if(!names.contains(title)) {
 							for(Block b: elements) {
 								updatedSave += b.toString() + " ";
 							}
 							System.out.println(title);
 							replaceLine(title, updatedSave);
-							names.add(title);
+
+							addTitle(title); //add the title
+
 							System.out.println(names);
 							// Display a message indicating that the level has been saved
 							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
@@ -760,6 +762,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         return dimg;
     }
 
+	public void addTitle (String title){
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
+			writer.write(title + ", ");
+			writer.close();
+		} catch (Exception e) {
+			System.out.println("Problem adding name.");
+		}
+	}
+
 	public static void replaceLine(String title, String save) {
 		try {
 			// input the (modified) file content to the StringBuffer "input"
@@ -801,26 +813,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 					
 	public void readFirstWords() {
-		String filePath = "levelSave.txt"; // Provide the path to your text file
-		int endIndex = -1;
+		String filePath = "names.txt"; // Provide the path to your text file
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
 
 			while ((line = reader.readLine()) != null) {
 				// Split the line into words using space as the delimiter
-				if(line.indexOf(" ") != -1) {
-
-					for(int i = 0; i < line.length(); i++) {
-						if(Character.isDigit(line.charAt(i))){
- 							endIndex = i; 
-							break; 
-						}
-					}
-
-					names.add(line.substring(0, endIndex));
-				} else {
-					//empty save file
-					names.add(line);
+				String[] words = line.split(", ");
+				for (String name: words) {
+					names.add(name);
 				}
 			}
 			System.out.println(names);
