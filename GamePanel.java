@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
-
+import java.util.concurrent.TimeUnit;
 //imports for file io
 import java.io.File;
 import java.io.IOException;
@@ -86,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
+	public String displaySaved = "LEVEL SAVED :)";
 
 	public GamePanel(boolean levelSelect) throws IOException {
 		if(levelSelect) {
@@ -184,6 +185,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
 
+			if(levelSaved) {
+				g.drawString(displaySaved, 400,400);
+			}
+			
 			g.setColor(Color.black);
 			drawSidebar(g);
 			for (Block b : elements) {
@@ -324,6 +329,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							}
 							System.out.println("Successfully wrote to the file.");
 							levelSaved = true;
+						} else {
+							//if level has already been saved before, overwrite the prev save
+							for(Block b: elements) { 
+								writer.write(" " + b.toString());
+							}
+							System.out.println("Overwrote prev save.");
+						
+
 						}
 						
 					}
@@ -371,7 +384,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (mainMenu) {
 
 		} else if (edit) {
-			// checks if a block is pressed then allow it to be dragged
+			// checks if an existing block is pressed then allow it to be dragged
 			boolean chosen = false;
 			for (Block b : elements) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
@@ -420,11 +433,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (edit) {
 
+			//if there IS a block being dragged
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
 				if (curDragging.x <= TAB_X) {
-					elements.remove(curDragging);
-				} else if (hover != null) {
+					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
+				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
 					// loops through all the blocks
 					boolean works = true;
 					for (int i = 0; i < elements.size(); i++) {
@@ -518,35 +532,115 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					int centerY = tmpY + curDragging.height / 2;
 
 					// looks for the nearest edge and forces it there
+
+					//LEFT EDGE
 					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
-						hover = new Block(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
 					}
 
 					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
 						curDragging.x++;
-						hover = new Block(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 
 					else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
 						curDragging.y--;
-						hover = new Block(curDragging.x, b.y - curDragging.height, curDragging.width,
-								curDragging.height, curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(curDragging.x, b.y - curDragging.height, curDragging.width,
+										curDragging.height, curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(curDragging.x, b.y - curDragging.height, curDragging.width,
+										curDragging.height, curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 
 					else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
 						curDragging.y++;
-						hover = new Block(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 					if (hover != null && checkAllIntersection(hover)) {
 						hover = null;
@@ -639,5 +733,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         return dimg;
     }
 
+						
 
 }
