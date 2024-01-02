@@ -1,2 +1,2 @@
-
- Ice 541 271 60 40 Portal 142 442 60 75 Stone 475 304 60 40 Stone 601 228 60 40 Stone 660 186 60 40
+gregory anthony Ice 356 364 60 40 Stone 416 364 60 40 
+greg anthony: 

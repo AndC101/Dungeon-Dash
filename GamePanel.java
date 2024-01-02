@@ -9,6 +9,7 @@ Implements Runnable interface to use "threading" - let the game do two things at
 
 */
 import java.awt.*;
+import java.awt.RenderingHints.Key;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -19,10 +20,13 @@ import java.util.*;
 
 //imports for file io
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -86,6 +90,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
+	public String displaySaved = "LEVEL SAVED :)";
+	public ArrayList<String> levels = new ArrayList<>();
+	public String title = "";
+	public String updatedSave = "";
+	public ArrayList<String> names = new ArrayList<>();
 
 	public GamePanel(boolean levelSelect) throws IOException {
 		if(levelSelect) {
@@ -93,6 +102,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			mainMenu = false;
 			edit = false;
 		}
+		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
+		readFirstWords();
 
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
@@ -183,7 +194,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
-
+			
 			g.setColor(Color.black);
 			drawSidebar(g);
 			for (Block b : elements) {
@@ -311,31 +322,61 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				//check if file is saved OR saved and played
 			} else if(e.getKeyCode() == KeyEvent.VK_1) {
-				try {
-					writer = new BufferedWriter(new FileWriter("LevelSave.txt", true));
-					
-					if(elements.isEmpty()) {
-						System.out.println("Cannot save to empty file!");
-					} else {
-						if(!levelSaved) {
-							writer.write("\n");
-							for(Block b: elements) { 
-								writer.write(" " + b.toString());
+				//save the file
+
+				updatedSave = "";
+				if (!levelSaved) {
+					// Create a JTextField for user input
+					JTextField textField = new JTextField();
+
+					// Show an input dialog with the text field
+					int option = JOptionPane.showOptionDialog(this, textField,
+							"Name your level!", JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
+					// Check if the user clicked OK
+					if (option == JOptionPane.OK_OPTION) {
+						// Get the entered name from the text field
+						title = textField.getText().stripTrailing(); // get the info from text box without whitespace
+						if(!names.contains(title)) {
+							for(Block b: elements) {
+								updatedSave += b.toString() + " ";
 							}
-							System.out.println("Successfully wrote to the file.");
+							System.out.println(title);
+							replaceLine(title, updatedSave);
+
+							addTitle(title); //add the title
+
+							System.out.println(names);
+							// Display a message indicating that the level has been saved
+							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 							levelSaved = true;
+						} else {
+							// Display a message indicating that the level has not been saved
+							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 						}
+
 						
+						
+						
+						
+					} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+						JOptionPane.showMessageDialog(this, "Save cancelled.", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
+
 					}
+				} else if (levelSaved) {
+					//if previously saved, then update the entry
+					for(Block b: elements) {
+						updatedSave += b.toString() + " ";
+					}
+					System.out.println(elements + "       " + updatedSave);
+					replaceLine(title, updatedSave);
+				}
+				 
 
-					// writer.write("\n" + elements);
-					
-					writer.close();
 
-				  } catch (IOException er) {
-					System.out.println("An error occurred.");
-					er.printStackTrace();
-				  }
+				
+		
 
 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
@@ -345,10 +386,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			}
 						
-
 		}
-
 	}
+		
+
+	
 
 	// if a key is released, we'll send it over to the PlayerBall class for
 	// processing
@@ -371,7 +413,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (mainMenu) {
 
 		} else if (edit) {
-			// checks if a block is pressed then allow it to be dragged
+			// checks if an existing block is pressed then allow it to be dragged
 			boolean chosen = false;
 			for (Block b : elements) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
@@ -420,11 +462,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (edit) {
 
+			//if there IS a block being dragged
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
 				if (curDragging.x <= TAB_X) {
-					elements.remove(curDragging);
-				} else if (hover != null) {
+					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
+				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
 					// loops through all the blocks
 					boolean works = true;
 					for (int i = 0; i < elements.size(); i++) {
@@ -518,35 +561,115 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					int centerY = tmpY + curDragging.height / 2;
 
 					// looks for the nearest edge and forces it there
+
+					//LEFT EDGE
 					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
-						hover = new Block(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
 					}
 
 					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
 						curDragging.x++;
-						hover = new Block(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 
 					else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
 						curDragging.y--;
-						hover = new Block(curDragging.x, b.y - curDragging.height, curDragging.width,
-								curDragging.height, curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(curDragging.x, b.y - curDragging.height, curDragging.width,
+										curDragging.height, curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(curDragging.x, b.y - curDragging.height, curDragging.width,
+										curDragging.height, curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 
 					else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
 						curDragging.y++;
-						hover = new Block(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
-								curDragging.img);
+
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
+						Class<?> type = curDragging.getClass();
+						String className = type.getName();
+						if(className.equals("Stone")){
+							try {
+								hover = new Stone(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} else if (className.equals("Ice")) {
+							try {
+								hover = new Ice(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+										curDragging.img);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						} 
+
+
 					}
 					if (hover != null && checkAllIntersection(hover)) {
 						hover = null;
@@ -639,5 +762,74 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         return dimg;
     }
 
+	public void addTitle (String title){
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
+			writer.write(title + ", ");
+			writer.close();
+		} catch (Exception e) {
+			System.out.println("Problem adding name.");
+		}
+	}
+
+	public static void replaceLine(String title, String save) {
+		try {
+			// input the (modified) file content to the StringBuffer "input"
+			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+			boolean containedTitle = false;
+
+			while ((line = file.readLine()) != null) {
+
+				if(line.startsWith(title)) {
+					line = title + ": " + save; // replace the line here
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+					containedTitle = true;
+				} else {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+
+			}
+
+			if(!containedTitle) {
+				line = title + ": " + save; // replace the line here
+				inputBuffer.append(line);
+				inputBuffer.append('\n');
+			}
+
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}
+					
+	public void readFirstWords() {
+		String filePath = "names.txt"; // Provide the path to your text file
+		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				// Split the line into words using space as the delimiter
+				String[] words = line.split(", ");
+				for (String name: words) {
+					names.add(name);
+				}
+			}
+			System.out.println(names);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+	}
+	
 
 }
