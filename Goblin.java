@@ -2,26 +2,24 @@ import java.awt.*;
 import java.io.*;
 
 
-
-import javax.swing.ImageIcon;
-
-
-
-public class Player extends Rectangle {
+public class Goblin extends Block {
 	
 	
 	public int yVelocity = -1;
 	public int xVelocity = 0;
 	public int moved = 0;
-	Image curAnimation;
+	public static int height = 40;
+	public static int width = 20;
+	Image animation;
 	
-	public Player(int x, int y, int l, int w) throws IOException{
+	public Goblin(int x, int y, int l, int w, Image i) throws IOException{
 		super(x,y,l,w);
+		animation = i;
 	}
 	
 	//draw the image from the block class
 	public void draw(Graphics2D g) {
-		g.drawImage(curAnimation, x, y, null);
+		g.drawImage(animation, x, y, null);
 	}
 	
 	
