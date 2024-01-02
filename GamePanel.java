@@ -9,7 +9,6 @@ Implements Runnable interface to use "threading" - let the game do two things at
 
 */
 import java.awt.*;
-import java.awt.RenderingHints.Key;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -46,8 +45,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	Font font = new Font(null, Font.PLAIN, 25);
 	Font rotatedFont;
 
+	//imports for graphics
 	Image image;
-
 	public BufferedImage portalImage = ImageIO.read(new File("Images/Start_Portal.png"));
 	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
 	public BufferedImage openChestImage = ImageIO.read(new File("Images/OpenChest.png"));
@@ -57,11 +56,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
 
-	
+
 	public Player knight;
 
+	//imports for text effects
 	public int alpha = 0;
 
+	//for states of the frame
 	public boolean mainMenu = true;
 	public boolean edit = false;
 	public boolean levelSelect = false;
@@ -88,20 +89,36 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
+	//for file IO
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
-	public String displaySaved = "LEVEL SAVED :)";
-	public ArrayList<String> levels = new ArrayList<>();
-	public String title = "";
 	public String updatedSave = "";
-	public ArrayList<String> names = new ArrayList<>();
+	public ArrayList<String> names = new ArrayList<>(); // to prevent duplicate named levels
 
-	public GamePanel(boolean levelSelect) throws IOException {
+	public String newLevelTitle = ""; //if new level 
+	public String prevSavedTitle = ""; //for files that existand are revisited (level select -> play/edit button)
+
+	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
-			edit = false;
+			this.edit = false;
+			this.play = false;
+		} else if(edit){
+			this.levelSelect = false; 
+			mainMenu = false;
+			this.edit = true;
+			this.play = false;
+		} else if (play) {
+			this.levelSelect = false; 
+			mainMenu = false;
+			this.edit = false;
+			this.play = true;
 		}
+
+		//get the title of the save file
+		prevSavedTitle = levelName; //only if the file already exists, otherwise this is ""
+
 		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
 		readFirstWords();
 
@@ -118,6 +135,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		elements = new ArrayList<Block>();
 		sidebar = new ArrayList<Block>();
+		readData(prevSavedTitle); //populates the elements arraylist with the blocks for the save level
+		//if not applicable, prevSavedTitle = "";
 
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
 		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
@@ -127,14 +146,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		sidebar.add(tabStone);
 		sidebar.add(tabIce);
 
-		// add the MousePressed method from the MouseAdapter - by doing this we can
-		// listen for mouse input. We do this differently from the KeyListener because
-		// MouseAdapter has SEVEN mandatory methods - we only need one of them, and we
-		// don't want to make 6 empty methods
 
-		// 62 represents the amount of pixels one new level entry takes
+		//total height for the scrollpane 
+		//make the scrollpane height slightly bigger than the height of each button * the num of buttons which makes the levelSelect
+		//frame scrollable and adjusts to however many buttons the app needs 
+		//names.size() refers to the number of names of levels (how many levels AKA buttons since each level requires space for it's button label)
 		totalHeight = names.size() * numButtons;
-
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
 		// make this class run at the same time as other classes (without this each
@@ -178,9 +195,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				alphaUp = true;
 
 			// display text for the menu
+			//indicator pos allows user to use up and down keys to position their choice in the menu
 			g.drawString("> ", 300, indicatorPos);
-
-
 			g.drawString("Level selection", 325, 250);
 			g.drawString("Create new dungeon", 325, 320);
 
@@ -197,6 +213,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			g.setColor(Color.black);
 			drawSidebar(g);
+
+
 			for (Block b : elements) {
 				b.draw(g);
 			}
@@ -290,7 +308,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				levelSelect = true;
 				//create a new gameframe in the levelSelect menu
 				try {
-					new GameFrame(true);
+					new GameFrame(true, false, false, "");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -305,7 +323,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				edit = true;
 
 				try {
-					new GameFrame(false);
+					new GameFrame(false, false, false, "");
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -322,9 +340,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				//check if file is saved OR saved and played
 			} else if(e.getKeyCode() == KeyEvent.VK_1) {
 				//save the file
-
 				updatedSave = "";
-				if (!levelSaved) {
+				if (!levelSaved && prevSavedTitle.isEmpty()) { //if user is created a fresh new level
 					// Create a JTextField for user input
 					JTextField textField = new JTextField();
 
@@ -336,17 +353,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					// Check if the user clicked OK
 					if (option == JOptionPane.OK_OPTION) {
 						// Get the entered name from the text field
-						title = textField.getText().stripTrailing(); // get the info from text box without whitespace
-						if(!names.contains(title)) {
+						newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without whitespace
+						if(!names.contains(newLevelTitle)) {
 							for(Block b: elements) {
-								updatedSave += b.toString() + " ";
+								updatedSave += b.toString() + ": ";
 							}
-							System.out.println(title);
-							replaceLine(title, updatedSave);
+							replaceLine(newLevelTitle, updatedSave);
 
-							addTitle(title); //add the title
+							addTitle(newLevelTitle); //add the title
 
-							System.out.println(names);
 							// Display a message indicating that the level has been saved
 							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 							levelSaved = true;
@@ -354,29 +369,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							// Display a message indicating that the level has not been saved
 							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 						}
-
-						
-						
-						
-						
 					} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-						JOptionPane.showMessageDialog(this, "Save cancelled.", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
-
+						JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 					}
-				} else if (levelSaved) {
+				} else if (levelSaved && prevSavedTitle.isEmpty()) {
 					//if previously saved, then update the entry
 					for(Block b: elements) {
-						updatedSave += b.toString() + " ";
+						updatedSave += b.toString() + ": ";
 					}
+					levelSaved = true;
 					System.out.println(elements + "       " + updatedSave);
-					replaceLine(title, updatedSave);
+					replaceLine(newLevelTitle, updatedSave); //replace line with the entered title --> THIS CASAE AND ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES THEIR NEW DUNGEON
+				} else if (!prevSavedTitle.isEmpty() && !levelSaved) {
+					for(Block b: elements) {
+						updatedSave += b.toString() + ": ";
+					}
+					
+					replaceLine(prevSavedTitle, updatedSave); //replace line with the given title
+
+
 				}
-				 
-
-
-				
-		
-
 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
 				//enter play mode;
@@ -387,9 +399,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						
 		}
 	}
-		
-
-	
 
 	// if a key is released, we'll send it over to the PlayerBall class for
 	// processing
@@ -688,6 +697,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void drawSidebar(Graphics2D g) {
+
 		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
 
 		if (tabPressed.equals("blocks")) {
@@ -738,7 +748,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 	}
-
+	
 	public boolean checkAllIntersection(Block block) {
 
 		for (int i = 0; i < elements.size() - 1; i++) {
@@ -750,6 +760,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
+	//resizes an image to preferred width and height
 	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
         Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
@@ -761,7 +772,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
         return dimg;
     }
 
+	//add title if user creates a new level to the names.txt file to prevent duplicate titles.
 	public void addTitle (String title){
+		//adds a title to the names.txt file for easy checking if there are any duplicate names (bad)
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
 			writer.write(title + ", ");
@@ -771,6 +784,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 
+	//rewrites the LevelSave.txt file into a temp input stream and then overwrites the previous save file to 
+	//imitate the effect of "overwritting" a save level. (this is the only viable way to overwrite in java file io)
 	public static void replaceLine(String title, String save) {
 		try {
 			// input the (modified) file content to the StringBuffer "input"
@@ -811,7 +826,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 					
+	//reads the first words (AKA titles) for each level into the names arraylist so no duplicate titles are made (our unique ID sys for levels relies on unique names)
+	//also required for num of buttons and height of scrollpane
 	public void readFirstWords() {
+		//read titles to check for no duplicates
+
 		String filePath = "names.txt"; // Provide the path to your text file
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			String line;
@@ -823,12 +842,52 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					names.add(name);
 				}
 			}
-			System.out.println(names);
+			System.out.println(names); //debugging
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	
 	}
 	
+	//reads the data for a specific level and adds all blocks of that level into the elements arraylist 
+	//so the level can be loaded and played/edited
+	public void readData(String title) {
+		//if the title is not found or there is no title
+
+		if(title.equals("")) {
+			return;
+		} else {
+			String filePath = "LevelSave.txt"; // Provide the path to your text file
+			try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					// Split the line into words using space as the delimiter
+					if(line.startsWith(title)){
+						String[] words = line.split(": ");
+						for (int i = 1; i < words.length; i++) {
+							//i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter : in the title itself
+							String[] inputs = words[i].split(" "); //splits based on space
+							if(inputs[0].equals("Ice")) {
+								elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Ice.width, Ice.height, iceImage));
+							} else if (inputs[0].equals("Stone")) {
+								elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Stone.width, Stone.height, stoneImage));
+							} else if (inputs[0].equals("Portal")) {
+								elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Portal.width, Portal.height, portalImage));
+							}
+						}
+						return;
+					}
+
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+
+
+	}
 
 }
