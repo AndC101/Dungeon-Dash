@@ -331,6 +331,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 		} else if (edit) {
+
+			knight.keyPressed(e);
+
 			if(e.getKeyCode() == 8) {
 				if(curSelected != null) {
 					elements.remove(curSelected);
@@ -395,12 +398,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				}
 
+				//FINISH THIS 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
 				//enter play mode;
 				edit = false;
 				play = true;
 
-			}
+			} 
+			// else if (e.getKeyCode() == KeyEvent.VK_D) {
+
+			// }
 						
 		}
 	}
