@@ -19,4 +19,8 @@ public class Portal extends Block {
 		super.draw(g);
 	}
 
+	public String toString () {
+		return "Portal " + super.toString();
+	}
+
 }

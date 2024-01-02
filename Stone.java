@@ -21,5 +21,9 @@ public class Stone extends Block {
 		super.draw(g);
 	}
 
+	public String toString () {
+		return "Stone " + super.toString();
+	}
+
 }
  

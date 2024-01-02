@@ -47,4 +47,5 @@ public class Block extends Rectangle {
 	public String toString() {
 		return x + " " + y + " " + width + " " + height;
 	}
+
 }
