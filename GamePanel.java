@@ -107,9 +107,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
-
-	public GamePanel() throws IOException {
-
 	//for file IO
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
@@ -150,7 +147,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseMotionListener(this);
 
 		knight = new Player(200, 100, 47, 53);
-		knight.curAnimation = afkAnimation;
 
 		// code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
@@ -292,7 +288,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// fluid and natural. If we take this out the movements appear sluggish and
 	// laggy
 	public void move() {
-		knight.move();
+		//knight.move();
 	}
 
 	// handles all collision detection and responds accordingly
@@ -334,90 +330,42 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			//play = true;
 		}
 
-		if (mainMenu) {
-			if (e.getKeyCode() == 10 && indicatorPos == 320){
-				levelSelect = false;
-				edit = true;
-				mainMenu = false;
-			}
-			else if (e.getKeyCode() == 10 && indicatorPos ==250) {
-				//enter the levelSelect menu
+		  if (mainMenu) {
+	            if (e.getKeyCode() == 10 && indicatorPos == 320){
+	                levelSelect = false;
+	                edit = true;
+	                mainMenu = false;
+	            }
+	            else if (e.getKeyCode() == 10 && indicatorPos ==250) {
+	                //enter the levelSelect menu
 
 
-				mainMenu = false;
-				edit = false;
+	                mainMenu = false;
+	                edit = false;
+	                levelSelect = true;
+	                //create a new gameframe in the levelSelect menu
+	                try {
+	                    new GameFrame(true, false, false, "");
+	                } catch (IOException e1) {
+	                    e1.printStackTrace();
+	                }
+	            } else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
+	                indicatorPos = 250;
+	            } else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
+	                indicatorPos = 320;
+	            } 
+	        } else if (levelSelect) {
+	            if (e.getKeyCode() == 10) {
+	                levelSelect = false;
+	                edit = true;
 
-			} else if (e.getKeyCode() == 8) {
-				if (curSelected != null) {
-					elements.remove(curSelected);
-					curSelected = null;
-				}
-			} else if (e.getKeyCode() == 37 && curSelected != null) {
-				for (Block b : elements) {
-					if (curSelected == b) {
-						b.x--;
-						if (checkAllIntersection(b))
-							b.x++;
-					}
-				}
-			}
+	                try {
+	                    new GameFrame(false, false, false, "");
+	                } catch (IOException e1) {
+	                    e1.printStackTrace();
+	                }
 
-			else if (e.getKeyCode() == 38 && curSelected != null) {
-				for (Block b : elements) {
-					if (curSelected == b) {
-						b.y--;
-						if (checkAllIntersection(b))
-							b.y++;
-					}
-				}
-			}
-
-			else if (e.getKeyCode() == 39 && curSelected != null) {
-				for (Block b : elements) {
-					if (curSelected == b) {
-						b.x++;
-						if (checkAllIntersection(b))
-							b.x--;
-					}
-				}
-			}
-
-			else if (e.getKeyCode() == 40 && curSelected != null) {
-				for (Block b : elements) {
-					if (curSelected == b) {
-						b.y++;
-						if (checkAllIntersection(b))
-							b.y--;
-					}
-				}
-			}
-		}
-
-		
-				levelSelect = true;
-				//create a new gameframe in the levelSelect menu
-				try {
-					new GameFrame(true, false, false, "");
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			} else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
-				indicatorPos = 250;
-			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
-				indicatorPos = 320;
-			} 
-		} else if (levelSelect) {
-			if (e.getKeyCode() == 10) {
-				levelSelect = false;
-				edit = true;
-
-				try {
-					new GameFrame(false, false, false, "");
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-
-			}
+	            }
 
 		} else if (edit) {
 
@@ -503,8 +451,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void keyReleased(KeyEvent e) {
-		knight.keyReleased(e);
-
+		
 	}
 
 	public void keyTyped(KeyEvent e) {
@@ -573,14 +520,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			//if there IS a block being dragged
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
-				if (curDragging.x <= TAB_X) {
+				if (curDragging.x <= TAB_X) {//remove it if it's still on the sidebar and not dragged into the sandbox
 
 					elements.remove(curDragging);
 					curSelected = null;
-				} else if (hover != null) {
-
-					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
-				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
+				}  
+				 else if (hover != null) { //if there IS a block being hovered over b the curDragging block
 
 					// loops through all the blocks
 					boolean works = true;

@@ -1,3 +1,5 @@
 andrew: Ice 254 176 60 40: Ice 361 197 60 40: Stone 478 267 60 40: Stone 484 209 60 40: Stone 365 298 60 40: Ice 581 302 60 40: Portal 197 317 60 75: Portal 320 367 60 75: Stone 656 220 60 40: Ice 735 276 60 40: Ice 623 348 60 40: 
-ethan: 
-greg: Ice 352 300 60 40: Stone 438 317 60 40: 
+e: Portal 245 105 60 75: Stone 343 154 60 40: Ice 314 248 60 40: Stone 325 204 60 40: 
+greg: Ice 237 196 60 40: Stone 438 317 60 40: Portal 354 104 60 75: 
+test: Portal 220 162 60 75: Stone 283 182 60 40: Ice 456 279 60 40: 
+bob: Portal 259 102 60 75: 
