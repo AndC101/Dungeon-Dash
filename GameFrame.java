@@ -6,16 +6,22 @@ Runs the constructor in GamePanel class
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
 
     private static GameFrame currentGameFrame; // Keep track of the current GameFrame instance
 	GamePanel panel;
+	public ArrayList<Block> temp = new ArrayList<>();
+	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
 
-	public GameFrame(boolean levelSelect, boolean edit, boolean play) throws IOException{
+	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 
         if (currentGameFrame != null) {
             currentGameFrame.dispose();
@@ -24,7 +30,7 @@ public class GameFrame extends JFrame implements ActionListener{
         currentGameFrame = this; // Set the current GameFrame to this instance
 
 
-		panel = new GamePanel(levelSelect, edit, play); //run GamePanel constructor
+		panel = new GamePanel(levelSelect, edit, play, levelTitle); //run GamePanel constructor
 		this.add(panel);
 		this.setTitle("Dungeon Dash"); //set title for frame
 		this.setResizable(false); //frame can't change size
@@ -105,6 +111,15 @@ public class GameFrame extends JFrame implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 // Perform actions when any "Play" button is pressed
                 System.out.println("Play button in row " + title + " pressed!");
+				
+				try {
+					// System.out.println("WE GOOD" + title);
+					new GameFrame(false, true, false, title);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+
+
 
             }
         });
@@ -118,7 +133,7 @@ public class GameFrame extends JFrame implements ActionListener{
 
             // Example: Open a new frame for the main menu
             try {
-                new GameFrame(false, false, false);
+                new GameFrame(false, false, false, "");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -126,7 +141,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			dispose();
 
 			try {
-                new GameFrame(false, true, false);
+                new GameFrame(false, true, false, "");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
