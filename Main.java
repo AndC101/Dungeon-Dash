@@ -5,7 +5,6 @@ This is a common technique among coders to keep things organized (and handy when
 */ 
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 class Main {
   public static void main(String[] args) throws IOException {

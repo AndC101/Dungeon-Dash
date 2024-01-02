@@ -210,7 +210,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
-			
+
 			g.setColor(Color.black);
 			drawSidebar(g);
 
@@ -380,13 +380,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					levelSaved = true;
 					System.out.println(elements + "       " + updatedSave);
 					replaceLine(newLevelTitle, updatedSave); //replace line with the entered title --> THIS CASAE AND ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES THEIR NEW DUNGEON
+					
+					//display saved
+					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 				} else if (!prevSavedTitle.isEmpty() && !levelSaved) {
 					for(Block b: elements) {
 						updatedSave += b.toString() + ": ";
 					}
-					
 					replaceLine(prevSavedTitle, updatedSave); //replace line with the given title
-
+					
+					//display saved
+					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
+					
 
 				}
 
