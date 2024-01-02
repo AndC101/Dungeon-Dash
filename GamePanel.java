@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
+  
 
 //imports for file io
 import java.io.File;
@@ -54,6 +55,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
+
+	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
+	
+	
+	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
+	Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
+	Image goblinRunning = new ImageIcon("Images/GoblinRunning.gif").getImage();
+
 	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
 
 
@@ -71,7 +80,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean fixed = false;
 	public boolean play = false;
 
+	public boolean running = false;
+	public boolean jumping = false;
+	public boolean falling = false;
+	public boolean landing = false;
+
+
 	public int indicatorPos = 250;
+
 
 	public String tabPressed = "blocks";
 
@@ -85,9 +101,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Stone tabStone;
 	public Ice tabIce;
 	public Ladder tabLadder;
+	public CrackedStone tabCrackedStone;
+	public Goblin tabGoblin;
 
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
+
+
+	public GamePanel() throws IOException {
 
 	//for file IO
 	public BufferedWriter writer;
@@ -122,12 +143,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
 		readFirstWords();
 
+
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
-		knight = new Player(200,100,20,30);
+		knight = new Player(200, 100, 47, 53);
+		knight.curAnimation = afkAnimation;
 
 		// code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
@@ -135,16 +158,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		elements = new ArrayList<Block>();
 		sidebar = new ArrayList<Block>();
+
+
 		readData(prevSavedTitle); //populates the elements arraylist with the blocks for the save level
 		//if not applicable, prevSavedTitle = "";
 
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
 		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
 		tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
+		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
+		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height, crackedStoneImage);
+		
+		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning);
 
 		sidebar.add(tabPortal);
 		sidebar.add(tabStone);
 		sidebar.add(tabIce);
+		sidebar.add(tabLadder);
+		sidebar.add(tabCrackedStone);
+		
+		sidebar.add(tabGoblin);
 
 
 		//total height for the scrollpane 
@@ -228,26 +261,31 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				g2d.setComposite(ac);
 				hover.draw(g2d);
 			}
-			
-			if(curSelected != null) {
+
+			if (curSelected != null) {
 				g.setColor(Color.yellow);
-				g.fillRect(curSelected.x, curSelected.y, curSelected.width, 3);
-				g.fillRect(curSelected.x, curSelected.y, 3, curSelected.height);
+				g.fillRect(curSelected.x-3, curSelected.y-3, curSelected.width + 3, 3);
+				g.fillRect(curSelected.x-3, curSelected.y-3, 3, curSelected.height + 3);
 				g.fillRect(curSelected.x + curSelected.width, curSelected.y, 3, curSelected.height + 3);
-				g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width, 3);
+				g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width + 3, 3);
 			}
-			
-			//code for drawing the knight animation
-			knight.draw(g);
+
+			// code for drawing the knight animation
 
 
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
-
 		}
 
+		if (play) {
+
+			
+		}
+		
 	}
+
+	
 
 	// call the move methods in other classes to update positions
 	// this method is constantly called from run(). By doing this, movements appear
@@ -289,9 +327,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 
-	// if a key is pressed, we'll send it over to the PlayerBall class for
-	// processing
 	public void keyPressed(KeyEvent e) {
+
+		if (e.getKeyCode() == 80) {
+			
+			//play = true;
+		}
 
 		if (mainMenu) {
 			if (e.getKeyCode() == 10 && indicatorPos == 320){
@@ -305,6 +346,54 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				mainMenu = false;
 				edit = false;
+
+			} else if (e.getKeyCode() == 8) {
+				if (curSelected != null) {
+					elements.remove(curSelected);
+					curSelected = null;
+				}
+			} else if (e.getKeyCode() == 37 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.x--;
+						if (checkAllIntersection(b))
+							b.x++;
+					}
+				}
+			}
+
+			else if (e.getKeyCode() == 38 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.y--;
+						if (checkAllIntersection(b))
+							b.y++;
+					}
+				}
+			}
+
+			else if (e.getKeyCode() == 39 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.x++;
+						if (checkAllIntersection(b))
+							b.x--;
+					}
+				}
+			}
+
+			else if (e.getKeyCode() == 40 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.y++;
+						if (checkAllIntersection(b))
+							b.y--;
+					}
+				}
+			}
+		}
+
+		
 				levelSelect = true;
 				//create a new gameframe in the levelSelect menu
 				try {
@@ -410,10 +499,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			// }
 						
 		}
+
 	}
 
-	// if a key is released, we'll send it over to the PlayerBall class for
-	// processing
 	public void keyReleased(KeyEvent e) {
 		knight.keyReleased(e);
 
@@ -445,9 +533,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					chosen = true;
 				}
 			}
-			
-			if(!chosen) curSelected = null;
-			
+
+			if (!chosen)
+				curSelected = null;
+
 			// checks if the block pressed is from the sidebar
 			for (Block b : sidebar) {
 				if (b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY()) {
@@ -457,8 +546,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					chosen = true;
 				}
 			}
-			
-			
 
 			// checks if a tab is pressed
 			if (e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
@@ -487,8 +574,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
 				if (curDragging.x <= TAB_X) {
+
+					elements.remove(curDragging);
+					curSelected = null;
+				} else if (hover != null) {
+
 					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
 				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
+
 					// loops through all the blocks
 					boolean works = true;
 					for (int i = 0; i < elements.size(); i++) {
@@ -500,6 +593,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						// if the snapped piece is also going to intersect a piece then don't add it
 						if (hover.intersects(b)) {
 							elements.remove(curDragging);
+							curSelected = null;
 							works = false;
 							break;
 						}
@@ -513,6 +607,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				} else if (hover == null && checkAllIntersection(curDragging)) {
 					elements.remove(curDragging);
+					curSelected = null;
 				}
 			}
 
@@ -558,6 +653,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				else if (curDragging.equals(tabIce)) {
 					try {
 						elements.add(new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
+					} catch (IOException IOE) {
+					}
+					curDragging = elements.get(elements.size() - 1);
+				}
+			
+				else if (curDragging.equals(tabLadder)) {
+					try {
+						elements.add(new Ladder(TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
+					} catch (IOException IOE) {
+					}
+					curDragging = elements.get(elements.size() - 1);
+				}
+				
+				else if(curDragging.equals(tabCrackedStone)) {
+					try {
+						elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height, crackedStoneImage));
 					} catch (IOException IOE) {
 					}
 					curDragging = elements.get(elements.size() - 1);
@@ -612,6 +723,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
+
+						hover = new Block(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
+								curDragging.img);
+
 						curDragging.x++;
 
 						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
@@ -635,11 +750,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						} 
 
 
+
 					}
 
 					else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
+
+						hover = new Block(curDragging.x, b.y - curDragging.height, curDragging.width,
+								curDragging.height, curDragging.img);
+
 						curDragging.y--;
 
 						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
@@ -663,11 +783,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						} 
 
 
+
 					}
 
 					else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
+
+						hover = new Block(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
+								curDragging.img);
+
 						curDragging.y++;
 
 						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
@@ -689,6 +814,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								e1.printStackTrace();
 							}
 						} 
+
 
 
 					}
@@ -723,7 +849,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			tabPortal.draw(g);
 			tabStone.draw(g);
 			tabIce.draw(g);
-
+			tabLadder.draw(g);
+			tabCrackedStone.draw(g);
+			
 		} else {
 			g.setColor(Color.green);
 			g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
@@ -738,6 +866,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black);
 			g.setFont(rotatedFont);
 			g.drawString("Enemies", GAME_WIDTH / 7 + 20, 10 + TAB_HEIGHT);
+			
+			tabGoblin.draw(g);
+			
 		} else {
 			g.setColor(Color.orange);
 			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
@@ -761,17 +892,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 	}
+
 	
 	public boolean checkAllIntersection(Block block) {
 
+
 		for (int i = 0; i < elements.size() - 1; i++) {
 			Block b = elements.get(i);
-			if (!block.equals(b) && block.intersects(b))
+			if (!block.equals(b) && block.intersects(b) && !b.equals(curDragging))
 				return true;
 		}
 		return false;
 
 	}
+
 
 	//resizes an image to preferred width and height
 	public static BufferedImage resize(BufferedImage img, int newW, int newH) {

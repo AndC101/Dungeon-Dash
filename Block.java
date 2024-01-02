@@ -13,6 +13,10 @@ public class Block extends Rectangle {
 		super(x,y,l,w);
 		img = i;
 	}
+
+	public Block(int x, int y, int l, int w){
+		super(x,y,l,w);
+	}
 	
 
 
