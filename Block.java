@@ -13,21 +13,11 @@ public class Block extends Rectangle {
 		super(x,y,l,w);
 		img = i;
 	}
-	
+
 	public Block(int x, int y, int l, int w){
 		super(x,y,l,w);
 	}
 	
-	// public static BufferedImage resize(BufferedImage img, int newW, int newH) {
-    //     Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-    //     BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-    //     Graphics2D g2d = dimg.createGraphics();
-    //     g2d.drawImage(tmp, 0, 0, null);
-    //     g2d.dispose();
-
-    //     return dimg;
-    // }
 
 
 
@@ -54,5 +44,7 @@ public class Block extends Rectangle {
 		g.drawImage(img, x, y, width, height, null);
 	}
 
-
+	public String toString() {
+		return x + " " + y + " " + width + " " + height;
+	}
 }
