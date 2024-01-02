@@ -2,6 +2,11 @@ import java.awt.*;
 import java.io.*;
 
 
+
+import javax.swing.ImageIcon;
+
+
+
 public class Player extends Rectangle {
 	
 	
