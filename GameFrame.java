@@ -15,7 +15,7 @@ public class GameFrame extends JFrame implements ActionListener{
     private static GameFrame currentGameFrame; // Keep track of the current GameFrame instance
 	GamePanel panel;
 
-	public GameFrame(boolean levelSelect) throws IOException{
+	public GameFrame(boolean levelSelect, boolean edit, boolean play) throws IOException{
 
         if (currentGameFrame != null) {
             currentGameFrame.dispose();
@@ -24,12 +24,12 @@ public class GameFrame extends JFrame implements ActionListener{
         currentGameFrame = this; // Set the current GameFrame to this instance
 
 
-		panel = new GamePanel(levelSelect); //run GamePanel constructor
+		panel = new GamePanel(levelSelect, edit, play); //run GamePanel constructor
 		this.add(panel);
 		this.setTitle("Dungeon Dash"); //set title for frame
 		this.setResizable(false); //frame can't change size
 		this.setBackground(Color.white);
-		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //X button will stop program execution
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //X button will stop program execution
 
 		//if level select menu, the frame must be adjusted
 		if(panel.levelSelect) {
@@ -50,7 +50,8 @@ public class GameFrame extends JFrame implements ActionListener{
 
 			int j = 25;
 			for(int i = 0; i < panel.names.size(); i++){
-				JLabel label = new JLabel("Title: " + panel.names.get(i));
+				String title = panel.names.get(i);
+				JLabel label = new JLabel("Title: " + title);
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
@@ -70,6 +71,8 @@ public class GameFrame extends JFrame implements ActionListener{
 								contentPane);
 				layout.putConstraint(SpringLayout.WEST, editButton, 20, SpringLayout.EAST,
 								playButton);
+				
+				addPlayButtonListener(playButton, title);
 
 				j+=60;
 			}
@@ -96,6 +99,16 @@ public class GameFrame extends JFrame implements ActionListener{
 
 
 	}
+    private void addPlayButtonListener(JButton playButton, String title) {
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Perform actions when any "Play" button is pressed
+                System.out.println("Play button in row " + title + " pressed!");
+
+            }
+        });
+    }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -105,11 +118,20 @@ public class GameFrame extends JFrame implements ActionListener{
 
             // Example: Open a new frame for the main menu
             try {
-                new GameFrame(false);
+                new GameFrame(false, false, false);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
+        } else if (e.getActionCommand().equals("Edit")) {
+			dispose();
+
+			try {
+                new GameFrame(false, true, false);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+		}
 	}
   
 }

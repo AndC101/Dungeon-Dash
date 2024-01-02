@@ -96,12 +96,24 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public String updatedSave = "";
 	public ArrayList<String> names = new ArrayList<>();
 
-	public GamePanel(boolean levelSelect) throws IOException {
+	public GamePanel(boolean levelSelect, boolean edit, boolean play) throws IOException {
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
-			edit = false;
+			this.edit = false;
+			this.play = false;
+		} else if(edit){
+			this.levelSelect = false; 
+			mainMenu = false;
+			this.edit = true;
+			this.play = false;
+		} else if (play) {
+			this.levelSelect = false; 
+			mainMenu = false;
+			this.edit = false;
+			this.play = true;
 		}
+
 		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
 		readFirstWords();
 
@@ -290,7 +302,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				levelSelect = true;
 				//create a new gameframe in the levelSelect menu
 				try {
-					new GameFrame(true);
+					new GameFrame(true, false, false);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -305,7 +317,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				edit = true;
 
 				try {
-					new GameFrame(false);
+					new GameFrame(false, false, false);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
