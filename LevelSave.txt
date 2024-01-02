@@ -1,2 +1,4 @@
-gregory anthony Ice 356 364 60 40 Stone 416 364 60 40 
-greg anthony: 
+Andrew Chen: 
+Ethan Lin: 
+Greg Anthony: Ice 281 190 60 40 Stone 425 135 60 40 Stone 515 280 60 40 
+test: 

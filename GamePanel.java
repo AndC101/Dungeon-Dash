@@ -133,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// don't want to make 6 empty methods
 
 		// 62 represents the amount of pixels one new level entry takes
-		totalHeight = 62 * numButtons;
+		totalHeight = names.size() * numButtons;
 
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
@@ -288,7 +288,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				mainMenu = false;
 				edit = false;
 				levelSelect = true;
-
 				//create a new gameframe in the levelSelect menu
 				try {
 					new GameFrame(true);
