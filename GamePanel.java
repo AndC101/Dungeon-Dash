@@ -254,7 +254,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// fluid and natural. If we take this out the movements appear sluggish and
 	// laggy
 	public void move() {
-
+		knight.move();
 	}
 
 	// handles all collision detection and responds accordingly
@@ -415,6 +415,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// if a key is released, we'll send it over to the PlayerBall class for
 	// processing
 	public void keyReleased(KeyEvent e) {
+		knight.keyReleased(e);
 
 	}
 
