@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
+
 import javax.swing.ImageIcon;
 
 public class Player extends Rectangle implements KeyListener {
@@ -66,6 +67,7 @@ public class Player extends Rectangle implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
+
 
         // Reset animation when the keys are released
         if (key == KeyEvent.VK_LEFT) {
