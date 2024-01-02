@@ -520,14 +520,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			//if there IS a block being dragged
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
-				if (curDragging.x <= TAB_X) {
+				if (curDragging.x <= TAB_X) {//remove it if it's still on the sidebar and not dragged into the sandbox
 
 					elements.remove(curDragging);
 					curSelected = null;
-				} else if (hover != null) {
-
-					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
-				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
+				}  
+				 else if (hover != null) { //if there IS a block being hovered over b the curDragging block
 
 					// loops through all the blocks
 					boolean works = true;
