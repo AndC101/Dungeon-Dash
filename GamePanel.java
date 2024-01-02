@@ -1,4 +1,3 @@
-
 /* GamePanel class acts as the main "game loop" - continuously runs the game and calls whatever needs to be called
 
 Child of JPanel because JPanel contains methods for drawing to the screen
@@ -16,6 +15,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.util.*;
+  
 
 //imports for file io
 import java.io.File;
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+
 
 public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
 
@@ -44,7 +45,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	Font font = new Font(null, Font.PLAIN, 25);
 	Font rotatedFont;
 
-	// imports for graphics
+	//imports for graphics
 	Image image;
 	public BufferedImage portalImage = ImageIO.read(new File("Images/Start_Portal.png"));
 	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
@@ -55,19 +56,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 
 	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
-
+	
+	
 	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
 	Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
 	Image goblinRunning = new ImageIcon("Images/GoblinRunning.gif").getImage();
 
 	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
 
+
 	public Player knight;
 
-	// imports for text effects
+	//imports for text effects
 	public int alpha = 0;
 
-	// for states of the frame
+	//for states of the frame
 	public boolean mainMenu = true;
 	public boolean edit = false;
 	public boolean levelSelect = false;
@@ -81,7 +84,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean falling = false;
 	public boolean landing = false;
 
+
 	public int indicatorPos = 250;
+
 
 	public String tabPressed = "blocks";
 
@@ -101,39 +106,41 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	ArrayList<Block> elements, sidebar;
 	Block hover = null;
 
-	// for file IO
+
+
+	//for file IO
 	public BufferedWriter writer;
 	public boolean levelSaved = false;
 	public String updatedSave = "";
 	public ArrayList<String> names = new ArrayList<>(); // to prevent duplicate named levels
 
-	public String newLevelTitle = ""; // if new level
-	public String prevSavedTitle = ""; // for files that existand are revisited (level select -> play/edit button)
+	public String newLevelTitle = ""; //if new level 
+	public String prevSavedTitle = ""; //for files that existand are revisited (level select -> play/edit button)
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
-		if (levelSelect) {
-			this.levelSelect = true;
+		if(levelSelect) {
+			this.levelSelect = true; 
 			mainMenu = false;
 			this.edit = false;
 			this.play = false;
-		} else if (edit) {
-			this.levelSelect = false;
+		} else if(edit){
+			this.levelSelect = false; 
 			mainMenu = false;
 			this.edit = true;
 			this.play = false;
 		} else if (play) {
-			this.levelSelect = false;
+			this.levelSelect = false; 
 			mainMenu = false;
 			this.edit = false;
 			this.play = true;
 		}
 
-		// get the title of the save file
-		prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
+		//get the title of the save file
+		prevSavedTitle = levelName; //only if the file already exists, otherwise this is ""
 
-		// read the titles of each entry in LevelSave into arraylist names so no
-		// duplicate is made
+		//read the titles of each entry in LevelSave into arraylist names so no duplicate is made
 		readFirstWords();
+
 
 		this.setFocusable(true); // make everything in this class appear on the screen
 		this.addKeyListener(this); // start listening for keyboard input
@@ -141,7 +148,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseMotionListener(this);
 
 		knight = new Player(200, 100, 47, 53);
-		knight.curAnimation = afkAnimation;
 
 		// code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
@@ -150,16 +156,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		elements = new ArrayList<Block>();
 		sidebar = new ArrayList<Block>();
 
-		readData(prevSavedTitle); // populates the elements arraylist with the blocks for the save level
-		// if not applicable, prevSavedTitle = "";
+
+		readData(prevSavedTitle); //populates the elements arraylist with the blocks for the save level
+		//if not applicable, prevSavedTitle = "";
 
 		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
 		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
 		tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
 		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
-		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
-				crackedStoneImage);
-
+		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height, crackedStoneImage);
+		
 		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning);
 
 		sidebar.add(tabPortal);
@@ -167,15 +173,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		sidebar.add(tabIce);
 		sidebar.add(tabLadder);
 		sidebar.add(tabCrackedStone);
-
+		
 		sidebar.add(tabGoblin);
 
-		// total height for the scrollpane
-		// make the scrollpane height slightly bigger than the height of each button *
-		// the num of buttons which makes the levelSelect
-		// frame scrollable and adjusts to however many buttons the app needs
-		// names.size() refers to the number of names of levels (how many levels AKA
-		// buttons since each level requires space for it's button label)
+
+		//total height for the scrollpane 
+		//make the scrollpane height slightly bigger than the height of each button * the num of buttons which makes the levelSelect
+		//frame scrollable and adjusts to however many buttons the app needs 
+		//names.size() refers to the number of names of levels (how many levels AKA buttons since each level requires space for it's button label)
 		totalHeight = names.size() * numButtons;
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
@@ -199,13 +204,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// call the draw methods in each class to update positions as things move
 	public void draw(Graphics2D g) {
 
-		if (mainMenu) {
+		if (mainMenu) {   
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(Color.white);
 			// display text for the title
 			g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
 			g.setColor(new Color(255, 255, 255, alpha));
+
 
 			// causes the text to fade in and out by adjusting transparancy value
 			if (alphaUp)
@@ -219,8 +225,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				alphaUp = true;
 
 			// display text for the menu
-			// indicator pos allows user to use up and down keys to position their choice in
-			// the menu
+			//indicator pos allows user to use up and down keys to position their choice in the menu
 			g.drawString("> ", 300, indicatorPos);
 			g.drawString("Level selection", 325, 250);
 			g.drawString("Create new dungeon", 325, 320);
@@ -229,9 +234,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		} else if (edit) {
 
-			// draw strings for user instruction for save and play
-
-			g.drawImage(resize(playBackground, GAME_WIDTH * 2, GAME_HEIGHT), GAME_WIDTH / 7, 0, this);
+			//draw strings for user instruction for save and play 
+			
+			g.drawImage(resize(playBackground, GAME_WIDTH*2, GAME_HEIGHT), GAME_WIDTH/7, 0, this);
 			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
@@ -239,9 +244,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black);
 			drawSidebar(g);
 
+
 			for (Block b : elements) {
 				b.draw(g);
 			}
+
+
 
 			// check if its being hovered and makes it like transparent
 			if (hover != null) {
@@ -253,13 +261,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			if (curSelected != null) {
 				g.setColor(Color.yellow);
-				g.fillRect(curSelected.x - 3, curSelected.y - 3, curSelected.width + 3, 3);
-				g.fillRect(curSelected.x - 3, curSelected.y - 3, 3, curSelected.height + 3);
+				g.fillRect(curSelected.x-3, curSelected.y-3, curSelected.width + 3, 3);
+				g.fillRect(curSelected.x-3, curSelected.y-3, 3, curSelected.height + 3);
 				g.fillRect(curSelected.x + curSelected.width, curSelected.y, 3, curSelected.height + 3);
 				g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width + 3, 3);
 			}
 
 			// code for drawing the knight animation
+
+
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
@@ -267,16 +277,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (play) {
 
+			
 		}
-
+		
 	}
+
+	
 
 	// call the move methods in other classes to update positions
 	// this method is constantly called from run(). By doing this, movements appear
 	// fluid and natural. If we take this out the movements appear sluggish and
 	// laggy
 	public void move() {
-		// knight.move();
+		//knight.move();
 	}
 
 	// handles all collision detection and responds accordingly
@@ -314,126 +327,168 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 		if (e.getKeyCode() == 80) {
-
-			// play = true;
+			
+			//play = true;
 		}
 
-		 if (mainMenu) {
-	            if (e.getKeyCode() == 10 && indicatorPos == 320){
-	                levelSelect = false;
-	                edit = true;
-	                mainMenu = false;
-	            }
-	            else if (e.getKeyCode() == 10 && indicatorPos ==250) {
-	                //enter the levelSelect menu
+		if (mainMenu) {
+			if (e.getKeyCode() == 10 && indicatorPos == 320){
+				levelSelect = false;
+				edit = true;
+				mainMenu = false;
+			}
+			else if (e.getKeyCode() == 10 && indicatorPos ==250) {
+				//enter the levelSelect menu
 
 
-	                mainMenu = false;
-	                edit = false;
-	                levelSelect = true;
-	                //create a new gameframe in the levelSelect menu
-	                try {
-	                    new GameFrame(true, false, false, "");
-	                } catch (IOException e1) {
-	                    e1.printStackTrace();
-	                }
-	            } else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
-	                indicatorPos = 250;
-	            } else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
-	                indicatorPos = 320;
-	            } 
-	        } else if (levelSelect) {
-	            if (e.getKeyCode() == 10) {
-	                levelSelect = false;
-	                edit = true;
+				mainMenu = false;
+				edit = false;
 
-	                try {
-	                    new GameFrame(false, false, false, "");
-	                } catch (IOException e1) {
-	                    e1.printStackTrace();
-	                }
-
-	            }
-
-	        } 
-
-		else if (edit) {
-			if (e.getKeyCode() == 8) {
+			} else if (e.getKeyCode() == 8) {
 				if (curSelected != null) {
 					elements.remove(curSelected);
 					curSelected = null;
 				}
+			} else if (e.getKeyCode() == 37 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.x--;
+						if (checkAllIntersection(b))
+							b.x++;
+					}
+				}
+			}
 
-				// check if file is saved OR saved and played
-			} else if (e.getKeyCode() == KeyEvent.VK_1) {
-				// save the file
+			else if (e.getKeyCode() == 38 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.y--;
+						if (checkAllIntersection(b))
+							b.y++;
+					}
+				}
+			}
+
+			else if (e.getKeyCode() == 39 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.x++;
+						if (checkAllIntersection(b))
+							b.x--;
+					}
+				}
+			}
+
+			else if (e.getKeyCode() == 40 && curSelected != null) {
+				for (Block b : elements) {
+					if (curSelected == b) {
+						b.y++;
+						if (checkAllIntersection(b))
+							b.y--;
+					}
+				}
+			}
+		}
+
+		
+		else if (levelSelect) {
+            if (e.getKeyCode() == 10) {
+                levelSelect = false;
+                edit = true;
+
+                try {
+                    new GameFrame(false, false, false, "");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+
+		} else if (edit) {
+
+			knight.keyPressed(e);
+
+			if(e.getKeyCode() == 8) {
+				if(curSelected != null) {
+					elements.remove(curSelected);
+					curSelected = null;
+				}
+
+				//check if file is saved OR saved and played
+			} else if(e.getKeyCode() == KeyEvent.VK_1) {
+				//save the file
 				updatedSave = "";
-				if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is created a fresh new level
+				if (!levelSaved && prevSavedTitle.isEmpty()) { //if user is created a fresh new level
 					// Create a JTextField for user input
 					JTextField textField = new JTextField();
 
 					// Show an input dialog with the text field
-					int option = JOptionPane.showOptionDialog(this, textField, "Name your level!",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+					int option = JOptionPane.showOptionDialog(this, textField,
+							"Name your level!", JOptionPane.OK_CANCEL_OPTION,
+							JOptionPane.INFORMATION_MESSAGE, null, null, null);
 
 					// Check if the user clicked OK
 					if (option == JOptionPane.OK_OPTION) {
 						// Get the entered name from the text field
-						newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without
-																				// whitespace
-						if (!names.contains(newLevelTitle)) {
-							for (Block b : elements) {
+						newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without whitespace
+						if(!names.contains(newLevelTitle)) {
+							for(Block b: elements) {
 								updatedSave += b.toString() + ": ";
 							}
 							replaceLine(newLevelTitle, updatedSave);
 
-							addTitle(newLevelTitle); // add the title
+							addTitle(newLevelTitle); //add the title
 
 							// Display a message indicating that the level has been saved
-							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-									JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 							levelSaved = true;
 						} else {
 							// Display a message indicating that the level has not been saved
-							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
-									"Invalid Save", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 						}
 					} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-						JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save",
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 					}
 				} else if (levelSaved && prevSavedTitle.isEmpty()) {
-					// if previously saved, then update the entry
-					for (Block b : elements) {
+					//if previously saved, then update the entry
+					for(Block b: elements) {
 						updatedSave += b.toString() + ": ";
 					}
 					levelSaved = true;
 					System.out.println(elements + "       " + updatedSave);
-					replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
-																// ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
-																// THEIR NEW DUNGEON
+					replaceLine(newLevelTitle, updatedSave); //replace line with the entered title --> THIS CASAE AND ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES THEIR NEW DUNGEON
+					
+					//display saved
+					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 				} else if (!prevSavedTitle.isEmpty() && !levelSaved) {
-					for (Block b : elements) {
+					for(Block b: elements) {
 						updatedSave += b.toString() + ": ";
 					}
-
-					replaceLine(prevSavedTitle, updatedSave); // replace line with the given title
+					replaceLine(prevSavedTitle, updatedSave); //replace line with the given title
+					
+					//display saved
+					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
+					
 
 				}
 
+				//FINISH THIS 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
-				// enter play mode;
+				//enter play mode;
 				edit = false;
 				play = true;
 
-			}
+			} 
+			// else if (e.getKeyCode() == KeyEvent.VK_D) {
 
+			// }
+						
 		}
 
 	}
 
 	public void keyReleased(KeyEvent e) {
-
+		
 	}
 
 	public void keyTyped(KeyEvent e) {
@@ -499,16 +554,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (edit) {
 
-			// if there IS a block being dragged
+			//if there IS a block being dragged
 			if (curDragging != null) {
 				// checks if it is still on the sidebar
 				if (curDragging.x <= TAB_X) {
+
 					elements.remove(curDragging);
 					curSelected = null;
-				} else if (hover == null) {
+				} else if (hover != null) {
 
-					elements.remove(curDragging); 
-				} else if (hover != null) { // if there IS a block being hovered over b the curDragging block
+					elements.remove(curDragging); //remove it if it's still on the sidebar and not dragged into the sandbox
+				} else if (hover != null) { //if there IS a block being hovered over b the curDragging block
 
 					// loops through all the blocks
 					boolean works = true;
@@ -585,7 +641,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 					curDragging = elements.get(elements.size() - 1);
 				}
-
+			
 				else if (curDragging.equals(tabLadder)) {
 					try {
 						elements.add(new Ladder(TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
@@ -593,11 +649,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 					curDragging = elements.get(elements.size() - 1);
 				}
-
-				else if (curDragging.equals(tabCrackedStone)) {
+				
+				else if(curDragging.equals(tabCrackedStone)) {
 					try {
-						elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height,
-								crackedStoneImage));
+						elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height, crackedStoneImage));
 					} catch (IOException IOE) {
 					}
 					curDragging = elements.get(elements.size() - 1);
@@ -623,31 +678,30 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 					// looks for the nearest edge and forces it there
 
-					// LEFT EDGE
+					//LEFT EDGE
 					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
 							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
 
-						// gets the name of the subclass for curDragging so it can create a hover block
-						// of the same type
-						// important for file IO
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
 						Class<?> type = curDragging.getClass();
 						String className = type.getName();
-						if (className.equals("Stone")) {
+						if(className.equals("Stone")){
 							try {
-								hover = new Stone(b.x - curDragging.width, curDragging.y, curDragging.width,
-										curDragging.height, curDragging.img);
+								hover = new Stone(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
 						} else if (className.equals("Ice")) {
 							try {
-								hover = new Ice(b.x - curDragging.width, curDragging.y, curDragging.width,
-										curDragging.height, curDragging.img);
+								hover = new Ice(b.x - curDragging.width, curDragging.y, curDragging.width, curDragging.height,
+										curDragging.img);
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
-						}
+						} 
 					}
 
 					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
@@ -659,12 +713,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 						curDragging.x++;
 
-						// gets the name of the subclass for curDragging so it can create a hover block
-						// of the same type
-						// important for file IO
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
 						Class<?> type = curDragging.getClass();
 						String className = type.getName();
-						if (className.equals("Stone")) {
+						if(className.equals("Stone")){
 							try {
 								hover = new Stone(b.x + b.width, curDragging.y, curDragging.width, curDragging.height,
 										curDragging.img);
@@ -678,7 +731,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
-						}
+						} 
+
+
 
 					}
 
@@ -691,12 +746,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 						curDragging.y--;
 
-						// gets the name of the subclass for curDragging so it can create a hover block
-						// of the same type
-						// important for file IO
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
 						Class<?> type = curDragging.getClass();
 						String className = type.getName();
-						if (className.equals("Stone")) {
+						if(className.equals("Stone")){
 							try {
 								hover = new Stone(curDragging.x, b.y - curDragging.height, curDragging.width,
 										curDragging.height, curDragging.img);
@@ -710,7 +764,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
-						}
+						} 
+
+
 
 					}
 
@@ -723,12 +779,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 						curDragging.y++;
 
-						// gets the name of the subclass for curDragging so it can create a hover block
-						// of the same type
-						// important for file IO
+						//gets the name of the subclass for curDragging so it can create a hover block of the same type 
+						//important for file IO
 						Class<?> type = curDragging.getClass();
 						String className = type.getName();
-						if (className.equals("Stone")) {
+						if(className.equals("Stone")){
 							try {
 								hover = new Stone(curDragging.x, b.y + b.height, curDragging.width, curDragging.height,
 										curDragging.img);
@@ -742,7 +797,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
-						}
+						} 
+
+
 
 					}
 					if (hover != null && checkAllIntersection(hover)) {
@@ -778,7 +835,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			tabIce.draw(g);
 			tabLadder.draw(g);
 			tabCrackedStone.draw(g);
-
+			
 		} else {
 			g.setColor(Color.green);
 			g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
@@ -793,9 +850,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black);
 			g.setFont(rotatedFont);
 			g.drawString("Enemies", GAME_WIDTH / 7 + 20, 10 + TAB_HEIGHT);
-
+			
 			tabGoblin.draw(g);
-
+			
 		} else {
 			g.setColor(Color.orange);
 			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
@@ -820,7 +877,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
+	
 	public boolean checkAllIntersection(Block block) {
+
 
 		for (int i = 0; i < elements.size() - 1; i++) {
 			Block b = elements.get(i);
@@ -831,23 +890,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
-	// resizes an image to preferred width and height
+
+	//resizes an image to preferred width and height
 	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
-		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
 
-		Graphics2D g2d = dimg.createGraphics();
-		g2d.drawImage(tmp, 0, 0, null);
-		g2d.dispose();
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
 
-		return dimg;
-	}
+        return dimg;
+    }
 
-	// add title if user creates a new level to the names.txt file to prevent
-	// duplicate titles.
-	public void addTitle(String title) {
-		// adds a title to the names.txt file for easy checking if there are any
-		// duplicate names (bad)
+	//add title if user creates a new level to the names.txt file to prevent duplicate titles.
+	public void addTitle (String title){
+		//adds a title to the names.txt file for easy checking if there are any duplicate names (bad)
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
 			writer.write(title + ", ");
@@ -857,10 +915,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 
-	// rewrites the LevelSave.txt file into a temp input stream and then overwrites
-	// the previous save file to
-	// imitate the effect of "overwritting" a save level. (this is the only viable
-	// way to overwrite in java file io)
+	//rewrites the LevelSave.txt file into a temp input stream and then overwrites the previous save file to 
+	//imitate the effect of "overwritting" a save level. (this is the only viable way to overwrite in java file io)
 	public static void replaceLine(String title, String save) {
 		try {
 			// input the (modified) file content to the StringBuffer "input"
@@ -871,7 +927,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			while ((line = file.readLine()) != null) {
 
-				if (line.startsWith(title)) {
+				if(line.startsWith(title)) {
 					line = title + ": " + save; // replace the line here
 					inputBuffer.append(line);
 					inputBuffer.append('\n');
@@ -883,7 +939,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			}
 
-			if (!containedTitle) {
+			if(!containedTitle) {
 				line = title + ": " + save; // replace the line here
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
@@ -900,13 +956,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			System.out.println("Problem reading file.");
 		}
 	}
-
-	// reads the first words (AKA titles) for each level into the names arraylist so
-	// no duplicate titles are made (our unique ID sys for levels relies on unique
-	// names)
-	// also required for num of buttons and height of scrollpane
+					
+	//reads the first words (AKA titles) for each level into the names arraylist so no duplicate titles are made (our unique ID sys for levels relies on unique names)
+	//also required for num of buttons and height of scrollpane
 	public void readFirstWords() {
-		// read titles to check for no duplicates
+		//read titles to check for no duplicates
 
 		String filePath = "names.txt"; // Provide the path to your text file
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -915,24 +969,23 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			while ((line = reader.readLine()) != null) {
 				// Split the line into words using space as the delimiter
 				String[] words = line.split(", ");
-				for (String name : words) {
+				for (String name: words) {
 					names.add(name);
 				}
 			}
-			System.out.println(names); // debugging
+			System.out.println(names); //debugging
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	
 	}
-
-	// reads the data for a specific level and adds all blocks of that level into
-	// the elements arraylist
-	// so the level can be loaded and played/edited
+	
+	//reads the data for a specific level and adds all blocks of that level into the elements arraylist 
+	//so the level can be loaded and played/edited
 	public void readData(String title) {
-		// if the title is not found or there is no title
+		//if the title is not found or there is no title
 
-		if (title.equals("")) {
+		if(title.equals("")) {
 			return;
 		} else {
 			String filePath = "LevelSave.txt"; // Provide the path to your text file
@@ -941,21 +994,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				while ((line = reader.readLine()) != null) {
 					// Split the line into words using space as the delimiter
-					if (line.startsWith(title)) {
+					if(line.startsWith(title)){
 						String[] words = line.split(": ");
 						for (int i = 1; i < words.length; i++) {
-							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
-							// in the title itself
-							String[] inputs = words[i].split(" "); // splits based on space
-							if (inputs[0].equals("Ice")) {
-								elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Ice.width, Ice.height, iceImage));
+							//i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter : in the title itself
+							String[] inputs = words[i].split(" "); //splits based on space
+							if(inputs[0].equals("Ice")) {
+								elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Ice.width, Ice.height, iceImage));
 							} else if (inputs[0].equals("Stone")) {
-								elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Stone.width, Stone.height, stoneImage));
+								elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Stone.width, Stone.height, stoneImage));
 							} else if (inputs[0].equals("Portal")) {
-								elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Portal.width, Portal.height, portalImage));
+								elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Portal.width, Portal.height, portalImage));
 							}
 						}
 						return;
@@ -967,6 +1016,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 		}
+
+
 
 	}
 
