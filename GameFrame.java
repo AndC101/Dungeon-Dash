@@ -78,7 +78,8 @@ public class GameFrame extends JFrame implements ActionListener{
 				layout.putConstraint(SpringLayout.WEST, editButton, 20, SpringLayout.EAST,
 								playButton);
 				
-				addPlayButtonListener(playButton, title);
+				addPlayButtonListener(playButton, title); //when play/edit button is pressed, the title of the level is sent to gamepanel for processing
+				addEditButtonListener(editButton, title);
 
 				j+=60;
 			}
@@ -114,16 +115,31 @@ public class GameFrame extends JFrame implements ActionListener{
 				
 				try {
 					// System.out.println("WE GOOD" + title);
+					new GameFrame(false, false, true, title);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+            }
+        });
+    }
+
+	private void addEditButtonListener(JButton editButton, String title) {
+		editButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Perform actions when any "Play" button is pressed
+				System.out.println("Edit button in row " + title + " pressed!");
+				
+				try {
+					// System.out.println("WE GOOD" + title);
 					new GameFrame(false, true, false, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-
-
-
-            }
-        });
+			}
+			});
     }
+
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
