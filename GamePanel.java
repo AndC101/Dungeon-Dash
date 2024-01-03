@@ -283,7 +283,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			// code for drawing the knight animation
 
-
+			knight.draw(g);
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
@@ -303,7 +303,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// fluid and natural. If we take this out the movements appear sluggish and
 	// laggy
 	public void move() {
-		//knight.move();
+		knight.move();
 	}
 
 	// handles all collision detection and responds accordingly
@@ -341,8 +341,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 
-
-		  if (mainMenu) {
+		if (mainMenu) {
 	            if (e.getKeyCode() == 10 && indicatorPos == 320){
 	                levelSelect = false;
 	                edit = true;
@@ -380,7 +379,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	            }
 
 		} else if (edit) {
-			
+			knight.keyPressed(e);
 			if(e.getKeyCode() == 70 && curSelected != null) {
 				elements.remove(curSelected);
 				try {
@@ -452,24 +451,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					
 
 				}
-
 				//FINISH THIS 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
 				//enter play mode;
 				edit = false;
 				play = true;
-
 			} 
-			// else if (e.getKeyCode() == KeyEvent.VK_D) {
-
-			// }
 						
 		}
 
 	}
 
 	public void keyReleased(KeyEvent e) {
-		
+		knight.keyReleased(e);
 	}
 
 	public void keyTyped(KeyEvent e) {
