@@ -3,14 +3,14 @@ import java.awt.image.*;
 import java.io.*;
 
 
-public class Ladder extends Block {
+public class Turret extends Block {
 	
-	public static final int width = 20;
-	public static final int height = 40;
+	public static final int width = 60;
+	public static final int height = 60;
 	int diffX, diffY;
 	public BufferedImage i;
 	
-	public Ladder(int x, int y, int l, int w, BufferedImage i) throws IOException{
+	public Turret(int x, int y, int l, int w, BufferedImage i) throws IOException{
 		super(x,y,l,w,i);
 	}
 	
@@ -18,9 +18,9 @@ public class Ladder extends Block {
 	public void draw(Graphics2D g) {
 		super.draw(g);
 	}
-	
+
 	public String toString () {
-		return "Ladder " + super.toString();
+		return "Turret " + super.toString();
 	}
 
 }
