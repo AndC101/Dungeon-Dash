@@ -21,6 +21,10 @@ public class CrackedStone extends Block {
 	public void draw(Graphics2D g) {
 		super.draw(g);
 	}
+	
+	public String toString () {
+		return "CrackedStone " + super.toString();
+	}
 
 }
  
