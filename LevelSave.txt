@@ -3,3 +3,4 @@ andrew: Ice 254 176 60 40: Ice 361 197 60 40: Stone 478 267 60 40: Stone 484 209
 ethan: 
 greg: Ice 352 300 60 40: Stone 438 317 60 40: 
 
+bruh: 
