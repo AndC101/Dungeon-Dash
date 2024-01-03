@@ -268,7 +268,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			// code for drawing the knight animation
 
-
+			knight.draw(g);
 
 		} else if (levelSelect) {
 			// to be filled (draw the image background?)
@@ -442,9 +442,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				play = true;
 
 			} 
-			// else if (e.getKeyCode() == KeyEvent.VK_D) {
-
-			// }
 						
 		}
 
