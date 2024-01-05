@@ -5,6 +5,7 @@ import java.io.*;
 
 public class Portal extends Block {
 	
+	//CAPITALIZE THESE
 	public static final int width = 60;
 	public static final int height = 75;
 
