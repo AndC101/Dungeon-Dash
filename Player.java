@@ -27,7 +27,7 @@ public class Player extends Rectangle {
     public Player(int x, int y, int l, int w) throws IOException {
         super(x, y, l, w);
     }
-
+    
     public void keyPressed(KeyEvent e) {
         if (e.getKeyChar() == 'd') {
             setXDirection(SPEED);

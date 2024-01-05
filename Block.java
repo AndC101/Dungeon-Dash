@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 
 public class Block extends Rectangle {
 	
-	int diffX, diffY;
-	boolean drag = false;
-	BufferedImage img;
+	public int diffX, diffY;
+	public boolean drag = false;
+	public BufferedImage img;
 	
 	public Block(int x, int y, int l, int w, BufferedImage i){
 		super(x,y,l,w);

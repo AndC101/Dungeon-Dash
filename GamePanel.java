@@ -82,11 +82,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean fixed = false;
 	public boolean play = false;
 
-	public boolean running = false;
-	public boolean jumping = false;
-	public boolean falling = false;
-	public boolean landing = false;
-
 
 	public int indicatorPos = 250;
 
@@ -119,6 +114,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public String newLevelTitle = ""; //if new level 
 	public String prevSavedTitle = ""; //for files that exist and are revisited (level select -> play/edit button)
 
+		
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		if(levelSelect) {
 			this.levelSelect = true; 
@@ -806,8 +802,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	
 	public boolean checkAllIntersection(Block block) {
-
-
 		for (int i = 0; i < elements.size() - 1; i++) {
 			Block b = elements.get(i);
 			if (!block.equals(b) && block.intersects(b) && !b.equals(curDragging))
