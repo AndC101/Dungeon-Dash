@@ -11,7 +11,6 @@ Implements Runnable interface to use "threading" - let the game do two things at
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -57,7 +56,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
-	
 	public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
 	
 	
@@ -82,10 +80,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean fixed = false;
 	public boolean play = false;
 
-	public boolean running = false;
-	public boolean jumping = false;
-	public boolean falling = false;
-	public boolean landing = false;
 
 
 	public int indicatorPos = 250;
@@ -95,7 +89,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// declare level widget variables
 	public int totalHeight;
-	public int numButtons = 18; // to be changed once file IO works
+	public int numButtons = 0; // to be changed once file IO works
 
 	public Block curDragging, curSelected;
 
@@ -118,6 +112,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public String newLevelTitle = ""; //if new level 
 	public String prevSavedTitle = ""; //for files that exist and are revisited (level select -> play/edit button)
+
+	public Background b = new Background(0, 0, playBackground);
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		if(levelSelect) {
@@ -239,9 +235,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		} else if (edit) {
 
-			//draw strings for user instruction for save and play 
 			
-			g.drawImage(resize(playBackground, GAME_WIDTH*2, GAME_HEIGHT), GAME_WIDTH/7, 0, this);
+			//draw the background 
+			b.draw(g);
+
+			//draw strings for user instruction for save and play 
 			g.setColor(Color.white);
 			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
@@ -290,7 +288,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		if (play) {
-
+			b.draw(g);
+			knight.draw(g);
+			for(Block b: elements) {
+				b.draw(g);
+			}
 			
 		}
 		
@@ -304,6 +306,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// laggy
 	public void move() {
 		knight.move();
+		
+		for(Block b: elements) {
+			b.move();
+		}
+		b.move();
+
 	}
 
 	// handles all collision detection and responds accordingly
@@ -379,7 +387,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	            }
 
 		} else if (edit) {
-			knight.keyPressed(e);
+
+			
 			if(e.getKeyCode() == 70 && curSelected != null) {
 				elements.remove(curSelected);
 				try {
@@ -451,7 +460,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					
 
 				}
-				//FINISH THIS 
 			} else if (e.getKeyCode() == KeyEvent.VK_2) {
 				//enter play mode;
 				edit = false;
@@ -460,10 +468,33 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						
 		}
 
+						
+		//FINISH THIS 
+		if(play) {
+
+			knight.keyPressed(e);
+			b.keyPressed(e);
+			for(Block b: elements) {
+				b.keyPressed(e);
+			}
+
+			
+
+
+		}
+
 	}
 
 	public void keyReleased(KeyEvent e) {
-		knight.keyReleased(e);
+			knight.keyReleased(e); 
+			b.keyReleased(e);
+			for(Block b: elements) {
+				b.keyReleased(e);
+			}
+
+			
+
+
 	}
 
 	public void keyTyped(KeyEvent e) {
@@ -746,6 +777,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void drawSidebar(Graphics2D g) {
+		g.setColor(Color.white);
+		g.fillRect(0, 0, 128, GAME_HEIGHT);
+		g.setColor(Color.black);
 
 		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
 

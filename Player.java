@@ -22,6 +22,8 @@ public class Player extends Rectangle {
     public final int SPEED = 5; // movement speed
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
+    public static boolean isCentered = false;
+    public boolean done = false;
 
     // create the player at x, y coordinates on the screen with length, width
     public Player(int x, int y, int l, int w) throws IOException {
@@ -30,12 +32,19 @@ public class Player extends Rectangle {
 
     public void keyPressed(KeyEvent e) {
         if (e.getKeyChar() == 'd') {
-            setXDirection(SPEED);
             isRight = true;
+            
+            if(!isCentered){
+                setXDirection(SPEED);
+            }
             move();
+
         } else if (e.getKeyChar() == 'a') {
-            setXDirection(SPEED * -1);
             isLeft = true;
+            if(!isCentered){
+                setXDirection(SPEED*-1);
+                
+            }
             move();
         } else if (e.getKeyChar() == 'w' && !isJumping) {
             // Only allow jumping if not already jumping
@@ -48,12 +57,18 @@ public class Player extends Rectangle {
 
     public void keyReleased(KeyEvent e) {
         if (e.getKeyChar() == 'd') {
-            setXDirection(0);
             isRight = false;
+            if(!isCentered){
+                setXDirection(0);
+                
+            }
             move();
         } else if (e.getKeyChar() == 'a') {
-            setXDirection(0);
             isLeft = false;
+            if(!isCentered){
+                setXDirection(0);
+                
+            }
             move();
         } else if (e.getKeyChar() == 'w') {
             // You can add additional logic for releasing 'w' key if needed
@@ -63,13 +78,15 @@ public class Player extends Rectangle {
         }
     }
 
+    public void setXDirection(int xDirection) {
+        xVelocity = xDirection;
+    }
+
+    
     public void setYDirection(int yDirection) {
         yVelocity = yDirection;
     }
 
-    public void setXDirection(int xDirection) {
-        xVelocity = xDirection;
-    }
 
     public void jump() {
 		falling = false;
@@ -108,11 +125,19 @@ public class Player extends Rectangle {
                 yVelocity = 0;
             }
         }
-        y = y + yVelocity;
         x = x + xVelocity;
+        y = y + yVelocity;
     }
 
     public void draw(Graphics g) {
+        if(getCenterX() >= 400) {
+            isCentered = true;
+            if(!done) {
+                xVelocity = 0;
+            } 
+            done = true;
+        }
+
         g.setColor(Color.white);
         if (isLeft) {
             g.drawImage(leftAnimation, x, y, null);
@@ -122,4 +147,5 @@ public class Player extends Rectangle {
             g.drawImage(afkAnimation, x, y, null);
         }
     }
+
 }
