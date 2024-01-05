@@ -6,12 +6,9 @@ Runs the constructor in GamePanel class
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
@@ -19,7 +16,6 @@ public class GameFrame extends JFrame implements ActionListener{
     private static GameFrame currentGameFrame; // Keep track of the current GameFrame instance
 	GamePanel panel;
 	public ArrayList<Block> temp = new ArrayList<>();
-	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
 
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 

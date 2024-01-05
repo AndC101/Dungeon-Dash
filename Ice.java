@@ -7,7 +7,6 @@ public class Ice extends Block {
 	
 	public static final int width = 60;
 	public static final int height = 40;
-	int diffX, diffY;
 	public BufferedImage i;
 	
 	public Ice(int x, int y, int l, int w, BufferedImage i) throws IOException{
