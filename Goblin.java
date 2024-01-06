@@ -5,7 +5,7 @@ import java.io.*;
 public class Goblin extends Block {
 	
 	
-	public int yVelocity = -1;
+	public int yVelocity = 0;
 	public int xVelocity = 0;
 	public int moved = 0;
 	public static int height = 50;
