@@ -20,34 +20,49 @@ public class Background {
         img = i;
     }
 
-	public void keyPressed(KeyEvent e) {
-        if (e.getKeyChar() == 'd') {
-            if(Player.isCentered) {
-                setXDirection(-SPEED);
-                move();
+	public void keyPressed(KeyEvent e, boolean play) {
+		if (play) {
+			
+			if(!Player.isCentered) {
+				setXDirection(0);
+			}
+			
+			else if (e.getKeyChar() == 'd') {
+				if (Player.isCentered) {
+					setXDirection(-SPEED);
+					move();
+				}
+			} else if (e.getKeyChar() == 'a') {
+				if (Player.isCentered) {
+					setXDirection(SPEED);
+					move();
+				}
+			}
+		} else {
 
-            }
-        } else if (e.getKeyChar() == 'a') {
-            
-            if(Player.isCentered) {
-                setXDirection(SPEED);
-                move();
-            }
-        }
+			if (e.getKeyChar() == 'd') {
+
+				setXDirection(-SPEED);
+				move();
+
+			} else if (e.getKeyChar() == 'a') {
+
+				setXDirection(SPEED);
+				move();
+
+			}
+		}
     }
 
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar() == 'd') {
-            if(Player.isCentered) {
-                setXDirection(0);
-                move();
-            }
-        } else if (e.getKeyChar() == 'a') {
-            if(Player.isCentered) {
-                setXDirection(0);
-                move();
-            }
-        } 
+    public void keyReleased(KeyEvent e, boolean play) {
+    	if(play) {
+			
+				setXDirection(0);
+			
+		}
+		else {
+			setXDirection(0);
+		}
     }
 
     public void setXDirection(int xDirection) {

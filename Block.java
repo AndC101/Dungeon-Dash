@@ -2,90 +2,100 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
-
 public class Block extends Rectangle {
-	
 
 	int diffX, diffY;
 	boolean drag = false;
 	BufferedImage img;
-    public int xVelocity;
-    public final int SPEED = 5; // movement speed
+	public int xVelocity;
+	public static final int SPEED = 5; // movement speed
 
-
-	public Block(int x, int y, int l, int w, BufferedImage i){
-		super(x,y,l,w);
+	public Block(int x, int y, int l, int w, BufferedImage i) {
+		super(x, y, l, w);
 		img = i;
 	}
 
-	public Block(int x, int y, int l, int w){
-		super(x,y,l,w);
+	public Block(int x, int y, int l, int w) {
+		super(x, y, l, w);
 	}
-	
 
 	public void mousePressed(MouseEvent e) {
 		diffX = e.getX() - x;
-        diffY = e.getY() - y;
-        drag = true;
+		diffY = e.getY() - y;
+		drag = true;
 	}
-	
+
 	public void mouseReleased(MouseEvent e) {
 		drag = false;
-		
+
 	}
-	
+
 	public void mouseDragged(MouseEvent e) {
-		x = e.getX() - diffX; y = e.getY() - diffY;
+		x = e.getX() - diffX;
+		y = e.getY() - diffY;
 	}
 
 	public String toString() {
 		return x + " " + y + " " + width + " " + height;
 	}
 
+	public void keyPressed(KeyEvent e, boolean play) {
+		if (play) {
+			if (e.getKeyChar() == 'd') {
+				if (Player.isCentered) {
+					setXDirection(-SPEED);
+					move();
+				}
+			} else if (e.getKeyChar() == 'a') {
+				if (Player.isCentered) {
+					setXDirection(SPEED);
+					move();
+				}
+			}
+			
+			if(!Player.isCentered) setXDirection(0);
+			
+		} else {
 
-	public void keyPressed(KeyEvent e) {
-        if (e.getKeyChar() == 'd') {
-            if(Player.isCentered) {
-                setXDirection(-SPEED);
-                move();
+			if (e.getKeyChar() == 'd') {
 
-            }
-        } else if (e.getKeyChar() == 'a') {
-            if(Player.isCentered) {
-                setXDirection(SPEED);
-                move();
+				setXDirection(-SPEED);
+				move();
 
-            }
-        }
-    }
+			} else if (e.getKeyChar() == 'a') {
 
-    public void keyReleased(KeyEvent e) {
-        if (e.getKeyChar() == 'd') {
-            if(Player.isCentered) {
-                setXDirection(0);
-                move();
-            }
-        } else if (e.getKeyChar() == 'a') {
-            if(Player.isCentered) {
-                setXDirection(0);
-                move();
+				setXDirection(SPEED);
+				move();
 
-            }
-        } 
-    }
+			}
+		}
 
-    public void setXDirection(int xDirection) {
-        xVelocity = xDirection;
-    }
+	}
 
+	public void keyReleased(KeyEvent e, boolean play) {
+		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+			if(play) {
+				
+					setXDirection(0);
+				
+			}
+			else {
+				setXDirection(0);
+			}
+		}
+		
+	}
 
-    public void move() {
-        x = x + xVelocity;
-    }
+	public void setXDirection(int xDirection) {
+		xVelocity = xDirection;
+	}
 
-    public void draw(Graphics g) {
-        g.drawImage(img, x, y, width, height, null);
-    }
+	public void move() {
+		x = x + xVelocity;
+	}
 
+	public void draw(Graphics2D g) {
+		g.drawImage(img, x, y, width, height, null);
+	}
 
 }

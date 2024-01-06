@@ -13,16 +13,20 @@ public class Player extends Rectangle {
     public boolean isRight = false;
     public boolean isJumping = false;
 	public boolean falling = false;
+	public boolean left = false;
     public int jumpHeight = 100; // Adjust this value based on your needs
     public int jumpCount = 0;
     public int jumpLimit = 100; // Adjust this value based on your needs
-
+    public int lBorder = 0;
+    public int rBorder = 0;
     public int yVelocity;
     public int xVelocity;
+    public int leftX = 0;
+    public int moved = 0;
     public final int SPEED = 5; // movement speed
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
-    public static boolean isCentered = false;
+    public static boolean isCentered = true;
     public boolean done = false;
 
     // create the player at x, y coordinates on the screen with length, width
@@ -31,6 +35,10 @@ public class Player extends Rectangle {
     }
     
     public void keyPressed(KeyEvent e) {
+    	
+    	if(isCentered) {
+    		setXDirection(0);
+    	}
         if (e.getKeyChar() == 'd') {
             isRight = true;
             
@@ -49,26 +57,24 @@ public class Player extends Rectangle {
         } else if (e.getKeyChar() == 'w' && !isJumping) {
             // Only allow jumping if not already jumping
             jump();
-        } else if (e.getKeyChar() == 's') {
-            setYDirection(SPEED);
-            move();
-        }
+        } 
     }
+    
 
     public void keyReleased(KeyEvent e) {
         if (e.getKeyChar() == 'd') {
             isRight = false;
-            if(!isCentered){
+            
                 setXDirection(0);
                 
-            }
+            
             move();
         } else if (e.getKeyChar() == 'a') {
             isLeft = false;
-            if(!isCentered){
+            
                 setXDirection(0);
                 
-            }
+            
             move();
         } else if (e.getKeyChar() == 'w') {
             // You can add additional logic for releasing 'w' key if needed
@@ -130,14 +136,17 @@ public class Player extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        if(getCenterX() >= 400) {
+        if( (left && isRight && x >= 450) || (!left && isLeft && x <= 450) ) {
             isCentered = true;
             if(!done) {
                 xVelocity = 0;
             } 
             done = true;
         }
-
+        
+        System.out.println(x + " " + isCentered);
+        
+        
         g.setColor(Color.white);
         if (isLeft) {
             g.drawImage(leftAnimation, x, y, null);
