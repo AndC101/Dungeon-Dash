@@ -79,7 +79,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
 	public boolean play = false;
-
+	public boolean spawn = true;
 
 
 	public int indicatorPos = 250;
@@ -90,10 +90,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// declare level widget variables
 	public int totalHeight;
 	public int numButtons = 0; // to be changed once file IO works
+	public int leftBorder = 1000000000, rightBorder = -1;
+	public int shift = 0;
+	public int spawnX = 0;
 
 	public Block curDragging, curSelected;
 
 	public Portal tabPortal;
+	public Block spawnPortal;
 	public Stone tabStone;
 	public Ice tabIce;
 	public Ladder tabLadder;
@@ -116,6 +120,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Background b = new Background(0, 0, playBackground);
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
+		
+		
+		
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
@@ -132,6 +139,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			this.edit = false;
 			this.play = true;
 		}
+		knight = new Player(0, 0, 47, 53);
+		
 
 		//get the title of the save file
 		prevSavedTitle = levelName; //only if the file already exists, otherwise this is ""
@@ -145,7 +154,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 
-		knight = new Player(200, 100, 47, 53);
+		
 
 		// code to rotate the text for the "block" description
 		affineTransform.rotate(Math.toRadians(90), 0, 0);
@@ -245,13 +254,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
 
 			g.setColor(Color.black);
-			drawSidebar(g);
+			
 
 
 			for (Block b : elements) {
 				b.draw(g);
 			}
 
+			drawSidebar(g);
 
 
 			// check if its being hovered and makes it like transparent
@@ -288,11 +298,54 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		if (play) {
+			
+			
+			//draws the background
 			b.draw(g);
-			knight.draw(g);
+			
 			for(Block b: elements) {
 				b.draw(g);
 			}
+			
+			if(spawn) { //spawns the knight in front of the portal
+				
+				for(Block b: elements) {
+					if(b.img != null && b.img.equals(portalImage)) {
+						spawnPortal = b;	
+						shift = spawnPortal.x - GAME_WIDTH/2 + spawnPortal.width/2;
+						break;
+					}					
+				}
+				
+				for(Block b: elements) {			
+					b.x -= shift;
+					leftBorder = Math.min(leftBorder,b.x);
+					rightBorder = Math.max(rightBorder, b.x + b.width);
+				}
+				knight.lBorder = leftBorder;
+				knight.rBorder = rightBorder;
+				
+				knight.x = spawnPortal.x + spawnPortal.width/2 - knight.width/2;
+				knight.y = spawnPortal.y +(spawnPortal.height - knight.height);
+				spawnX = spawnPortal.x;
+				spawn = false;
+			}
+			
+			
+			if(Math.abs(leftBorder + spawnPortal.x - spawnX) <=  (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
+				knight.left = true;
+			}
+			else {
+				knight.left = false;
+			}
+			
+			
+			if(leftBorder + spawnPortal.x - spawnX >= 0 || rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+				Player.isCentered = false;
+			}
+		
+			knight.moved = spawnPortal.x - spawnX;
+			knight.draw(g);
 			
 		}
 		
@@ -308,10 +361,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		knight.move();
 		
 		for(Block b: elements) {
-			b.move();
+			b.move();	
 		}
 		b.move();
-
 	}
 
 	// handles all collision detection and responds accordingly
@@ -388,8 +440,27 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		} else if (edit) {
 
-			
-			if(e.getKeyCode() == 70 && curSelected != null) {
+			if(e.getKeyCode() == 37) {
+				if(curSelected != null && !checkAllIntersection(curSelected))  curSelected.x--;
+			}
+			else if(e.getKeyCode() == 39) {
+				if(curSelected != null && !checkAllIntersection(curSelected)) curSelected.x++;
+			}
+			else if(e.getKeyCode() == 38) {
+				if(curSelected != null && !checkAllIntersection(curSelected)) curSelected.y--;
+			}
+			else if(e.getKeyCode() == 40) {
+				if(curSelected != null && !checkAllIntersection(curSelected)) curSelected.y++;
+			}
+			else if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+				b.keyPressed(e,false);
+				for(Block b: elements) {
+					b.keyPressed(e,false);
+				}
+		
+				
+			}
+			else if(e.getKeyCode() == 70 && curSelected != null) {
 				elements.remove(curSelected);
 				try {
 					elements.add(hFlip(curSelected));
@@ -473,21 +544,37 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if(play) {
 
 			knight.keyPressed(e);
-			b.keyPressed(e);
+			b.keyPressed(e,true);
+			
+		
+			
 			for(Block b: elements) {
-				b.keyPressed(e);
+				b.keyPressed(e,true);
 			}
+			
 
 		}
 
 	}
 
 	public void keyReleased(KeyEvent e) {
-			knight.keyReleased(e); 
-			b.keyReleased(e);
+		
+		
+		if(edit) {
+			b.keyReleased(e,false);
 			for(Block b: elements) {
-				b.keyReleased(e);
+				b.keyReleased(e,false);
 			}
+		}
+		
+		else if(play) {
+			knight.keyReleased(e); 
+			b.keyReleased(e,true);
+			for(Block b: elements) {
+				b.keyReleased(e,true);
+			}
+		}
+			
 
 			
 
@@ -500,7 +587,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
+		
 	}
 
 	@Override
@@ -837,8 +924,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	
 	public boolean checkAllIntersection(Block block) {
-
-
 		for (int i = 0; i < elements.size() - 1; i++) {
 			Block b = elements.get(i);
 			if (!block.equals(b) && block.intersects(b) && !b.equals(curDragging))
@@ -1009,7 +1094,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new CrackedStone(x, y, width, height,b.img);
 		}
 		else if(className.equals("Goblin")){
-			return new Goblin(x, y, width, height,b.img);
+			return new Goblin(x, y, width, height,goblinRunning);
 		}
 		else if(className.equals("Turret")) {
 			return new Turret(x, y, width, height,b.img);

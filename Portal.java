@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.*;
 import java.io.*;
 
@@ -8,6 +9,7 @@ public class Portal extends Block {
 	//CAPITALIZE THESE
 	public static final int width = 60;
 	public static final int height = 75;
+
 	public BufferedImage i;
 	
 	public Portal(int x, int y, int l, int w, BufferedImage i) throws IOException{
@@ -22,5 +24,5 @@ public class Portal extends Block {
 	public String toString () {
 		return "Portal " + super.toString();
 	}
-
+	
 }

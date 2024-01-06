@@ -7,7 +7,6 @@ public class Turret extends Block {
 	
 	public static final int width = 60;
 	public static final int height = 60;
-	int diffX, diffY;
 	public BufferedImage i;
 	
 	public Turret(int x, int y, int l, int w, BufferedImage i) throws IOException{

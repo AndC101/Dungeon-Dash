@@ -4,10 +4,8 @@ import java.io.*;
 
 public class Goblin extends Block {
 	
-	
-	public int yVelocity = 0;
+
 	public int xVelocity = 0;
-	public int moved = 0;
 	public static int height = 50;
 	public static int width = 50;
 	Image animation;
@@ -22,10 +20,9 @@ public class Goblin extends Block {
 		g.drawImage(animation, x, y, null);
 	}
 	
-	
+		
 	public void move() {
 		x += xVelocity;
-		y += yVelocity;
 	}
 	
 	public String toString () {

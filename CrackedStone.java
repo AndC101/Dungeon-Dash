@@ -9,8 +9,6 @@ public class CrackedStone extends Block {
 	public static final int height = 40;
 	public static final int breakTime = 3000;
 	
-	
-	int diffX, diffY;
 	public BufferedImage i;
 	
 	public CrackedStone(int x, int y, int l, int w, BufferedImage i) throws IOException{
