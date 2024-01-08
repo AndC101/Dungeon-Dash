@@ -136,12 +136,11 @@ public class Player extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        if( (left && isRight && x >= 450) || (!left && isLeft && x <= 450) ) {
+        if( (left && isRight && x >= 450) || (!left && isLeft && x <= 450)) {
             isCentered = true;
-            done = true;
+          
         }
-        
-        System.out.println(x + " " + isCentered);
+       
         
         
         g.setColor(Color.white);

@@ -93,6 +93,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int leftBorder = 1000000000, rightBorder = -1;
 	public int shift = 0;
 	public int spawnX = 0;
+	public int adjust = 0;
 
 	public Block curDragging, curSelected;
 
@@ -313,7 +314,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						shift = spawnPortal.x - GAME_WIDTH/2 + spawnPortal.width/2;
 						break;
 					}					
-				}
+				}	
 				
 				for(Block b: elements) {			
 					b.x -= shift;
@@ -339,11 +340,35 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			
 			if(leftBorder + spawnPortal.x - spawnX >= 0 || rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+				
+				if(leftBorder + spawnPortal.x - spawnX >= 0) {
+					adjust = leftBorder + spawnPortal.x - spawnX;
+				}
+				else if(rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+					adjust = (rightBorder + spawnPortal.x - spawnX) - GAME_WIDTH;
+					System.out.println(adjust);
+				}
+				
+				for(Block b: elements) {			
+					b.x -= adjust;
+				}
+				
+				
 				Player.isCentered = false;
 			}
+			
 		
 			knight.moved = spawnPortal.x - spawnX;
 			knight.draw(g);
+			
+			if(leftBorder + spawnPortal.x - spawnX >= 0 && rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+				Player.isCentered = false;
+			}
+			
+			
+			
+			
+			
 			
 		}
 		
