@@ -121,8 +121,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		
-		
-		
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
@@ -359,7 +357,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// laggy
 	public void move() {
 		knight.move();
-		
 		for(Block b: elements) {
 			b.move();	
 		}
