@@ -140,7 +140,6 @@ public class Player extends Rectangle {
             isCentered = true;
           
         }
-       
         
         
         g.setColor(Color.white);

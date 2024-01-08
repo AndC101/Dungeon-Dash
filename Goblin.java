@@ -5,7 +5,6 @@ import java.io.*;
 public class Goblin extends Block {
 	
 
-	public int xVelocity = 0;
 	public static int height = 50;
 	public static int width = 50;
 	Image animation;
