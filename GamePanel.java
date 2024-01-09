@@ -407,6 +407,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(knight.x <= 0) knight.x = 0;
 			if(knight.x + knight.width >= GAME_WIDTH) knight.x = GAME_WIDTH - knight.width;
 			
+			for(Block b: elements) {
+				if(getClass(b).equals("Portal")) continue;
+				if(knight.y <= b.y + b.height && knight.y >= b.y && (knight.x + knight.width >= b.y && knight.x + knight.width <= b.y + b.width
+						|| knight.x <= b.x + b.width && knight.x >= b.x)) {
+					knight.y = b.y + b.height;
+					knight.isJumping = false;
+					knight.falling = true;
+				}
+				
+				if(knight.x <= b.x && knight.x + knight.width >= b.x && knight.y <= b.y && knight.y + knight.height >= b.y + b.height ) {
+					knight.x = b.x - knight.width;
+					knight.setXDirection(0);
+				}
+				
+				
+				
+				
+			}
+			
+			
 		}
 		
 	}
@@ -1141,6 +1161,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new Turret(x, y, width, height,b.img);
 		}
 		return b;
+	}
+	
+	public String getClass(Block b) {
+		Class<?> type = b.getClass();
+		return type.getName();
 	}
 	
 	public Block hFlip(Block b) throws IOException {
