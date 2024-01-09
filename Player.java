@@ -41,7 +41,7 @@ public class Player extends Rectangle {
     	}
         if (e.getKeyChar() == 'd') {
             isRight = true;
-            
+            isLeft = false;
             if(!isCentered){
                 setXDirection(SPEED);
             }
@@ -49,6 +49,7 @@ public class Player extends Rectangle {
 
         } else if (e.getKeyChar() == 'a') {
             isLeft = true;
+            isRight = false;
             if(!isCentered){
                 setXDirection(SPEED*-1);
                 

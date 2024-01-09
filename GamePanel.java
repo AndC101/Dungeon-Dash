@@ -57,6 +57,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
 	public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
+	public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
 	
 	
 	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
@@ -105,8 +106,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public CrackedStone tabCrackedStone;
 	public Goblin tabGoblin;
 	public Turret tabTurret;
+	public OneUp tabOneUp;
 
-	ArrayList<Block> elements, blockSidebar, enemySidebar;
+	ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
 	Block hover = null;
 
 	//for file IO
@@ -165,6 +167,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		elements = new ArrayList<Block>();
 		blockSidebar = new ArrayList<Block>();
 		enemySidebar = new ArrayList<Block>();
+		powerUpSidebar = new ArrayList<Block>();
 
 		readData(prevSavedTitle); //populates the elements arraylist with the blocks for the save level
 		//if not applicable, prevSavedTitle = "";
@@ -177,6 +180,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning);
 		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
+		
+	
 		
 		blockSidebar.add(tabPortal);
 		blockSidebar.add(tabStone);
@@ -408,20 +413,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(knight.x + knight.width >= GAME_WIDTH) knight.x = GAME_WIDTH - knight.width;
 			
 			for(Block b: elements) {
-				if(getClass(b).equals("Portal")) continue;
-				if(knight.y <= b.y + b.height && knight.y >= b.y && (knight.x + knight.width >= b.y && knight.x + knight.width <= b.y + b.width
-						|| knight.x <= b.x + b.width && knight.x >= b.x)) {
-					knight.y = b.y + b.height;
-					knight.isJumping = false;
-					knight.falling = true;
-				}
-				
-				if(knight.x <= b.x && knight.x + knight.width >= b.x && knight.y <= b.y && knight.y + knight.height >= b.y + b.height ) {
-					knight.x = b.x - knight.width;
-					knight.setXDirection(0);
-				}
-				
-				
+			
 				
 				
 			}
