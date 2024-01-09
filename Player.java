@@ -139,7 +139,7 @@ public class Player extends Rectangle {
             x = 420; //force the knight centered 
         }
 
-        System.out.println("jump: " + isJumping + " center: " + isCentered + " left: " + isLeft + " right: " + isRight);
+        // System.out.println("jump: " + isJumping + " center: " + isCentered + " left: " + isLeft + " right: " + isRight);
 
         
         

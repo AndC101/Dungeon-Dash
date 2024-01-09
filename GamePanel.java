@@ -122,6 +122,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public Background b = new Background(0, 0, playBackground);
 
+	public boolean d = false;
+	public boolean a = false;
+	public boolean w = false;
+
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		
 		if(levelSelect) {
@@ -454,13 +458,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public void keyPressed(KeyEvent e) {
 
 		if(e.getKeyCode() == KeyEvent.VK_D) {
-			right = true;
-			left = false;
+			d = true;
 		} else if (e.getKeyCode() == KeyEvent.VK_A){
-			left = true;
-			right = false;
+			a = true;
 		}
-
+		System.out.println(" d: " + d + " a: " + a);
 
 		if (mainMenu) {
 	            if (e.getKeyCode() == 10 && indicatorPos == 320){

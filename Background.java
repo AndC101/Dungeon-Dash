@@ -20,19 +20,19 @@ public class Background {
         img = i;
     }
 
-	public void keyPressed(KeyEvent e, boolean play, boolean left, boolean right) {
+	public void keyPressed(KeyEvent e, boolean play) {
 		if (play) {
 			
 			if(!Player.isCentered) {
 				setXDirection(0);
 			}
 			
-			else if (e.getKeyChar() == 'd' || right) {
+			else if (e.getKeyChar() == 'd') {
 				if (Player.isCentered) {
 					setXDirection(-SPEED);
 					move();
 				}
-			} else if (e.getKeyChar() == 'a' || left) {
+			} else if (e.getKeyChar() == 'a') {
 				if (Player.isCentered) {
 					setXDirection(SPEED);
 					move();
