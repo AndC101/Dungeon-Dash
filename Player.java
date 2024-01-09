@@ -135,7 +135,9 @@ public class Player extends Rectangle {
             isCentered = true;
             x = 420; //force the knight centered 
         }
+
         System.out.println("jump: " + isJumping + " center: " + isCentered + " left: " + isLeft + " right: " + isRight);
+
         
         
         g.setColor(Color.white);
