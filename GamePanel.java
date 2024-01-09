@@ -122,8 +122,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		
-		
-		
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
@@ -380,7 +378,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// laggy
 	public void move() {
 		knight.move();
-		
 		for(Block b: elements) {
 			b.move();	
 		}
@@ -575,7 +572,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						updatedSave += b.toString() + ": ";
 					}
 					levelSaved = true;
-					System.out.println(elements + "       " + updatedSave);
+					// System.out.println(elements + "       " + updatedSave);
 					replaceLine(newLevelTitle, updatedSave); //replace line with the entered title --> THIS CASAE AND ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES THEIR NEW DUNGEON
 					
 					//display saved
@@ -605,9 +602,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			knight.keyPressed(e);
 			b.keyPressed(e,true);
-			
 		
-			
 			for(Block b: elements) {
 				b.keyPressed(e,true);
 			}

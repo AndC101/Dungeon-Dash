@@ -27,7 +27,6 @@ public class Player extends Rectangle {
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
     public static boolean isCentered = true;
-    public boolean done = false;
 
     // create the player at x, y coordinates on the screen with length, width
     public Player(int x, int y, int l, int w) throws IOException {
@@ -39,9 +38,10 @@ public class Player extends Rectangle {
     	if(isCentered) {
     		setXDirection(0);
     	}
+
         if (e.getKeyChar() == 'd') {
             isRight = true;
-            
+            isLeft = false;
             if(!isCentered){
                 setXDirection(SPEED);
             }
@@ -49,9 +49,9 @@ public class Player extends Rectangle {
 
         } else if (e.getKeyChar() == 'a') {
             isLeft = true;
+            isRight = false;
             if(!isCentered){
                 setXDirection(SPEED*-1);
-                
             }
             move();
         } else if (e.getKeyChar() == 'w' && !isJumping) {
@@ -65,16 +65,11 @@ public class Player extends Rectangle {
         if (e.getKeyChar() == 'd') {
             isRight = false;
             
-                setXDirection(0);
-                
-            
+            setXDirection(0);
             move();
         } else if (e.getKeyChar() == 'a') {
             isLeft = false;
-            
-                setXDirection(0);
-                
-            
+            setXDirection(0);
             move();
         } else if (e.getKeyChar() == 'w') {
             // You can add additional logic for releasing 'w' key if needed
@@ -136,10 +131,13 @@ public class Player extends Rectangle {
     }
 
     public void draw(Graphics g) {
-        if( (left && isRight && x >= 450) || (!left && isLeft && x <= 450)) {
+        if( (left && isRight && x >= 420) || (!left && isLeft && x <= 420)) {
             isCentered = true;
-          
+            x = 420; //force the knight centered 
         }
+
+        System.out.println("jump: " + isJumping + " center: " + isCentered + " left: " + isLeft + " right: " + isRight);
+
         
         
         g.setColor(Color.white);
