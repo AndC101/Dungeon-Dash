@@ -41,7 +41,6 @@ public class Player extends Rectangle {
 
         if (e.getKeyChar() == 'd') {
             isRight = true;
-            isLeft = false;
             if(!isCentered){
                 setXDirection(SPEED);
             }
@@ -131,6 +130,7 @@ public class Player extends Rectangle {
     }
 
     public void draw(Graphics g) {
+
         if( (left && isRight && x >= 420) || (!left && isLeft && x <= 420)) {
             isCentered = true;
             x = 420; //force the knight centered 
