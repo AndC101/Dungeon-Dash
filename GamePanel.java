@@ -124,8 +124,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		
-		
-		
 		if(levelSelect) {
 			this.levelSelect = true; 
 			mainMenu = false;
@@ -385,7 +383,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// laggy
 	public void move() {
 		knight.move();
-		
 		for(Block b: elements) {
 			b.move();	
 		}
@@ -413,7 +410,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(knight.x + knight.width >= GAME_WIDTH) knight.x = GAME_WIDTH - knight.width;
 			
 			for(Block b: elements) {
+<<<<<<< HEAD
 			
+=======
+				if(getClass(b).equals("Portal")) continue;
+				
+				
+>>>>>>> 317f5142bfba76f4f95952523259a8b0f57b7143
 				
 				
 			}
@@ -451,6 +454,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void keyPressed(KeyEvent e) {
+
+		if(e.getKeyCode() == KeyEvent.VK_D) {
+			right = true;
+			left = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_A){
+			left = true;
+			right = false;
+		}
 
 
 		if (mainMenu) {
@@ -567,7 +578,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						updatedSave += b.toString() + ": ";
 					}
 					levelSaved = true;
-					System.out.println(elements + "       " + updatedSave);
+					// System.out.println(elements + "       " + updatedSave);
 					replaceLine(newLevelTitle, updatedSave); //replace line with the entered title --> THIS CASAE AND ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES THEIR NEW DUNGEON
 					
 					//display saved
@@ -594,15 +605,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						
 		//FINISH THIS 
 		if(play) {
+			
 
 			knight.keyPressed(e);
 			b.keyPressed(e,true);
-			
 		
-			
 			for(Block b: elements) {
 				b.keyPressed(e,true);
 			}
+			
 			
 
 		}
@@ -621,10 +632,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		else if(play) {
 			knight.keyReleased(e); 
-			b.keyReleased(e,true);
-			for(Block b: elements) {
+
 				b.keyReleased(e,true);
-			}
+				for(Block b: elements) {
+					b.keyReleased(e,true);
+				}
+			
 		}
 			
 
