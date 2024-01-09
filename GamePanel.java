@@ -198,7 +198,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		totalHeight = names.size() * numButtons;
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
-		// make this class run at the same time as other classes (without this each
+		// make this class run at the same time as other classes (without this each	
 		// class would "pause" while another class runs). By using threading we can
 		// remove lag, and also allows us to do features like display timers in real
 		// time!
@@ -410,13 +410,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(knight.x + knight.width >= GAME_WIDTH) knight.x = GAME_WIDTH - knight.width;
 			
 			for(Block b: elements) {
-<<<<<<< HEAD
 			
-=======
+
 				if(getClass(b).equals("Portal")) continue;
 				
 				
->>>>>>> 317f5142bfba76f4f95952523259a8b0f57b7143
 				
 				
 			}
