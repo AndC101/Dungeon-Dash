@@ -406,17 +406,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			for(Block b: elements) {
 				if(getClass(b).equals("Portal")) continue;
-				if(knight.y <= b.y + b.height && knight.y >= b.y && (knight.x + knight.width >= b.y && knight.x + knight.width <= b.y + b.width
-						|| knight.x <= b.x + b.width && knight.x >= b.x)) {
-					knight.y = b.y + b.height;
-					knight.isJumping = false;
-					knight.falling = true;
-				}
-				
-				if(knight.x <= b.x && knight.x + knight.width >= b.x && knight.y <= b.y && knight.y + knight.height >= b.y + b.height ) {
-					knight.x = b.x - knight.width;
-					knight.setXDirection(0);
-				}
 				
 				
 				
@@ -456,6 +445,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void keyPressed(KeyEvent e) {
+
+		if(e.getKeyCode() == KeyEvent.VK_D) {
+			right = true;
+			left = false;
+		} else if (e.getKeyCode() == KeyEvent.VK_A){
+			left = true;
+			right = false;
+		}
 
 
 		if (mainMenu) {
@@ -599,6 +596,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						
 		//FINISH THIS 
 		if(play) {
+			
 
 			knight.keyPressed(e);
 			b.keyPressed(e,true);
@@ -606,6 +604,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for(Block b: elements) {
 				b.keyPressed(e,true);
 			}
+			
 			
 
 		}
@@ -624,10 +623,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		else if(play) {
 			knight.keyReleased(e); 
-			b.keyReleased(e,true);
-			for(Block b: elements) {
+
 				b.keyReleased(e,true);
-			}
+				for(Block b: elements) {
+					b.keyReleased(e,true);
+				}
+			
 		}
 			
 
