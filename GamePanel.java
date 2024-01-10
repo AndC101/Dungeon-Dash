@@ -183,6 +183,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning);
 		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
 		
+		tabOneUp = new OneUp(TAB_X - 110,20, OneUp.width, OneUp.height, oneUpImage);
 	
 		
 		blockSidebar.add(tabPortal);
@@ -193,6 +194,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		enemySidebar.add(tabGoblin);
 		enemySidebar.add(tabTurret);
+		
+		powerUpSidebar.add(tabOneUp);
 
 
 		//total height for the scrollpane 
@@ -351,7 +354,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				}
 				else if(rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
 					adjust = (rightBorder + spawnPortal.x - spawnX) - GAME_WIDTH;
-					System.out.println(adjust);
+					
 				}
 				
 				for(Block b: elements) {			
@@ -369,11 +372,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(leftBorder + spawnPortal.x - spawnX >= 0 && rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
 				Player.isCentered = false;
 			}
-			
-			
-			
-			
-			
 			
 		}
 		
@@ -462,7 +460,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		} else if (e.getKeyCode() == KeyEvent.VK_A){
 			a = true;
 		}
-		System.out.println(" d: " + d + " a: " + a);
+	
 
 		if (mainMenu) {
 	            if (e.getKeyCode() == 10 && indicatorPos == 320){
@@ -697,6 +695,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 				}
 			}
+			else {
+				for (Block b : powerUpSidebar) {
+					if (mousePressedBlock(b,e)) {
+						b.mousePressed(e);
+						curDragging = b;
+						sidebarPressed = true;
+						chosen = true;
+					}
+				}
+			}
 			
 
 			// checks if a tab is pressed
@@ -842,6 +850,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						curDragging = elements.get(elements.size() - 1);
 					}
 				}
+				else {
+					if (curDragging.equals(tabOneUp)) {
+						try {
+							elements.add(new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+				}
 				
 
 				sidebarPressed = false;
@@ -977,6 +994,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.setColor(Color.black);
 			g.setFont(rotatedFont);
 			g.drawString("Powerups", GAME_WIDTH / 7 + 20, 2 * TAB_HEIGHT + 30);
+			
+			tabOneUp.draw(g);
+			
 		} else {
 			g.setColor(Color.CYAN);
 			g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH, TAB_HEIGHT + 40);
@@ -1164,6 +1184,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 		else if(className.equals("Turret")) {
 			return new Turret(x, y, width, height,b.img);
+		}
+		else if(className.equals("OneUp")) {
+			return new OneUp(x,y,width,height,b.img);
 		}
 		return b;
 	}

@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 public class Block extends Rectangle {
 
@@ -9,6 +10,8 @@ public class Block extends Rectangle {
 	BufferedImage img;
 	public int xVelocity;
 	public static final int SPEED = 5; // movement speed
+	
+	public HashSet<Character> keysPressed = new HashSet<Character>();
 
 	public Block(int x, int y, int l, int w, BufferedImage i) {
 		super(x, y, l, w);
@@ -41,12 +44,13 @@ public class Block extends Rectangle {
 
 	public void keyPressed(KeyEvent e, boolean play) {
 		if (play) {
-			if (e.getKeyChar() == 'd') {
+			keysPressed.add(e.getKeyChar());
+			if (keysPressed.contains('d')) {
 				if (Player.isCentered) {
 					setXDirection(-SPEED);
 					move();
 				}
-			} else if (e.getKeyChar() == 'a') {
+			} else if (keysPressed.contains('a')) {
 				if (Player.isCentered) {
 					setXDirection(SPEED);
 					move();
@@ -73,6 +77,7 @@ public class Block extends Rectangle {
 	}
 
 	public void keyReleased(KeyEvent e, boolean play) {
+		keysPressed.remove(e.getKeyChar());
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
 				
