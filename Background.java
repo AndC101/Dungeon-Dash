@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
 
 
 public class Background {
@@ -13,6 +14,8 @@ public class Background {
     public int y = 0;
 
     private int lastDrawnX = 0;
+    
+    public HashSet<Character> keysPressed = new HashSet<Character>();
 
     public Background (int x, int y, BufferedImage i) {
         this.x = x;
@@ -21,47 +24,30 @@ public class Background {
     }
 
 	public void keyPressed(KeyEvent e, boolean play) {
-		if (play) {
-			
-			if(!Player.isCentered) {
-				setXDirection(0);
-			}
-			
-			else if (e.getKeyChar() == 'd') {
-				if (Player.isCentered) {
-					setXDirection(-SPEED);
-					move();
-				}
-			} else if (e.getKeyChar() == 'a') {
-				if (Player.isCentered) {
-					setXDirection(SPEED);
-					move();
-				}
-			}
-		} else {
-
-			if (e.getKeyChar() == 'd') {
-
-				setXDirection(-SPEED);
-				move();
-
-			} else if (e.getKeyChar() == 'a') {
-
-				setXDirection(SPEED);
-				move();
-
-			}
-		}
+		keysPressed.add(e.getKeyChar());
+		
     }
 
     public void keyReleased(KeyEvent e, boolean play) {
-    	if(play) {
-			
-				setXDirection(0);
-			
-		}
-		else {
-			setXDirection(0);
+    	keysPressed.remove(e.getKeyChar());
+		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+			if(play) {
+				
+				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
+					setXDirection(-5);
+					Player.isRight = true;
+				}
+				else if(e.getKeyChar() == 'd' && keysPressed.contains('a')) {
+					setXDirection(5);
+					Player.isLeft = true;
+				}
+				else {
+					setXDirection(0);
+				}
+				
+				
+				
+			}
 		}
     }
 
@@ -71,6 +57,21 @@ public class Background {
 
 
     public void move() {
+
+		if(!Player.isCentered) {
+			setXDirection(0);
+		}
+		
+		else if (keysPressed.contains('d')) {
+			if (Player.isCentered) {
+				setXDirection(-SPEED);
+			}
+		} else if (keysPressed.contains('a')) {
+			if (Player.isCentered) {
+				setXDirection(SPEED);
+			}
+		}
+	
         x = x + xVelocity;
     }
 	//resizes an image to preferred width and height

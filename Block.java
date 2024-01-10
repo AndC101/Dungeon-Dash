@@ -43,37 +43,7 @@ public class Block extends Rectangle {
 	}
 
 	public void keyPressed(KeyEvent e, boolean play) {
-		if (play) {
-			keysPressed.add(e.getKeyChar());
-			if (keysPressed.contains('d')) {
-				if (Player.isCentered) {
-					setXDirection(-SPEED);
-					move();
-				}
-			} else if (keysPressed.contains('a')) {
-				if (Player.isCentered) {
-					setXDirection(SPEED);
-					move();
-				}
-			}
-			
-			if(!Player.isCentered) setXDirection(0);
-			
-		} else {
-
-			if (e.getKeyChar() == 'd') {
-
-				setXDirection(-SPEED);
-				move();
-
-			} else if (e.getKeyChar() == 'a') {
-
-				setXDirection(SPEED);
-				move();
-
-			}
-		}
-
+		keysPressed.add(e.getKeyChar());
 	}
 
 	public void keyReleased(KeyEvent e, boolean play) {
@@ -81,7 +51,17 @@ public class Block extends Rectangle {
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
 				
+				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
+					setXDirection(-5);
+					Player.isRight = true;
+				}
+				else if(e.getKeyChar() == 'd' && keysPressed.contains('a')) {
+					setXDirection(5);
+					Player.isLeft = true;
+				}
+				else {
 					setXDirection(0);
+				}
 				
 			}
 			else {
@@ -96,6 +76,20 @@ public class Block extends Rectangle {
 	}
 
 	public void move() {
+	
+			if (keysPressed.contains('d')) {
+				if (Player.isCentered) {
+					setXDirection(-SPEED);
+				}
+			} else if (keysPressed.contains('a')) {
+				if (Player.isCentered) {
+					setXDirection(SPEED);
+				}
+			}
+			
+			if(!Player.isCentered) setXDirection(0);
+			
+		
 		x = x + xVelocity;
 	}
 
