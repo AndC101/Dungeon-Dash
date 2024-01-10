@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.HashSet;
+
 import javax.swing.ImageIcon;
 
 public class Player extends Rectangle {
@@ -27,6 +29,9 @@ public class Player extends Rectangle {
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
     public static boolean isCentered = true;
+    public static boolean canJump = true;
+
+    public HashSet<Character> keysPressed = new HashSet<Character>();
 
     // create the player at x, y coordinates on the screen with length, width
     public Player(int x, int y, int l, int w) throws IOException {
@@ -35,32 +40,41 @@ public class Player extends Rectangle {
     
     public void keyPressed(KeyEvent e) {
     	
+    	keysPressed.add(e.getKeyChar());
     	if(isCentered) {
     		setXDirection(0);
     	}
 
-        if (e.getKeyChar() == 'd') {
+        if (keysPressed.contains('d')) {
             isRight = true;
+
+            isLeft = false;
+
             if(!isCentered){
                 setXDirection(SPEED);
             }
             move();
 
-        } else if (e.getKeyChar() == 'a') {
+        } 
+        else if (keysPressed.contains('a')) {
             isLeft = true;
             isRight = false;
             if(!isCentered){
                 setXDirection(SPEED*-1);
             }
             move();
-        } else if (e.getKeyChar() == 'w' && !isJumping) {
+        } 
+        
+        if (keysPressed.contains('w') && !isJumping && canJump) {
             // Only allow jumping if not already jumping
             jump();
+            canJump = false;
         } 
     }
     
 
     public void keyReleased(KeyEvent e) {
+    	keysPressed.remove(e.getKeyChar());
         if (e.getKeyChar() == 'd') {
             isRight = false;
             
@@ -71,7 +85,7 @@ public class Player extends Rectangle {
             setXDirection(0);
             move();
         } else if (e.getKeyChar() == 'w') {
-            // You can add additional logic for releasing 'w' key if needed
+            canJump = true;
         } else if (e.getKeyChar() == 's') {
             setYDirection(0);
             move();
