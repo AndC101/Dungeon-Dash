@@ -11,8 +11,8 @@ public class Player extends Rectangle {
     private Image leftAnimation = new ImageIcon("Images/KnightRunLeft.gif").getImage();
     private Image rightAnimation = new ImageIcon("Images/KnightRunRight.gif").getImage();
 
-    public boolean isLeft = false;
-    public boolean isRight = false;
+    public static boolean isLeft = false;
+    public static boolean isRight = false;
     public boolean isJumping = false;
 	public boolean falling = false;
 	public boolean left = false;
@@ -41,35 +41,7 @@ public class Player extends Rectangle {
     public void keyPressed(KeyEvent e) {
     	
     	keysPressed.add(e.getKeyChar());
-    	if(isCentered) {
-    		setXDirection(0);
-    	}
-
-        if (keysPressed.contains('d')) {
-            isRight = true;
-
-            isLeft = false;
-
-            if(!isCentered){
-                setXDirection(SPEED);
-            }
-            move();
-
-        } 
-        else if (keysPressed.contains('a')) {
-            isLeft = true;
-            isRight = false;
-            if(!isCentered){
-                setXDirection(SPEED*-1);
-            }
-            move();
-        } 
-        
-        if (keysPressed.contains('w') && !isJumping && canJump) {
-            // Only allow jumping if not already jumping
-            jump();
-            canJump = false;
-        } 
+    	
     }
     
 
@@ -110,6 +82,36 @@ public class Player extends Rectangle {
     }
 
     public void move() {
+    	
+    	
+    	if(isCentered) {
+    		setXDirection(0);
+    	}
+
+        if (keysPressed.contains('d')) {
+            isRight = true;
+
+            isLeft = false;
+
+            if(!isCentered){
+                setXDirection(SPEED);
+            }
+
+        } 
+        else if (keysPressed.contains('a')) {
+            isLeft = true;
+            isRight = false;
+            if(!isCentered){
+                setXDirection(SPEED*-1);
+            }
+        } 
+        
+        if (keysPressed.contains('w') && !isJumping && canJump) {
+            // Only allow jumping if not already jumping
+            jump();
+            canJump = false;
+        } 
+    	
         if (isJumping) {
             if (jumpCount < jumpLimit) {
                 // If jumping, move up until reaching jumpHeight
