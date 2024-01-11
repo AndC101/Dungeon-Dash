@@ -43,11 +43,8 @@ public class Background {
 				}
 				else {
 					setXDirection(0);
-				}
-				
-				
-				
-			}
+                }
+			} 
 		}
     }
 

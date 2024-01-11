@@ -62,7 +62,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	
 	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
 	Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
-	Image goblinRunning = new ImageIcon("Images/GoblinRunning.gif").getImage();
+	Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
+	Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
 
 	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
 
@@ -90,9 +91,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// declare level widget variables
 	public int totalHeight;
-	public int numButtons = 0; // to be changed once file IO works
+	public int numButtons = 0; 
 	public int leftBorder = 1000000000, rightBorder = -1;
-	public int shift = 0;
+	public static int shift = 0;
 	public int spawnX = 0;
 	public int adjust = 0;
 
@@ -180,7 +181,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
 		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height, crackedStoneImage);
 		
-		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning);
+		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
 		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
 		
 		tabOneUp = new OneUp(TAB_X - 110,20, OneUp.width, OneUp.height, oneUpImage);
@@ -839,7 +840,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				else if(tabPressed.equals("enemies")) {
 					if (curDragging.equals(tabGoblin)) {
 						try {
-							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning));
+							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1144,7 +1145,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), CrackedStone.width, CrackedStone.height, crackedStoneImage));
 							}
 							else if (inputs[0].equals("Goblin")) {
-								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Goblin.width, Goblin.height, goblinRunning));
+								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
 							}
 							else if(inputs[0].equals("Turret")) {
 								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Turret.width, Turret.height, turretImage));
@@ -1182,7 +1183,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new CrackedStone(x, y, width, height,b.img);
 		}
 		else if(className.equals("Goblin")){
-			return new Goblin(x, y, width, height,goblinRunning);
+			return new Goblin(x, y, width, height,goblinRunLeft, goblinRunRight, true);
 		}
 		else if(className.equals("Turret")) {
 			return new Turret(x, y, width, height,b.img);
