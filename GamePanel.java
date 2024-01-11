@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
 	public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
 	public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
+	public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
 	
 	
 	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
@@ -73,14 +74,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int alpha = 0;
 
 	//for states of the frame
-	public boolean mainMenu = true;
-	public boolean edit = false;
+	public static boolean mainMenu = true;
+	public static boolean edit = false;
 	public boolean levelSelect = false;
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
-	public boolean play = false;
+	public static boolean play = false;
 	public boolean spawn = true;
+	public boolean powerUpUp = true;
 
 
 	public int indicatorPos = 250;
@@ -95,6 +97,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int shift = 0;
 	public int spawnX = 0;
 	public int adjust = 0;
+	public int powerUpBob = 0;
 
 	public Block curDragging, curSelected;
 
@@ -107,6 +110,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Goblin tabGoblin;
 	public Turret tabTurret;
 	public OneUp tabOneUp;
+	public SpeedBoost tabSpeedBoost; 
 
 	ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
 	Block hover = null;
@@ -184,7 +188,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
 		
 		tabOneUp = new OneUp(TAB_X - 110,20, OneUp.width, OneUp.height, oneUpImage);
-	
+		tabSpeedBoost = new SpeedBoost(TAB_X - 110,100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
 		
 		blockSidebar.add(tabPortal);
 		blockSidebar.add(tabStone);
@@ -196,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		enemySidebar.add(tabTurret);
 		
 		powerUpSidebar.add(tabOneUp);
-
+		powerUpSidebar.add(tabSpeedBoost);
 
 		//total height for the scrollpane 
 		//make the scrollpane height slightly bigger than the height of each button * the num of buttons which makes the levelSelect
@@ -311,6 +315,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			b.draw(g);
 			
 			for(Block b: elements) {
+				if(getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
+					if(powerUpUp) {
+						powerUpBob++;
+						if(powerUpBob % 2 == 0)b.y++;
+					}
+					else {
+						powerUpBob--;
+						if(powerUpBob % 2 == 0) b.y--;
+					}
+					
+					if(powerUpBob >= 20) powerUpUp = false;
+					if(powerUpBob <= -20) powerUpUp = true;
+					
+				}
 				b.draw(g);
 			}
 			
@@ -860,6 +878,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						}
 						curDragging = elements.get(elements.size() - 1);
 					}
+					else if (curDragging.equals(tabSpeedBoost)) {
+						try {
+							elements.add(new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
 				}
 				
 
@@ -998,6 +1023,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Powerups", GAME_WIDTH / 7 + 20, 2 * TAB_HEIGHT + 30);
 			
 			tabOneUp.draw(g);
+			tabSpeedBoost.draw(g);
 			
 		} else {
 			g.setColor(Color.CYAN);
@@ -1149,6 +1175,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							else if(inputs[0].equals("Turret")) {
 								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Turret.width, Turret.height, turretImage));
 							}
+							else if(inputs[0].equals("OneUp")) {
+								elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), OneUp.width, OneUp.height, oneUpImage));
+							}
+							else if(inputs[0].equals("SpeedBoost")) {
+								elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), SpeedBoost.width, SpeedBoost.height, speedBoostImage));
+							}
 						}
 						return;
 					}
@@ -1189,6 +1221,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 		else if(className.equals("OneUp")) {
 			return new OneUp(x,y,width,height,b.img);
+		}
+		else if(className.equals("SpeedBoost")) {
+			return new SpeedBoost(x,y,width,height,b.img);
 		}
 		return b;
 	}

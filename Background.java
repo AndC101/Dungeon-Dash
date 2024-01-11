@@ -25,30 +25,10 @@ public class Background {
 
 	public void keyPressed(KeyEvent e, boolean play) {
 		keysPressed.add(e.getKeyChar());
-		
     }
 
     public void keyReleased(KeyEvent e, boolean play) {
     	keysPressed.remove(e.getKeyChar());
-		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
-			if(play) {
-				
-				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
-					setXDirection(-5);
-					Player.isRight = true;
-				}
-				else if(e.getKeyChar() == 'd' && keysPressed.contains('a')) {
-					setXDirection(5);
-					Player.isLeft = true;
-				}
-				else {
-					setXDirection(0);
-				}
-				
-				
-				
-			}
-		}
     }
 
     public void setXDirection(int xDirection) {
@@ -57,12 +37,9 @@ public class Background {
 
 
     public void move() {
-
-		if(!Player.isCentered) {
-			setXDirection(0);
-		}
 		
-		else if (keysPressed.contains('d')) {
+		
+		if (keysPressed.contains('d')) {
 			if (Player.isCentered) {
 				setXDirection(-SPEED);
 			}
@@ -71,6 +48,12 @@ public class Background {
 				setXDirection(SPEED);
 			}
 		}
+		if(GamePanel.play && !Player.isCentered) {
+			setXDirection(0);
+		}
+		
+		if(!keysPressed.contains('a') && !keysPressed.contains('d')) setXDirection(0);
+		
 	
         x = x + xVelocity;
     }
