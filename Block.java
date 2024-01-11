@@ -8,7 +8,7 @@ public class Block extends Rectangle {
 	int diffX, diffY;
 	boolean drag = false;
 	BufferedImage img;
-	public int xVelocity;
+	public static int xVelocity;
 	public static final int SPEED = 5; // movement speed
 	
 	public HashSet<Character> keysPressed = new HashSet<Character>();
@@ -42,7 +42,7 @@ public class Block extends Rectangle {
 		return x + " " + y + " " + width + " " + height;
 	}
 
-	public void keyPressed(KeyEvent e, boolean play) {
+	public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
 	}
 

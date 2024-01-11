@@ -19,12 +19,8 @@ public class Player extends Rectangle {
     public int jumpHeight = 100; // Adjust this value based on your needs
     public int jumpCount = 0;
     public int jumpLimit = 100; // Adjust this value based on your needs
-    public int lBorder = 0;
-    public int rBorder = 0;
     public int yVelocity;
     public int xVelocity;
-    public int leftX = 0;
-    public int moved = 0;
     public final int SPEED = 5; // movement speed
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
