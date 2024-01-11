@@ -3,14 +3,14 @@ import java.awt.image.*;
 import java.io.*;
 
 
-public class OneUp extends Block {
+public class SpeedBoost extends Block {
 	
-	public static final int width = 60;
-	public static final int height = 60;
+	public static final int width = 45;
+	public static final int height = 45;
 	
 	public BufferedImage i;
 	
-	public OneUp(int x, int y, int l, int w, BufferedImage i) throws IOException{
+	public SpeedBoost(int x, int y, int l, int w, BufferedImage i) throws IOException{
 		super(x,y,l,w,i);
 	}
 	
@@ -20,7 +20,7 @@ public class OneUp extends Block {
 	}
 	
 	public String toString () {
-		return "OneUp " + super.toString();
+		return "SpeedBoost " + super.toString();
 	}
 
 }
