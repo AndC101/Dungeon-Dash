@@ -13,8 +13,6 @@ public class Background {
     public final int SPEED = 1; // movement speed
     public int x = 0;
     public int y = 0;
-
-    private int lastDrawnX = 0;
     
     public HashSet<Character> keysPressed = new HashSet<Character>();
 
@@ -72,7 +70,6 @@ public class Background {
 
 
     public void draw(Graphics g) {
-        lastDrawnX = x+GamePanel.GAME_WIDTH;
         // System.out.println(lastDrawnX + "   " + ((- (x-GamePanel.GAME_WIDTH/7)  % 2000) + GamePanel.GAME_WIDTH - GamePanel.GAME_WIDTH/7) );
 
         for(int i = 0; i < 100; i++) {
@@ -82,9 +79,6 @@ public class Background {
         }
     }
 
-    public int getCurX() {
-        return lastDrawnX;
-    }
 
 
 }

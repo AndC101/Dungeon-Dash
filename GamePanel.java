@@ -417,6 +417,7 @@
 			 b.move();
 		 }
 		//  System.out.println("knight y " + knight.y);
+	
 		 back.move();
 	 }
  

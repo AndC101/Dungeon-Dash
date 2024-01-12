@@ -59,7 +59,7 @@ public class Goblin extends Block {
 		
 	public void move() {
 		
-		// x += xVelocity;
+		x += xVelocity;
 		if(isEnemy) {
 			if(x <= initX-GamePanel.shift) {
 				x = initX-GamePanel.shift;
