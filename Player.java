@@ -28,6 +28,8 @@ public class Player extends Rectangle {
     
     //has to do with jumping
 
+
+
     public boolean isJumping = false;
 	public boolean falling = false;
     public int jumpHeight = 100; // will be edited
@@ -38,10 +40,9 @@ public class Player extends Rectangle {
 	public static boolean canJump = true;
     
 	//has to do with speed
+
     public int yVelocity;
     public int xVelocity;
-    public int leftX = 0;
-    public int moved = 0;
     public final int SPEED = 5; // movement speed
 
     public static boolean oneScreen = false;
@@ -167,7 +168,9 @@ public class Player extends Rectangle {
     public void draw(Graphics g) {
 
 
+
     	//if the knight crosses the middle after coming from a side
+
         if(!oneScreen && ((left && isRight && x >= 420) || (!left && isLeft && x <= 420))) {
             isCentered = true;
             x = 420; //force the knight centered 

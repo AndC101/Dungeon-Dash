@@ -42,7 +42,7 @@ public class Block extends Rectangle {
 		return x + " " + y + " " + width + " " + height;
 	}
 
-	public void keyPressed(KeyEvent e, boolean play) {
+	public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
 	}
 

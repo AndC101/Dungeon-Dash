@@ -1,3 +1,9 @@
+/*
+ * Ethan Lin & Andrew Chen
+ * January 11, 2023
+ * Adds a heart to the knight
+ */
+
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -5,13 +11,13 @@ import java.io.*;
 
 public class OneUp extends Block {
 	
-	public static final int width = 60;
-	public static final int height = 60;
+	public static int width = 60;
+	public static int height = 60;
 	
-	public BufferedImage i;
+	public BufferedImage i; //image for the powerup
 	
 	public OneUp(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i);
+		super(x,y,l,w,i); //block constructor
 	}
 	
 	//draw the image from the block class
@@ -19,6 +25,7 @@ public class OneUp extends Block {
 		super.draw(g);
 	}
 	
+	//returns name and the constructor info
 	public String toString () {
 		return "OneUp " + super.toString();
 	}
