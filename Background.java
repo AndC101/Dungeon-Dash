@@ -12,7 +12,6 @@ import java.util.HashSet;
 
 public class Background {
 	
-	//global variables
 	boolean drag = false;
 	BufferedImage img;
     public int xVelocity; //current X Velocity
@@ -31,12 +30,12 @@ public class Background {
         this.y = y;
         img = i;
     }
-    //handles key presses
-	public void keyPressed(KeyEvent e) {
+
+	public void keyPressed(KeyEvent e, boolean play) {
 		keysPressed.add(e.getKeyChar());
     }
-	//handles key releases
-    public void keyReleased(KeyEvent e) {
+
+    public void keyReleased(KeyEvent e, boolean play) {
     	keysPressed.remove(e.getKeyChar());
     }
     //sets the x velocity
