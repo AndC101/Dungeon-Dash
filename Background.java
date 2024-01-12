@@ -6,12 +6,15 @@ import java.util.HashSet;
 
 public class Background {
 	
-	public boolean drag = false;
-	public BufferedImage img;
+	//global variables
+	boolean drag = false;
+	BufferedImage img;
     public int xVelocity;
     public final int SPEED = 1; // movement speed
     public int x = 0;
     public int y = 0;
+
+    private int lastDrawnX = 0;
     
     public HashSet<Character> keysPressed = new HashSet<Character>();
 
@@ -21,11 +24,11 @@ public class Background {
         img = i;
     }
 
-	public void keyPressed(KeyEvent e, boolean play) {
+	public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
     }
 
-    public void keyReleased(KeyEvent e, boolean play) {
+    public void keyReleased(KeyEvent e) {
     	keysPressed.remove(e.getKeyChar());
     }
 
@@ -69,6 +72,8 @@ public class Background {
 
 
     public void draw(Graphics g) {
+        lastDrawnX = x+GamePanel.GAME_WIDTH;
+        // System.out.println(lastDrawnX + "   " + ((- (x-GamePanel.GAME_WIDTH/7)  % 2000) + GamePanel.GAME_WIDTH - GamePanel.GAME_WIDTH/7) );
 
         for(int i = 0; i < 100; i++) {
             g.drawImage(img, x + i*2000, y, 2000, 550, null);
@@ -77,6 +82,9 @@ public class Background {
         }
     }
 
+    public int getCurX() {
+        return lastDrawnX;
+    }
 
 
 }
