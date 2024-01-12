@@ -151,6 +151,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		knight = new Player(0, 0, 47, 53);
 		
 
+		// initializes the Player
+		knight = new Player(0, 0, 47, 53);
+
 		//get the title of the save file
 		prevSavedTitle = levelName; //only if the file already exists, otherwise this is ""
 
@@ -352,12 +355,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				
 				knight.x = spawnPortal.x + spawnPortal.width/2 - knight.width/2;
 				knight.y = spawnPortal.y +(spawnPortal.height - knight.height);
+				// saves the original position of the portal
 				spawnX = spawnPortal.x;
 				spawn = false;
 			}
 			
 			
 			if(Math.abs(leftBorder + spawnPortal.x - spawnX) <=  (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
+				// moves the knight to the portal
+				knight.x = spawnPortal.x + spawnPortal.width / 2 - knight.width / 2;
+				knight.y = spawnPortal.y + (spawnPortal.height - knight.height);
+
+			}
+
+			// checks which half of the level the knight is on
+			if (Math.abs(leftBorder + spawnPortal.x - spawnX) <= (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
 				knight.left = true;
 			}
 			else {
@@ -380,6 +392,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				}
 				
 				
+					if (spawn) {
+						knight.x -= adjust;
+					}
+				}
+
+				// since a border is reached, the knight no longer needs to be centered
 				Player.isCentered = false;
 			}
 			
@@ -393,8 +411,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			System.out.println("Velocity: " +  b.xVelocity + " Moving left: " + spawnPortal.keysPressed.contains('a') + " Centered?: " + knight.isCentered);
 			
+
+			if (spawn)
+				spawn = !spawn;
+
 		}
-		
+
 	}
 
 	
@@ -434,12 +456,32 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for(Block b: elements) {
 			
 
+		} else if (play) {
+			// doesn't allow the player to walk off the screen
+			if (knight.x <= 0)
+				knight.x = 0;
+			if (knight.x + knight.width >= GAME_WIDTH)
+				knight.x = GAME_WIDTH - knight.width;
+
+			// unfinished code
+			for (Block b : elements) {
+
 				if(getClass(b).equals("Portal")) continue;
+				if (getClass(b).equals("Portal"))
+					continue;
 				
+				if(knight.x <= b.x && knight.x + knight.width >= b.x && (knight.y >= b.y && knight.y <= b.y + b.height) 
+						|| (knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height)) {
+					knight.x = b.x - knight.width;
+					if(!Player.isCentered) {
+						back.xVelocity = 0;
+						Block.xVelocity = 0;
+					}
+				}
 				
-				if(knight.x < b.x + b.width && knight.x + knight.width > b.x + b.width && ((knight.y >= b.y && knight.y <= b.y + b.height) 
-						|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height))) {
-					knight.x = b.x + b.width;
+				if(knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width && (knight.y >= b.y && knight.y <= b.y + b.height) 
+						|| (knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height)) {
+					knight.x = b.x - knight.width;
 					if(!Player.isCentered) {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
