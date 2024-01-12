@@ -1,8 +1,8 @@
-/* GameFrame class establishes the frame (window) for the game
-It is a child of JFrame because JFrame manages frames
-Runs the constructor in GamePanel class
-
-*/ 
+/*
+ * Ethan Lin & Andrew Chen
+ * January 11, 2023
+ * GameFrame creates the window or "frame" for the game, switches based on game mode
+ */
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,12 +12,12 @@ import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
 
-    private static GameFrame currentGameFrame; // Keep track of the current GameFrame instance
+    private static GameFrame currentGameFrame; // keeps track of current GameFrame instance
 	GamePanel panel;
 
-
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
-
+		
+		//dispose old gameframes 
         if (currentGameFrame != null) {
             currentGameFrame.dispose();
         }
@@ -32,7 +32,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		this.setBackground(Color.white);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //X button will stop program execution
 
-		//if level select menu, the frame must be adjusted
+		//if level select menu, the frame must be adjusted to levelselect mode
 		if(panel.levelSelect) {
 			this.setTitle("Dungeon Dash - Level Select"); //set title for frame
 
@@ -41,22 +41,28 @@ public class GameFrame extends JFrame implements ActionListener{
 			JPanel buttonPanel = new JPanel();
 			buttonPanel.add(backButton);
 
+			//enable scrolling feature
 			JScrollPane scroll = new JScrollPane();
 			Container contentPane = this.getContentPane();
 
+			//layout
 			SpringLayout layout = new SpringLayout();
 			JPanel mainPanel = new JPanel();
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
 
-			int j = 25;
-			for(int i = 0; i < panel.names.size(); i++){
+			
+			int j = 25; // initial y pos
+			for(int i = 0; i < panel.names.size(); i++){ //loops through each level saved ( names.size() )
+				
+				//get the level title and make label and buttons for it
 				String title = panel.names.get(i);
 				JLabel label = new JLabel("Title: " + title);
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
 
+				//add and format the information
 				mainPanel.add(label);
 				mainPanel.add(playButton);
 				mainPanel.add(editButton);
@@ -80,6 +86,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			}
 
 
+			//makes scrollpane work
 			mainPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.totalHeight));
 			scroll.setPreferredSize(new Dimension(GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT));
 			scroll.setViewportView(mainPanel);
@@ -87,7 +94,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			contentPane.add(buttonPanel,BorderLayout.SOUTH);
 
 			//action listener for backButton
-			backButton.addActionListener(this);
+			backButton.addActionListener(this); //return to menu
 
 			// contentPane.add(buttonPanel,BorderLayout.SOUTH);
 			this.setSize(900, 550);
@@ -101,15 +108,16 @@ public class GameFrame extends JFrame implements ActionListener{
 
 
 	}
+
+	//checks for which play button is pressed and loads the game file in a new gameframe
     private void addPlayButtonListener(JButton playButton, String title) {
         playButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Perform actions when any "Play" button is pressed
+
+			public void actionPerformed(ActionEvent e) {
+                // debug for play button pressed
                 System.out.println("Play button in row " + title + " pressed!");
 				
 				try {
-					// System.out.println("WE GOOD" + title);
 					new GameFrame(false, false, true, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -118,9 +126,10 @@ public class GameFrame extends JFrame implements ActionListener{
         });
     }
 
+	//same logic as play button, but sends user into edit mode for the level
 	private void addEditButtonListener(JButton editButton, String title) {
 		editButton.addActionListener(new ActionListener() {
-			@Override
+
 			public void actionPerformed(ActionEvent e) {
 				// Perform actions when any "Play" button is pressed
 				System.out.println("Edit button in row " + title + " pressed!");
@@ -135,29 +144,31 @@ public class GameFrame extends JFrame implements ActionListener{
 			});
     }
 
-
-	@Override
+	//
 	public void actionPerformed(ActionEvent e) {
+		//if back button pressed
         if (e.getActionCommand().equals("Back to menu")) {
-            // Perform actions to return to the main menu
-            dispose(); // Close the current frame
+            
+            dispose(); //close the current frame
 
-            // Example: Open a new frame for the main menu
+            //opens new frame back to the main mennu
             try {
                 new GameFrame(false, false, false, "");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        } else if (e.getActionCommand().equals("Edit")) {
-			dispose();
+        } 
+		
+		// else if (e.getActionCommand().equals("Edit")) {
+		// 	dispose();
 
-			try {
-                new GameFrame(false, true, false, "");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+		// 	try {
+        //         new GameFrame(false, true, false, "");
+        //     } catch (IOException ex) {
+        //         ex.printStackTrace();
+        //     }
 
-		}
+		// }
 	}
   
 }
