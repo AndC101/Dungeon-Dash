@@ -124,7 +124,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public String newLevelTitle = ""; //if new level 
 	public String prevSavedTitle = ""; //for files that exist and are revisited (level select -> play/edit button)
 
-	public Background b = new Background(0, 0, playBackground);
+	public Background back = new Background(0, 0, playBackground);
 
 	public boolean d = false;
 	public boolean a = false;
@@ -262,7 +262,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			
 			//draw the background 
-			b.draw(g);
+			back.draw(g);
 
 			//draw strings for user instruction for save and play 
 			g.setColor(Color.white);
@@ -313,7 +313,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			
 			//draws the background
-			b.draw(g);
+			back.draw(g);
 			
 			for(Block b: elements) {
 				if(getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
@@ -348,9 +348,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					leftBorder = Math.min(leftBorder,b.x);
 					rightBorder = Math.max(rightBorder, b.x + b.width);
 				}
-				knight.lBorder = leftBorder;
-				knight.rBorder = rightBorder;
-				
 				knight.x = spawnPortal.x + spawnPortal.width/2 - knight.width/2;
 				knight.y = spawnPortal.y +(spawnPortal.height - knight.height);
 				spawnX = spawnPortal.x;
@@ -390,10 +387,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 			if(leftBorder + spawnPortal.x - spawnX >= 0 && rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
 				Player.isCentered = false;
-			}
-			
-			System.out.println("Velocity: " +  b.xVelocity + " Moving left: " + spawnPortal.keysPressed.contains('a') + " Centered?: " + knight.isCentered);
-			
+			}		
 		}
 		
 	}
@@ -409,7 +403,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		for(Block b: elements) {
 			b.move();	
 		}
-		b.move();
+		back.move();
 	}
 
 	// handles all collision detection and responds accordingly
@@ -544,7 +538,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if(curSelected != null && !checkAllIntersection(curSelected)) curSelected.y++;
 			}
 			else if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
-				b.keyPressed(e,false);
+				back.keyPressed(e,false);
 				for(Block b: elements) {
 					b.keyPressed(e,false);
 				}
@@ -636,7 +630,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			
 
 			knight.keyPressed(e);
-			b.keyPressed(e,true);
+			back.keyPressed(e,true);
 		
 			for(Block b: elements) {
 				b.keyPressed(e,true);
@@ -652,7 +646,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		
 		
 		if(edit) {
-			b.keyReleased(e,false);
+			back.keyReleased(e,false);
 			for(Block b: elements) {
 				b.keyReleased(e,false);
 			}
@@ -661,7 +655,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		else if(play) {
 			knight.keyReleased(e); 
 
-				b.keyReleased(e,true);
+				back.keyReleased(e,true);
 				for(Block b: elements) {
 					b.keyReleased(e,true);
 				}
