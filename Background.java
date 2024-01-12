@@ -6,7 +6,6 @@ import java.util.HashSet;
 
 public class Background {
 	
-	//global variables
 	boolean drag = false;
 	BufferedImage img;
     public int xVelocity;
@@ -24,11 +23,11 @@ public class Background {
         img = i;
     }
 
-	public void keyPressed(KeyEvent e) {
+	public void keyPressed(KeyEvent e, boolean play) {
 		keysPressed.add(e.getKeyChar());
     }
 
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(KeyEvent e, boolean play) {
     	keysPressed.remove(e.getKeyChar());
     }
 
