@@ -1223,8 +1223,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new OneUp(x,y,width,height,b.img);
 		}
 		else if(className.equals("SpeedBoost")) {
-			return new SpeedBoost(x,y,width,height,b.img);
-		}
+			return new SpeedBoost(x,y,width,height,b.img);		}
 		return b;
 	}
 	
