@@ -13,6 +13,7 @@ public class Player extends Rectangle {
 
     public static boolean isLeft = false;
     public static boolean isRight = false;
+    public static boolean oneScreen = false;
     public boolean isJumping = false;
 	public boolean falling = false;
 	public boolean left = false;
@@ -143,7 +144,7 @@ public class Player extends Rectangle {
 
     public void draw(Graphics g) {
 
-        if( (left && isRight && x >= 420) || (!left && isLeft && x <= 420)) {
+        if(!oneScreen && ((left && isRight && x >= 420) || (!left && isLeft && x <= 420))) {
             isCentered = true;
             x = 420; //force the knight centered 
         }
