@@ -124,6 +124,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// creates the background image
 	public Background back = new Background(0, 0, playBackground);
 
+	//constructor
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		// initializes the variables handling the different screens
 		if (levelSelect) {
