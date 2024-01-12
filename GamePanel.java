@@ -469,6 +469,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					if(!Player.isCentered) {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
+						System.out.println("this is a change");
 					}
 				}
 				
