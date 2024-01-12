@@ -1,7 +1,6 @@
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
- * Mr Anthony
  * GamePanel class is the main class to run the game
  */
 
