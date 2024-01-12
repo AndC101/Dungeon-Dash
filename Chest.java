@@ -7,8 +7,7 @@ import javax.imageio.ImageIO;
 
 public class Chest extends Block {
 	
-	int diffX, diffY;
-	boolean opened;
+	public boolean opened;
 	public BufferedImage i;
 	
 	public Chest(int x, int y, int l, int w, BufferedImage i) throws IOException{

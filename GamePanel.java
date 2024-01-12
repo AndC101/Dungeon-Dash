@@ -91,9 +91,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// declare level widget variables
 	public int totalHeight;
-	public int numButtons = 0; 
+	public int numButtons = 0; // to be changed once file IO works
 	public int leftBorder = 1000000000, rightBorder = -1;
-	public static int shift = 0;
+	public int shift = 0;
 	public int spawnX = 0;
 	public int adjust = 0;
 
@@ -840,7 +840,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				else if(tabPressed.equals("enemies")) {
 					if (curDragging.equals(tabGoblin)) {
 						try {
-							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunning));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1145,7 +1145,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), CrackedStone.width, CrackedStone.height, crackedStoneImage));
 							}
 							else if (inputs[0].equals("Goblin")) {
-								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Goblin.width, Goblin.height, goblinRunning));
 							}
 							else if(inputs[0].equals("Turret")) {
 								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]), Turret.width, Turret.height, turretImage));
@@ -1183,7 +1183,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new CrackedStone(x, y, width, height,b.img);
 		}
 		else if(className.equals("Goblin")){
-			return new Goblin(x, y, width, height,goblinRunLeft, goblinRunRight, true);
+			return new Goblin(x, y, width, height,goblinRunning);
 		}
 		else if(className.equals("Turret")) {
 			return new Turret(x, y, width, height,b.img);

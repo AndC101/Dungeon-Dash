@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 public class Background {
 	
+	//global variables
 	boolean drag = false;
 	BufferedImage img;
     public int xVelocity;
@@ -23,13 +24,13 @@ public class Background {
         img = i;
     }
 
-	public void keyPressed(KeyEvent e, boolean play) {
+	public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
-		
     }
 
-    public void keyReleased(KeyEvent e, boolean play) {
+    public void keyReleased(KeyEvent e) {
     	keysPressed.remove(e.getKeyChar());
+<<<<<<< HEAD
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
 				
@@ -46,6 +47,8 @@ public class Background {
                 }
 			} 
 		}
+=======
+>>>>>>> main
     }
 
     public void setXDirection(int xDirection) {
@@ -54,12 +57,9 @@ public class Background {
 
 
     public void move() {
-
-		if(!Player.isCentered) {
-			setXDirection(0);
-		}
 		
-		else if (keysPressed.contains('d')) {
+		
+		if (keysPressed.contains('d')) {
 			if (Player.isCentered) {
 				setXDirection(-SPEED);
 			}
@@ -68,6 +68,12 @@ public class Background {
 				setXDirection(SPEED);
 			}
 		}
+		if(GamePanel.play && !Player.isCentered) {
+			setXDirection(0);
+		}
+		
+		if(!keysPressed.contains('a') && !keysPressed.contains('d')) setXDirection(0);
+		
 	
         x = x + xVelocity;
     }
