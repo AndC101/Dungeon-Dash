@@ -91,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int spawnX = 0;
 	public int adjust = 0;
 	public int powerUpBob = 0;
+	public int buffer = 5;
 
 	public Block curDragging, curSelected;
 
@@ -143,7 +144,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		// initializes the Player
-		knight = new Player(0, 0, 47, 53);
+		knight = new Player(0, 0, 43, 53);
 
 		// get the title of the save file
 		prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
@@ -349,11 +350,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					leftBorder = Math.min(leftBorder, b.x);
 					rightBorder = Math.max(rightBorder, b.x + b.width);
 				}
+				
+				if(spawn && rightBorder - leftBorder <= GAME_WIDTH) {
+					Player.oneScreen = true;
+				}
+				
 				// saves the original position of the portal
 				spawnX = spawnPortal.x;
 				// moves the knight to the portal
+				
 				knight.x = spawnPortal.x + spawnPortal.width / 2 - knight.width / 2;
 				knight.y = spawnPortal.y + (spawnPortal.height - knight.height);
+				
 
 			}
 
@@ -381,10 +389,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				// moves all blocks accordingly and the knight if it was just spawned
 				for (Block b : elements) {
 					b.x -= adjust;
-					if (spawn) {
-						knight.x -= adjust;
-					}
 				}
+				if (spawn) {
+					knight.x -= adjust;
+				}
+				
 
 				// since a border is reached, the knight no longer needs to be centered
 				Player.isCentered = false;
@@ -393,11 +402,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			// draws the knight
 			knight.draw(g);
 
-			if (spawn)
-				spawn = !spawn;
+			if (spawn) spawn = false;
+				
 
 		}
-
+		
 	}
 
 	// calls the move method of all other methods
@@ -429,7 +438,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			}
 
-		} else if (play) {
+		} else if (play && !spawn) {
 			// doesn't allow the player to walk off the screen
 			if (knight.x <= 0)
 				knight.x = 0;
@@ -440,10 +449,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			for (Block b : elements) {
 
 				if (getClass(b).equals("Portal"))
-					continue;
+					continue;				
 				
-				if(knight.x <= b.x && knight.x + knight.width >= b.x && (knight.y >= b.y && knight.y <= b.y + b.height) 
-						|| (knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height)) {
+				
+				
+				if(knight.x < b.x && knight.x + knight.width > b.x  && ((knight.y >= b.y && knight.y <= b.y + b.height) 
+						|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height) || (knight.y < b.y && knight.y + knight.height > b.y + b.height))) {
 					knight.x = b.x - knight.width;
 					if(!Player.isCentered) {
 						back.xVelocity = 0;
@@ -451,14 +462,27 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 				}
 				
-				if(knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width && (knight.y >= b.y && knight.y <= b.y + b.height) 
-						|| (knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height)) {
-					knight.x = b.x - knight.width;
+				
+				if(knight.x < b.x + b.width && knight.x + knight.width > b.x + b.width && ((knight.y >= b.y && knight.y <= b.y + b.height) 
+						|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height))) {
+					knight.x = b.x + b.width;
 					if(!Player.isCentered) {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
 				}
+				
+				
+				if(((knight.x > b.x && knight.x < b.x + b.width) || (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+						&& knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height) {
+						knight.y = b.y - knight.height ;
+						
+						knight.isJumping = false;
+						knight.falling = false;
+						knight.yVelocity = 0;
+				}
+				
+				
 
 			}
 
@@ -634,8 +658,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			// checks the knight, Blocks, and the background to see what should change to
 			// each one
+			System.out.println(knight.x);
 			knight.keyPressed(e);
+			System.out.println(knight.x);
 			back.keyPressed(e);
+			System.out.println(knight.x);
 
 			for (Block b : elements) {
 				b.keyPressed(e);
@@ -656,7 +683,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		else if (play) {
 			//calls keyReleased for background, the knight, and all blocks
+			System.out.println(knight.x);
 			knight.keyReleased(e);
+			System.out.println(knight.x);
 
 			back.keyReleased(e);
 			for (Block b : elements) {
