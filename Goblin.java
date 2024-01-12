@@ -1,10 +1,16 @@
+/*
+ * Ethan Lin & Andrew Chen
+ * January 11, 2023
+ * GamePanel class is the main class to run the game
+ */
+
 import java.awt.*;
 import java.io.*;
 
 
 public class Goblin extends Block {
 	
-
+	
 	public static int height = 50;
 	public static int width = 50;
 	Image animation;

@@ -144,7 +144,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			});
     }
 
-	//
+	//checks if a button is pressed (back button only)
 	public void actionPerformed(ActionEvent e) {
 		//if back button pressed
         if (e.getActionCommand().equals("Back to menu")) {
@@ -159,16 +159,6 @@ public class GameFrame extends JFrame implements ActionListener{
             }
         } 
 		
-		// else if (e.getActionCommand().equals("Edit")) {
-		// 	dispose();
-
-		// 	try {
-        //         new GameFrame(false, true, false, "");
-        //     } catch (IOException ex) {
-        //         ex.printStackTrace();
-        //     }
-
-		// }
 	}
   
 }

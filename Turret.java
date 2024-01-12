@@ -5,8 +5,8 @@ import java.io.*;
 
 public class Turret extends Block {
 	
-	public static final int width = 60;
-	public static final int height = 60;
+	public static int width = 60;
+	public static int height = 60;
 	public BufferedImage i;
 	
 	public Turret(int x, int y, int l, int w, BufferedImage i) throws IOException{

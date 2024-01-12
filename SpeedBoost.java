@@ -5,8 +5,8 @@ import java.io.*;
 
 public class SpeedBoost extends Block {
 	
-	public static final int width = 45;
-	public static final int height = 45;
+	public static int width = 45;
+	public static int height = 45;
 	
 	public BufferedImage i;
 	
