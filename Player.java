@@ -13,18 +13,15 @@ public class Player extends Rectangle {
 
     public static boolean isLeft = false;
     public static boolean isRight = false;
+    public static boolean oneScreen = false;
     public boolean isJumping = false;
 	public boolean falling = false;
 	public boolean left = false;
     public int jumpHeight = 100; // Adjust this value based on your needs
     public int jumpCount = 0;
     public int jumpLimit = 100; // Adjust this value based on your needs
-    public int lBorder = 0;
-    public int rBorder = 0;
     public int yVelocity;
     public int xVelocity;
-    public int leftX = 0;
-    public int moved = 0;
     public final int SPEED = 5; // movement speed
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
@@ -147,7 +144,7 @@ public class Player extends Rectangle {
 
     public void draw(Graphics g) {
 
-        if( (left && isRight && x >= 420) || (!left && isLeft && x <= 420)) {
+        if(!oneScreen && ((left && isRight && x >= 420) || (!left && isLeft && x <= 420))) {
             isCentered = true;
             x = 420; //force the knight centered 
         }

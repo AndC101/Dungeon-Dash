@@ -1,13 +1,19 @@
+/*
+ * Ethan Lin & Andrew Chen
+ * January 11, 2023
+ * goblin is a walking enemy
+ */
+
 import java.awt.*;
 import java.io.*;
 
 
 public class Goblin extends Block {
 	
-
+	
 	public static int height = 50;
 	public static int width = 50;
-	Image animation;
+	Image animation; //animation image
 	
 	public Goblin(int x, int y, int l, int w, Image i) throws IOException{
 		super(x,y,l,w);
@@ -24,6 +30,7 @@ public class Goblin extends Block {
 		x += xVelocity;
 	}
 	
+	//returns name and the constructor info
 	public String toString () {
 		return "Goblin " + super.toString();
 	}
