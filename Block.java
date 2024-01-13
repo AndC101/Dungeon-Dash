@@ -10,7 +10,7 @@ public class Block extends Rectangle {
 	BufferedImage img;
 	public static int xVelocity;
 	public static final int SPEED = 5; // movement speed
-	
+
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 
 	public Block(int x, int y, int l, int w, BufferedImage i) {
@@ -21,6 +21,7 @@ public class Block extends Rectangle {
 	public Block(int x, int y, int l, int w) {
 		super(x, y, l, w);
 	}
+
 
 	public void mousePressed(MouseEvent e) {
 		diffX = e.getX() - x;
@@ -50,7 +51,7 @@ public class Block extends Rectangle {
 		keysPressed.remove(e.getKeyChar());
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
-				
+
 				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
 					setXDirection(-5);
 					Player.isRight = true;
@@ -76,7 +77,6 @@ public class Block extends Rectangle {
 	}
 
 	public void move() {
-	
 			if (keysPressed.contains('d')) {
 				if (Player.isCentered) {
 					setXDirection(-SPEED);
@@ -87,9 +87,10 @@ public class Block extends Rectangle {
 				}
 			}
 			
-			if(!Player.isCentered) setXDirection(0);
-			
-		
+			if(!Player.isCentered) {
+				setXDirection(0);
+			} 
+
 		x = x + xVelocity;
 	}
 

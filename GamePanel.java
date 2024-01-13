@@ -78,6 +78,7 @@
 	 public static boolean play = false;
 	 public boolean spawn = true;
 	 public boolean powerUpUp = true;
+	 
  
 	 public int indicatorPos = 250;
  
@@ -124,6 +125,8 @@
 	 // creates the background image
 	 public Background back = new Background(0, 0, playBackground);
  
+	public boolean onTop = false;
+	public boolean intersected = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
 		 if (levelSelect) {
@@ -182,7 +185,7 @@
 		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				 crackedStoneImage);
  
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
@@ -660,15 +663,15 @@
  
 			 // checks the knight, Blocks, and the background to see what should change to
 			 // each one
-			 System.out.println(knight.x);
+			//  System.out.println(knight.x);
 			 knight.keyPressed(e);
-			 System.out.println(knight.x);
+			//  System.out.println(knight.x);
 			 back.keyPressed(e);
-			 System.out.println(knight.x);
+			//  System.out.println(knight.x);
  
 			 for (Block b : elements) {
-				 b.keyPressed(e);
-			 }
+				b.keyPressed(e);	
+			}
 		 }
  
 	 }
@@ -680,18 +683,20 @@
 			 back.keyReleased(e);
 			 for (Block b : elements) {
 				 b.keyReleased(e, false);
+				 
 			 }
 		 }
  
 		 else if (play) {
 			 //calls keyReleased for background, the knight, and all blocks
-			 System.out.println(knight.x);
+			//  System.out.println(knight.x);
 			 knight.keyReleased(e);
-			 System.out.println(knight.x);
+			//  System.out.println(knight.x);
  
 			 back.keyReleased(e);
 			 for (Block b : elements) {
 				 b.keyReleased(e, true);
+
 			 }
  
 		 }
@@ -810,12 +815,20 @@
 					 if (works) {
 						 elements.remove(curDragging);
 						 elements.add(hover);
+						 if(hover instanceof Goblin && !onTop) {
+							elements.remove(hover);
+						 }
+
 						 curSelected = hover;
 					 }
 				 //checks if a block is trying to be placed on an existing block
 				 } else if (hover == null && checkAllIntersection(curDragging)) {
 					 elements.remove(curDragging);
 					 curSelected = null;
+				 }else {
+					if(hover == null && curDragging instanceof Goblin) {
+						elements.remove(curDragging);
+					}
 				 }
 			 }
 			 //once mouse is released
@@ -895,7 +908,8 @@
 				 } else if (tabPressed.equals("enemies")) {
 					 if (curDragging.equals(tabGoblin)) {
 						 try {
-							 elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+							
 						 } catch (IOException IOE) {
 						 }
 						 curDragging = elements.get(elements.size() - 1);
@@ -931,6 +945,7 @@
  
 			 // loops through all the elements
 			 boolean intersected = false;
+			 onTop = false;
 			 for (int i = 0; i < elements.size(); i++) {
 				 Block b = elements.get(i);
 				 //skips the block if it is the one being dragged
@@ -954,6 +969,7 @@
 							 //creates a holographic image of where the block would be if released
 							 hover = decipherBlock(curDragging, b.x - curDragging.width, curDragging.y,
 									 curDragging.width, curDragging.height);
+									 
 						 } catch (IOException e1) {
 						 }
 					 }
@@ -975,10 +991,12 @@
 					 else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
 							 && Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
 							 && Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
- 
+								
 						 try {
 							 hover = decipherBlock(curDragging, curDragging.x, b.y - curDragging.height,
 									 curDragging.width, curDragging.height);
+									 System.out.println("top");
+									 onTop = true;
 						 } catch (IOException e1) {
 						 }
  
@@ -1270,7 +1288,7 @@
 		 } else if (className.equals("CrackedStone")) {
 			 return new CrackedStone(x, y, width, height, b.img);
 		 } else if (className.equals("Goblin")) {
-			 return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, false);
+			 return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
 		 } else if (className.equals("Turret")) {
 			 return new Turret(x, y, width, height, b.img);
 		 } else if (className.equals("OneUp")) {

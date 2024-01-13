@@ -87,7 +87,7 @@ public class GameFrame extends JFrame implements ActionListener{
 
 
 			//makes scrollpane work
-			mainPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.totalHeight));
+			mainPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.names.size()*62));
 			scroll.setPreferredSize(new Dimension(GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT));
 			scroll.setViewportView(mainPanel);
 			contentPane.add(scroll);
@@ -96,7 +96,6 @@ public class GameFrame extends JFrame implements ActionListener{
 			//action listener for backButton
 			backButton.addActionListener(this); //return to menu
 
-			// contentPane.add(buttonPanel,BorderLayout.SOUTH);
 			this.setSize(900, 550);
 
 		
