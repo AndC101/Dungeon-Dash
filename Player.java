@@ -45,6 +45,7 @@ public class Player extends Rectangle {
     public int yVelocity;
     public int xVelocity;
     public final int SPEED = 5; // movement speed
+    public int fallCounter = 0;
 
     public static boolean oneScreen = false;
 
@@ -168,8 +169,8 @@ public class Player extends Rectangle {
             }
         }
         else {
-        	while(canFall()) {
-        		y++;
+        	if(canFall()) {
+        		y += 8;
         	}
         }
         //moves the player      

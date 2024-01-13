@@ -81,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean powerUpUp = true;
 	public boolean checkVertical = false;
 
+
 	public int indicatorPos = 250;
 
 	public String tabPressed = "blocks";
@@ -93,6 +94,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int spawnX = 0;
 	public int adjust = 0;
 	public int powerUpBob = 0;
+	
 	public int buffer = 5;
 
 	public Block curDragging, curSelected;
@@ -454,15 +456,29 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				// System.out.println("Knight x " + knight.x + " B x " + b.x);
 				// System.out.println("Knight y " + knight.y + " B y " + b.y);
 
-				if ((((knight.x > b.x && knight.x < b.x + b.width)
+				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y && knight.y + knight.height < b.y + b.height)) {
+						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.25)) {
 					knight.y = b.y - knight.height - 1;
 
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
 					checkVertical = true;
+				}
+				
+				if (((knight.x > b.x && knight.x < b.x + b.width)
+						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+						&& knight.y + knight.height > b.y + b.height && knight.y  < (b.y + +b.height)) {
+					if(b.y + b.height + knight.height + 1 <= FLOOR) {
+						knight.y = b.y + b.height + 1;
+						knight.isJumping = true;
+						knight.falling = true;
+						checkVertical = true;
+						
+					}
+					
+					
 				}
 				
 				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
@@ -486,7 +502,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						Block.xVelocity = 0;
 					}
 				}
-
 				
 				
 				checkVertical = false;
