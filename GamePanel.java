@@ -126,7 +126,6 @@
 	 public Background back = new Background(0, 0, playBackground);
  
 	public boolean onTop = false;
-	public boolean intersected = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
 		 if (levelSelect) {
@@ -440,8 +439,9 @@
 					 curSelected.y = 0;
 				 if (curSelected.y + curSelected.height >= GAME_HEIGHT)
 					 curSelected.y = GAME_HEIGHT - curSelected.height;
- 
 			 }
+
+			 //send the max x distance to the goblin
  
 		 } else if (play && !spawn) {
 			 // doesn't allow the player to walk off the screen
@@ -995,11 +995,9 @@
 						 try {
 							 hover = decipherBlock(curDragging, curDragging.x, b.y - curDragging.height,
 									 curDragging.width, curDragging.height);
-									 System.out.println("top");
 									 onTop = true;
 						 } catch (IOException e1) {
 						 }
- 
 						 curDragging.y--;
  
 					 }
