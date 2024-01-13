@@ -8,6 +8,7 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.ImageIcon;
@@ -99,7 +100,7 @@ public class Player extends Rectangle {
     
     //moves the player
     public void move() {
-    	
+    
     	//no need to move if the screen is following the player
     	if(isCentered) {
     		setXDirection(0);
@@ -132,7 +133,8 @@ public class Player extends Rectangle {
     	
         ///if the player is jumping 
         if (isJumping) {
-            if (jumpCount < jumpLimit) {
+        	
+        	if (jumpCount < jumpLimit) {
                 // If jumping, move up until reaching jumpHeight
 
 				//the if statement below slowly decrease the speed to simulate real life physics
@@ -155,14 +157,27 @@ public class Player extends Rectangle {
 						falling = false;
 					}
                 }
+                if(!canFall() && falling) {
+            		isJumping = false;
+            		falling = false;
+            		yVelocity = 0;
+            	}
             } else {
                 isJumping = false;
                 yVelocity = 0;
             }
         }
-        //moves the player
+        else {
+        	while(canFall()) {
+        		y++;
+        	}
+        }
+        //moves the player      
         x = x + xVelocity;
         y = y + yVelocity;
+        
+        
+   
     }
     //draws the player
     public void draw(Graphics g) {
@@ -186,4 +201,25 @@ public class Player extends Rectangle {
         }
     }
 
+    
+    public boolean canFall() {
+		 int botRightX = x + width; int botRightY = y + height;	
+		 
+		 for(Block b: GamePanel.elements) {
+			 if(GamePanel.getClass(b).equals("Portal")) continue;
+			 if((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
+					 || (x >= b.x && botRightX <= b.x + b.width))
+					 && botRightY >= b.y && y <= b.y)) {
+				 return false;
+			 }
+		 }
+		 
+		 if(botRightY >= GamePanel.FLOOR) {
+			 y = GamePanel.FLOOR - height;
+			 return false;
+		 }
+		 
+		 return true;
+		 
+	 }
 }
