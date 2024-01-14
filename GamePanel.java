@@ -460,7 +460,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.25)) {
 					knight.y = b.y - knight.height - 1;
-
+			
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
@@ -483,7 +483,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				
 				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
-								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height))) {
+								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x - knight.width - 1;
 					if (!Player.isCentered) {
 						back.xVelocity = 0;
@@ -495,7 +496,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
-								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height))) {
+								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x + b.width + 1;
 					if (!Player.isCentered) {
 						back.xVelocity = 0;
