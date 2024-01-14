@@ -124,7 +124,11 @@
  
 	 // creates the background image
 	 public Background back = new Background(0, 0, playBackground);
- 
+	
+	public boolean turLeft = false;
+	public boolean turRight = true;
+	public int flipNum = 0;
+
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
@@ -185,7 +189,7 @@
 				 crackedStoneImage);
  
 		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
-		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage);
+		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
 		 tabSpeedBoost = new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
@@ -916,7 +920,16 @@
 					 }
 					 if (curDragging.equals(tabTurret)) {
 						 try {
-							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage));
+
+							if(flipNum % 2 != 0) {
+								turLeft = true;
+								turRight = false;
+							} else {
+								turLeft = false;
+								turRight = true;
+							}
+
+							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, true));
 						 } catch (IOException IOE) {
 						 }
 						 curDragging = elements.get(elements.size() - 1);
@@ -1249,8 +1262,17 @@
 								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
 							 } else if (inputs[0].equals("Turret")) {
+
+								if(flipNum % 2 != 0) {
+									turLeft = true;
+									turRight = false;
+								} else {
+									turLeft = false;
+									turRight = true;
+								}
+
 								 elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Turret.width, Turret.height, turretImage));
+										 Turret.width, Turret.height, turretImage, turLeft, turRight, true));
 							 } else if (inputs[0].equals("OneUp")) {
 								 elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										 OneUp.width, OneUp.height, oneUpImage));
@@ -1288,7 +1310,16 @@
 		 } else if (className.equals("Goblin")) {
 			 return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
 		 } else if (className.equals("Turret")) {
-			 return new Turret(x, y, width, height, b.img);
+
+			if(flipNum % 2 != 0){
+				turLeft = true;
+				turRight = false;
+			} else {
+				turLeft = false;
+				turRight = true;
+			}
+
+			 return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
 		 } else if (className.equals("OneUp")) {
 			 return new OneUp(x, y, width, height, b.img);
 		 } else if (className.equals("SpeedBoost")) {
@@ -1305,6 +1336,10 @@
  
 	 //returns a Block that is horizontally flipped compared to b
 	 public Block hFlip(Block b) throws IOException {
+		if(b instanceof Turret) {
+			flipNum++; //used to account for turret flips
+			System.out.println("hi " + flipNum);
+		}
 		 return decipherBlock(b, b.x + b.width, b.y, -b.width, b.height);
 	 }
  
