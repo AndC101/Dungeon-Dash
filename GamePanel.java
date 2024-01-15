@@ -458,9 +458,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.25)) {
+						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.20)) {
 					knight.y = b.y - knight.height - 1;
-			
+					System.out.println("hit top");
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
@@ -469,8 +469,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y + b.height && knight.y  < (b.y + +b.height)) {
+						&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height && knight.y > (double)(b.y + (double)(b.height) * 0.80)) {
 					if(b.y + b.height + knight.height + 1 <= FLOOR) {
+						System.out.println("hit bot");
 						knight.y = b.y + b.height + 1;
 						knight.isJumping = true;
 						knight.falling = true;
@@ -485,6 +486,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
 								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
 								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+					System.out.println("hit left");
 					knight.x = b.x - knight.width - 1;
 					if (!Player.isCentered) {
 						back.xVelocity = 0;
