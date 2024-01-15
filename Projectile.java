@@ -1,7 +1,7 @@
 /*
 * Ethan Lin & Andrew Chen
 * January 11, 2023
-* Goblin is a moveable enemy 
+* Projectile is a bullet emerging from the turret
 */
 
 
@@ -39,13 +39,12 @@ public class Projectile extends Rectangle {
     
     public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
-
 	}
 
 	public void keyReleased(KeyEvent e, boolean play) {
 		//check for errors
 		keysPressed.remove(e.getKeyChar());
-		System.out.println(keysPressed + " " + keysPressed.size());
+		// System.out.println(keysPressed + " " + keysPressed.size());
 
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
@@ -74,8 +73,7 @@ public class Projectile extends Rectangle {
 		if(isEnemy) {
 			// System.out.println("working");
 			g.setColor(Color.red);
-			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debuggin
-
+			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
 			if(r) {
 				g.drawImage(runR, x, y, null);
 			} else if (l) {
@@ -94,7 +92,6 @@ public class Projectile extends Rectangle {
 	}
 
 	public void move() {
-		// System.out.println(xVelocity);
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
 
@@ -107,7 +104,6 @@ public class Projectile extends Rectangle {
 			}
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
-				// System.out.println(xVelocity + 5);
 
 				if(r) {
 					setXDirection(7); //good
@@ -138,10 +134,11 @@ public class Projectile extends Rectangle {
 				l = false;
 				setXDirection(SPEED);
 			} else if (x >= xBorder-GamePanel.shift+shootDist) {
-				x=xBorder-GamePanel.shift+shootDist;
-				l = true;
-				r = false;
-				setXDirection(-SPEED);
+				
+				x=xBorder-GamePanel.shift;
+				r = true;
+				l = false;
+				setXDirection(SPEED);
 			} 	
 		}
 	}
