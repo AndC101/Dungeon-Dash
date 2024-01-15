@@ -40,6 +40,7 @@ public class Goblin extends Block {
 	
 	public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
+
 	}
 
 	public void keyReleased(KeyEvent e, boolean play) {
@@ -48,7 +49,6 @@ public class Goblin extends Block {
 		keysPressed.remove(e.getKeyChar());
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
-
 				if(e.getKeyChar() == 'a') {
 					if(l) {
 						setXDirection(-1);

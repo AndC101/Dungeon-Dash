@@ -128,6 +128,8 @@
 	public boolean turLeft = false;
 	public boolean turRight = true;
 	public int flipNum = 0;
+	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
+
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -315,6 +317,9 @@
 			 // draws the background
 			 back.draw(g);
  
+			
+			// a.draw(g);
+
 			 // loops through all elements
 			 for (Block b : elements) {
 				 // checks if it is a powerup and if so make it bob up and down
@@ -423,7 +428,7 @@
 			 b.move();
 		 }
 		//  System.out.println("knight y " + knight.y);
-	
+		//  a.move();
 		 back.move();
 	 }
  
@@ -676,6 +681,7 @@
 			 for (Block b : elements) {
 				b.keyPressed(e);	
 			}
+			// a.keyPressed(e);
 		 }
  
 	 }
@@ -702,7 +708,7 @@
 				 b.keyReleased(e, true);
 
 			 }
- 
+			//  a.keyReleased(e, true);
 		 }
 	 }
  

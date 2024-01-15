@@ -31,7 +31,7 @@ public class Turret extends Block {
 		r = right;
 		isEnemy = enemy;
 		try {
-			ball = new Projectile(x, y+5, 30, 30, fireballLeft, fireballRight, true);
+			ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,28 +42,26 @@ public class Turret extends Block {
 	//draw the image from the block class
 	public void draw(Graphics2D g) {
 		super.draw(g);
-			try {
-				ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			ball.draw(g);
-
-
+		ball.draw(g);
+			// System.out.println(ball.xVelocity);
 	}
-	public void keyReleased(KeyEvent e) {
-		super.keyReleased(e, true);
-		ball.keyReleased(e, true);
+	public void keyReleased(KeyEvent e, boolean play) {
+		super.keyReleased(e, play);
+		ball.keyReleased(e, play);
 	}
 
 
 	public void keyPressed(KeyEvent e) {
-		super.keyPressed(e);
 		ball.keyPressed(e);
+		super.keyPressed(e);
 	}
 
 	public void move() {
+		if(r) {
+			ball.xBorder = x+GamePanel.shift+width;
+		} else {
+			ball.xBorder = x+GamePanel.shift;
+		}
 		super.move();
 		ball.move();
 	}
