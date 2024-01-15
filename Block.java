@@ -35,7 +35,6 @@ public class Block extends Rectangle {
 		super(x, y, l, w);
 	}
 
-
 	//handles when the mouse is pressed
 	public void mousePressed(MouseEvent e) {
 		diffX = e.getX() - x;

@@ -19,8 +19,8 @@ public class Background {
     public final int SPEED = 1; // movement speed
     public int x = 0;
     public int y = 0;
+
     
-    //which keys are pressed
     public HashSet<Character> keysPressed = new HashSet<Character>();
 
     //constructor
@@ -80,8 +80,7 @@ public class Background {
 	//draws the backrgound
     public void draw(Graphics g) {
 
-        //extends the background to 1000 times the original size to make it seem infinite
-        for(int i = 0; i < 1000; i++) {
+        for(int i = 0; i < 100; i++) {
             g.drawImage(img, x + i*2000, y, 2000, 550, null);
             g.drawImage(img, x + i*-2000, y, 2000, 550, null);
 

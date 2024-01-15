@@ -1,3 +1,4 @@
+
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
@@ -32,7 +33,8 @@
 	 public static final int TAB_HEIGHT = 100;
 	 public static final int TAB_WIDTH = 30;
 	 public static final int TAB_X = GAME_WIDTH / 7 + 5;
- 
+ 	public static final int FLOOR = GAME_HEIGHT - 25;
+
 	 public Thread gameThread;
 	 public Graphics graphics;
  
@@ -78,7 +80,8 @@
 	 public static boolean play = false;
 	 public boolean spawn = true;
 	 public boolean powerUpUp = true;
-	 
+	 public boolean checkVertical = false;
+
  
 	 public int indicatorPos = 250;
  
@@ -110,7 +113,7 @@
  
 	 // all elements are in the elements ArrayList
 	 // the sidebar ArrayLists contain the different sidebar objects
-	 ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
+	 public static ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
 	 Block hover = null;
  
 	 // for file IO
@@ -317,9 +320,6 @@
 			 // draws the background
 			 back.draw(g);
  
-			
-			// a.draw(g);
-
 			 // loops through all elements
 			 for (Block b : elements) {
 				 // checks if it is a powerup and if so make it bob up and down
@@ -427,8 +427,6 @@
 		 for (Block b : elements) {
 			 b.move();
 		 }
-		//  System.out.println("knight y " + knight.y);
-		//  a.move();
 		 back.move();
 	 }
  
@@ -450,57 +448,80 @@
 					 curSelected.y = GAME_HEIGHT - curSelected.height;
 			 }
 
-			 //send the max x distance to the goblin
  
 		 } else if (play && !spawn) {
-			 // doesn't allow the player to walk off the screen
-			 if (knight.x <= 0)
-				 knight.x = 0;
-			 if (knight.x + knight.width >= GAME_WIDTH)
-				 knight.x = GAME_WIDTH - knight.width;
- 
-			 // unfinished code
-			 for (Block b : elements) {
- 
-				 if (getClass(b).equals("Portal"))
-					 continue;				
-				 
-				 
-				 
-				 if(knight.x < b.x && knight.x + knight.width > b.x  && ((knight.y >= b.y && knight.y <= b.y + b.height) 
-						 || (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height) || (knight.y < b.y && knight.y + knight.height > b.y + b.height))) {
-					 knight.x = b.x - knight.width;
-					 if(!Player.isCentered) {
-						 back.xVelocity = 0;
-						 Block.xVelocity = 0;
-					 }
-				 }
-				 
-				 
-				 if(knight.x < b.x + b.width && knight.x + knight.width > b.x + b.width && ((knight.y >= b.y && knight.y <= b.y + b.height) 
-						 || (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height))) {
-					 knight.x = b.x + b.width;
-					 if(!Player.isCentered) {
-						 back.xVelocity = 0;
-						 Block.xVelocity = 0;
-					 }
-				 }
-				 
-				 
-				 if(((knight.x > b.x && knight.x < b.x + b.width) || (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						 && knight.y + knight.height >= b.y && knight.y + knight.height <= b.y + b.height) {
-						 knight.y = b.y - knight.height ;
-						 
-						 knight.isJumping = false;
-						 knight.falling = false;
-						 knight.yVelocity = 0;
-				 }
-				 
-				 
- 
-			 }
- 
-		 }
+			// doesn't allow the player to walk off the screen
+			if (knight.x <= 0)
+				knight.x = 0;
+			if (knight.x + knight.width >= GAME_WIDTH)
+				knight.x = GAME_WIDTH - knight.width;
+
+			// unfinished code
+			for (Block b : elements) {
+
+				if (getClass(b).equals("Portal"))
+					continue;
+
+				// System.out.println("Knight x " + knight.x + " B x " + b.x);
+				// System.out.println("Knight y " + knight.y + " B y " + b.y);
+
+				if (((knight.x > b.x && knight.x < b.x + b.width)
+						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.20)) {
+					knight.y = b.y - knight.height - 1;
+					System.out.println("hit top");
+					knight.isJumping = false;
+					knight.falling = false;
+					knight.yVelocity = 0;
+					checkVertical = true;
+				}
+				
+				if (((knight.x > b.x && knight.x < b.x + b.width)
+						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+						&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height && knight.y > (double)(b.y + (double)(b.height) * 0.80)) {
+					if(b.y + b.height + knight.height + 1 <= FLOOR) {
+						System.out.println("hit bot");
+						knight.y = b.y + b.height + 1;
+						knight.isJumping = true;
+						knight.falling = true;
+						checkVertical = true;
+						
+					}
+					
+					
+				}
+				
+				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
+						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
+								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+					System.out.println("hit left");
+					knight.x = b.x - knight.width - 1;
+					if (!Player.isCentered) {
+						back.xVelocity = 0;
+						Block.xVelocity = 0;
+					}
+				}
+	
+				
+
+				if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
+						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
+								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+					knight.x = b.x + b.width + 1;
+					if (!Player.isCentered) {
+						back.xVelocity = 0;
+						Block.xVelocity = 0;
+					}
+				}
+				
+				
+				checkVertical = false;
+
+			}
+
+		}
  
 	 }
  
@@ -672,11 +693,8 @@
  
 			 // checks the knight, Blocks, and the background to see what should change to
 			 // each one
-			//  System.out.println(knight.x);
 			 knight.keyPressed(e);
-			//  System.out.println(knight.x);
 			 back.keyPressed(e);
-			//  System.out.println(knight.x);
  
 			 for (Block b : elements) {
 				b.keyPressed(e);	
@@ -699,16 +717,13 @@
  
 		 else if (play) {
 			 //calls keyReleased for background, the knight, and all blocks
-			//  System.out.println(knight.x);
 			 knight.keyReleased(e);
-			//  System.out.println(knight.x);
  
 			 back.keyReleased(e);
 			 for (Block b : elements) {
 				 b.keyReleased(e, true);
 
 			 }
-			//  a.keyReleased(e, true);
 		 }
 	 }
  
@@ -1335,7 +1350,7 @@
 	 }
  
 	 //returns the name of the class of Block b
-	 public String getClass(Block b) {
+	 public static String getClass(Block b) {
 		 Class<?> type = b.getClass();
 		 return type.getName();
 	 }
