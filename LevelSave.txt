@@ -4,5 +4,5 @@ Andrew's Level:
 Ethan's Level: Portal 454 275 60 75: Stone 454 235 60 40: Stone 514 292 60 40: CrackedStone 394 288 60 40: 
 test: Portal 466 203 60 75: Ice 392 168 60 40: CrackedStone 380 312 60 40: 
 merrick XD: Ice 463 321 60 40: Portal 646 269 60 75: 
-Kaibos Level: Portal 264 475 60 75: Stone 372 386 60 40: Ice 314 434 60 40: Ladder 401 346 20 40: CrackedStone 431 313 60 40: Goblin 317 227 50 50: Goblin 381 269 50 50: Turret 544 213 -60 60: oneUp 486 490 60 60: 
-Collision Testing: Portal 207 450 60 75: CrackedStone 303 485 60 40: CrackedStone 438 457 60 40: Ice 69 426 60 40: Ice 602 470 60 40: Stone 756 446 60 40: 
+Kaibos Level: Portal 264 475 60 75: Stone 372 386 60 40: Ice 314 434 60 40: Ladder 401 346 20 40: CrackedStone 431 313 60 40: Goblin 317 227 50 50: Goblin 381 269 50 50: Turret 544 213 60 60: Ice 484 221 60 40: Stone 464 261 60 40: 
+Collision Testing: Portal 207 450 60 75: CrackedStone 303 485 60 40: CrackedStone 473 430 60 40: Ice 69 426 60 40: Stone 756 446 60 40: Ice 512 380 60 40: 
