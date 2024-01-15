@@ -1,7 +1,7 @@
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
- * GamePanel class is the main class to run the game
+ * Ice class is the main class to run the game
  */
 
 

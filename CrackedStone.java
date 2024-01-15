@@ -1,7 +1,7 @@
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
- * CrackedStone dissapears after a breakTime
+ * CrackedStone disappears after a breakTime
  */
 
 import java.awt.*;
