@@ -69,7 +69,7 @@ public class Block extends Rectangle {
 		keysPressed.remove(e.getKeyChar());
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
-				
+
 				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
 					setXDirection(-5);
 					Player.isRight = true;
