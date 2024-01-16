@@ -1,8 +1,8 @@
 /*
- * Ethan Lin & Andrew Chen
- * January 11, 2023
- * Goblin is a moveable enemy 
- */
+* Ethan Lin & Andrew Chen
+* January 11, 2023
+* Projectile is a bullet emerging from the turret
+*/
 
 
 import java.awt.*;
@@ -11,61 +11,60 @@ import java.io.*;
 import java.util.HashSet;
 
 
-public class Goblin extends Block {
-	
+public class Projectile extends Rectangle {
+    
 
-	public static int height = 50;
-	public static int width = 50;
-	boolean r, l = false;
-	Image runL;
-	Image runR;
-	int runDist = 400;
-	int xBorder;
-	public int SPEED = 1;
-	public boolean isEnemy;
-	public int xVelocity;
-	public HashSet<Character> keysPressed = new HashSet<Character>();
-	// int x, y, l, w;
+    public static int height = 50;
+    public static int width = 50;
+    public boolean r, l = false;
+    public Image runL;
+    public Image runR;
+    public int shootDist = 400;
+    public int xBorder;
+    public int SPEED = 3;
+    public boolean isEnemy;
+    public int xVelocity;
+    public HashSet<Character> keysPressed = new HashSet<Character>();
 
 
-	public Goblin(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
-		super(x,y,l,w);
-		runL = left;
-		runR = right;
-		if(enemy) {
-			xBorder = x;
-		}
-		isEnemy = enemy;
-	}
-	
-	public void keyPressed(KeyEvent e) {
+    public Projectile(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
+        super(x,y,l,w);
+        runL = left;
+        runR = right;
+        if(enemy) {
+            xBorder = x;
+        }
+        isEnemy = enemy;
+    }
+    
+    public void keyPressed(KeyEvent e) {
 		keysPressed.add(e.getKeyChar());
-
 	}
 
 	public void keyReleased(KeyEvent e, boolean play) {
-
 		//check for errors
 		keysPressed.remove(e.getKeyChar());
+		// System.out.println(keysPressed + " " + keysPressed.size());
+
 		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 			if(play) {
+
 				if(e.getKeyChar() == 'a') {
 					if(l) {
-						setXDirection(-1);
+						setXDirection(-3);
 					} else {
-						setXDirection(1);
+						setXDirection(3);
 					}
 				}
 				else if(e.getKeyChar() == 'd') {
 					if(l) {
-						setXDirection(-1);
+						setXDirection(-3);
 					} else {
-						setXDirection(1);
+						setXDirection(3);
 					}
 				}
 			}
 		}
-		
 	}
 
 	
@@ -73,9 +72,8 @@ public class Goblin extends Block {
 	public void draw(Graphics2D g) {
 		if(isEnemy) {
 			// System.out.println("working");
-			g.setColor(Color.white);
+			g.setColor(Color.red);
 			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
-
 			if(r) {
 				g.drawImage(runR, x, y, null);
 			} else if (l) {
@@ -98,35 +96,35 @@ public class Goblin extends Block {
 			if (Player.isCentered && Player.isRight) {
 
 				if(r) {
-					setXDirection(-4); //good
+					setXDirection(-2); //good
 				} else if (l) {
-					setXDirection(-6); //good
+					setXDirection(-7); //good
 				}
-				xBorder+=-5;
+				// xBorder+=-5;
 			}
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
 
 				if(r) {
-					setXDirection(6); //good
+					setXDirection(7); //good
 				} else if (l) {
-					setXDirection(4);
+					setXDirection(2);
 				}
 
-				xBorder+=5;
+				// xBorder+=5;
 			}
 		}
 		
 		if(!Player.isCentered) {
 			if(l) {
-				setXDirection(-1);
+				setXDirection(-3);
 			} else if (r) {
-				setXDirection(1);
+				setXDirection(3);
 			}
 		} 
 
 		// System.out.println(x);
-
+		
 		x += xVelocity;
 
 		if(isEnemy) {
@@ -135,19 +133,18 @@ public class Goblin extends Block {
 				r = true;
 				l = false;
 				setXDirection(SPEED);
-			} else if (x >= xBorder-GamePanel.shift+runDist) {
-				x=xBorder-GamePanel.shift+runDist;
-				l = true;
-				r = false;
-				setXDirection(-SPEED);
+			} else if (x >= xBorder-GamePanel.shift+shootDist) {
+				
+				x=xBorder-GamePanel.shift;
+				r = true;
+				l = false;
+				setXDirection(SPEED);
 			} 	
 		}
 	}
-
-	
-	public String toString () {
-		return "Goblin " + super.toString();
-	}
+    
+    public String toString () {
+        return "Projectile " + super.toString();
+    }
 }
 
- 
