@@ -55,6 +55,8 @@ public class Projectile extends Rectangle {
 					} else {
 						setXDirection(3);
 					}
+	
+					
 				}
 				else if(e.getKeyChar() == 'd') {
 					if(l) {
@@ -70,14 +72,14 @@ public class Projectile extends Rectangle {
 	
 	//draw the image from the block class
 	public void draw(Graphics2D g) {
+
 		if(isEnemy) {
-			// System.out.println("working");
 			g.setColor(Color.red);
 			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
 			if(r) {
-				g.drawImage(runR, x, y, null);
+				g.drawImage(runR, x-10, y, null);
 			} else if (l) {
-				g.drawImage(runL, x, y, null);
+				g.drawImage(runL, x-10, y, null);
 			} else {
 				g.drawImage(runR, x, y, null);
 			}

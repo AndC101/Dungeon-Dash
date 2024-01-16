@@ -420,8 +420,7 @@
 		 
 	 }
  
-	 // calls the move method of all other methods
-	 // laggy
+	 // calls the move method of all other method
 	 public void move() {
 		 knight.move();
 		 for (Block b : elements) {
@@ -462,8 +461,6 @@
 				if (getClass(b).equals("Portal"))
 					continue;
 
-				// System.out.println("Knight x " + knight.x + " B x " + b.x);
-				// System.out.println("Knight y " + knight.y + " B y " + b.y);
 
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
@@ -662,7 +659,6 @@
 						 updatedSave += b.toString() + ": ";
 					 }
 					 levelSaved = true;
-					 // System.out.println(elements + " " + updatedSave);
 					 replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
 																 // ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
 																 // THEIR NEW DUNGEON
@@ -950,7 +946,7 @@
 								turRight = true;
 							}
 
-							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, true));
+							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false));
 						 } catch (IOException IOE) {
 						 }
 						 curDragging = elements.get(elements.size() - 1);
