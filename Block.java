@@ -19,7 +19,7 @@ public class Block extends Rectangle {
 	
 	BufferedImage img;
 	public static int xVelocity;
-	public static final int SPEED = 5; // movement speed
+	public static final int SPEED = 2; // movement speed
 	
 	//current keys pressed
 	public HashSet<Character> keysPressed = new HashSet<Character>();
