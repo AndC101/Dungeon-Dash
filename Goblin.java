@@ -149,5 +149,3 @@ public class Goblin extends Block {
 		return "Goblin " + super.toString();
 	}
 }
-
- 

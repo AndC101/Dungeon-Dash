@@ -28,9 +28,6 @@ public class Player extends Rectangle {
     public static boolean isCentered = true;
     
     //has to do with jumping
-
-
-
     public boolean isJumping = false;
 	public boolean falling = false;
     public int jumpHeight = 100; // will be edited
@@ -43,11 +40,13 @@ public class Player extends Rectangle {
 	//has to do with speed
 
     public int yVelocity;
-    public int xVelocity;
+    public static int xVelocity;
     public final int SPEED = 5; // movement speed
     public int fallCounter = 0;
 
     public static boolean oneScreen = false;
+    
+    public static Block under = null;
 
     //contains the keys pressed
     public HashSet<Character> keysPressed = new HashSet<Character>();
@@ -82,7 +81,7 @@ public class Player extends Rectangle {
     }
 
     //sets the xVelocity
-    public void setXDirection(int xDirection) {
+    public static void setXDirection(int xDirection) {
         xVelocity = xDirection;
     }
 
@@ -101,7 +100,7 @@ public class Player extends Rectangle {
     
     //moves the player
     public void move() {
-    
+    	System.out.println(x);
     	//no need to move if the screen is following the player
     	if(isCentered) {
     		setXDirection(0);
@@ -122,7 +121,7 @@ public class Player extends Rectangle {
             isLeft = true;
             isRight = false;
             if(!isCentered){
-                setXDirection(SPEED*-1);
+                setXDirection(-SPEED);
             }
         } 
         
@@ -182,9 +181,7 @@ public class Player extends Rectangle {
     }
     //draws the player
     public void draw(Graphics g) {
-
-
-
+    	canFall();
     	//if the knight crosses the middle after coming from a side
 
         if(!oneScreen && ((left && isRight && x >= 420) || (!left && isLeft && x <= 420))) {
@@ -205,21 +202,23 @@ public class Player extends Rectangle {
     
     public boolean canFall() {
 		 int botRightX = x + width; int botRightY = y + height;	
-		 
 		 for(Block b: GamePanel.elements) {
 			 if(GamePanel.getClass(b).equals("Portal")) continue;
 			 if((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
 					 || (x >= b.x && botRightX <= b.x + b.width))
 					 && botRightY >= b.y && y <= b.y)) {
+				 under = b;
 				 return false;
 			 }
 		 }
 		 
 		 if(botRightY >= GamePanel.FLOOR) {
 			 y = GamePanel.FLOOR - height;
+			 under = null;
 			 return false;
 		 }
 		 
+		 under = null;
 		 return true;
 		 
 	 }
