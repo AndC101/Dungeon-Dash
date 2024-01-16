@@ -102,7 +102,7 @@ public class Goblin extends Block {
 				} else if (l) {
 					setXDirection(-6); //good
 				}
-				xBorder+=-5;
+				xBorder-=Block.SPEED;
 			}
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
@@ -113,7 +113,7 @@ public class Goblin extends Block {
 					setXDirection(4);
 				}
 
-				xBorder+=5;
+				xBorder+=Block.SPEED;
 			}
 		}
 		
@@ -149,5 +149,3 @@ public class Goblin extends Block {
 		return "Goblin " + super.toString();
 	}
 }
-
- 
