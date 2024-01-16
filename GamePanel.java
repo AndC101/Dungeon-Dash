@@ -451,10 +451,15 @@
  
 		 } else if (play && !spawn) {
 			// doesn't allow the player to walk off the screen
-			if (knight.x <= 0)
+			if (knight.x <= 0) {
 				knight.x = 0;
-			if (knight.x + knight.width >= GAME_WIDTH)
+				Player.setXDirection(0);
+			}
+			if (knight.x + knight.width >= GAME_WIDTH) {
 				knight.x = GAME_WIDTH - knight.width;
+				Player.setXDirection(0);
+			}
+			
 
 			// unfinished code
 			for (Block b : elements) {
@@ -469,7 +474,6 @@
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.20)) {
 					knight.y = b.y - knight.height - 1;
-					System.out.println("hit top");
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
@@ -495,9 +499,11 @@
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
 								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
 								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
-					System.out.println("hit left");
 					knight.x = b.x - knight.width - 1;
 					if (!Player.isCentered) {
+						Player.setXDirection(0);
+					}
+					else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
@@ -511,6 +517,9 @@
 						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x + b.width + 1;
 					if (!Player.isCentered) {
+						Player.setXDirection(0);
+					}
+					else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
