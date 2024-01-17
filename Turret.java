@@ -37,7 +37,7 @@
 		 r = right;
 		 isEnemy = enemy;
 		 try {
-			 ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
+			 ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight,l, r,  true);
 		 } catch (IOException e) {
 			 e.printStackTrace();
 		 }
@@ -55,9 +55,9 @@
  
 		 super.draw(g);
 		 if(ballTwo != null) {
-			 ballTwo.draw(g);
+			 ballTwo.draw(g, y);
 		 }
-		 ball.draw(g);
+		 ball.draw(g, y);
 			 // System.out.println(ball.xVelocity);
 	 }
 	 public void keyReleased(KeyEvent e) {
@@ -111,7 +111,7 @@
 		 TimerTask task = new TimerTask() {
 			 public void run() {
 				 try {
-					 ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
+					 ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l ,r, true);
 				 } catch (IOException e) {
 					 e.printStackTrace();
 				 }
