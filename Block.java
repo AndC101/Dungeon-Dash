@@ -19,10 +19,10 @@ public class Block extends Rectangle {
 	
 	BufferedImage img;
 	public static int xVelocity;
-	public static final int SPEED = 5; // movement speed
+	public static final int SPEED = 2; // movement speed
 	
 	//current keys pressed
-	public HashSet<Character> keysPressed = new HashSet<Character>();
+	public static HashSet<Character> keysPressed = new HashSet<Character>();
 
 	//Block constructor
 	public Block(int x, int y, int l, int w, BufferedImage i) {
@@ -71,11 +71,11 @@ public class Block extends Rectangle {
 			if(play) {
 
 				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
-					setXDirection(-5);
+					setXDirection(-SPEED);
 					Player.isRight = true;
 				}
 				else if(e.getKeyChar() == 'd' && keysPressed.contains('a')) {
-					setXDirection(5);
+					setXDirection(SPEED);
 					Player.isLeft = true;
 				}
 				else {

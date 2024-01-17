@@ -91,7 +91,7 @@
 	 public int totalHeight;
 	 public int numButtons = 0; // to be changed once file IO works
 	 public int leftBorder = 1000000000, rightBorder = -1;
-	 public static int shift = 0;
+	 public static int shift;
 	 public int spawnX = 0;
 	 public int adjust = 0;
 	 public int powerUpBob = 0;
@@ -152,6 +152,8 @@
 			 mainMenu = false;
 			 this.edit = false;
 			 this.play = true;
+		 } else {
+			mainMenu=true;
 		 }
  
 		 // initializes the Player
@@ -193,7 +195,7 @@
 		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				 crackedStoneImage);
  
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
@@ -451,10 +453,15 @@
  
 		 } else if (play && !spawn) {
 			// doesn't allow the player to walk off the screen
-			if (knight.x <= 0)
+			if (knight.x <= 0) {
 				knight.x = 0;
-			if (knight.x + knight.width >= GAME_WIDTH)
+				Player.setXDirection(0);
+			}
+			if (knight.x + knight.width >= GAME_WIDTH) {
 				knight.x = GAME_WIDTH - knight.width;
+				Player.setXDirection(0);
+			}
+			
 
 			// unfinished code
 			for (Block b : elements) {
@@ -469,7 +476,6 @@
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.20)) {
 					knight.y = b.y - knight.height - 1;
-					System.out.println("hit top");
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
@@ -495,9 +501,11 @@
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
 								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
 								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
-					System.out.println("hit left");
 					knight.x = b.x - knight.width - 1;
 					if (!Player.isCentered) {
+						Player.setXDirection(0);
+					}
+					else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
@@ -511,6 +519,9 @@
 						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x + b.width + 1;
 					if (!Player.isCentered) {
+						Player.setXDirection(0);
+					}
+					else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
