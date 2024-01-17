@@ -203,7 +203,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				 crackedStoneImage);
 		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
@@ -416,6 +416,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				 // moves all blocks accordingly and the knight if it was just spawned
 				 for (Block b : elements) {
 					 b.x -= adjust;
+					 if(b instanceof Goblin) {
+						((Goblin)b).xBorder-=adjust;
+					 }
 				 }
 				 if (spawn) {
 					 knight.x -= adjust;
@@ -449,7 +452,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	 public void move() {
 		 knight.move();
 		 for (Block b : elements) {
-			 b.move();
+			b.move();			 
 		 }
 		 back.move();
 	 }
@@ -965,7 +968,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					if (curDragging.equals(tabGoblin)) {
 						try {
 							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft,
-									goblinRunRight, true));
+									goblinRunRight, false));
 
 						} catch (IOException IOE) {
 						}
@@ -1318,7 +1321,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
  
 							  } else if (inputs[0].equals("Goblin")) {
 								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+								 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+										//  System.out.println(a);
 							 } else if (inputs[0].equals("Turret")) {
 
 								if (flipNum % 2 != 0) {

@@ -1,5 +1,5 @@
 /*
-s* Ethan Lin & Andrew Chen
+* Ethan Lin & Andrew Chen
 * January 11, 2023
 * Projectile is a bullet emerging from the turret
 */
