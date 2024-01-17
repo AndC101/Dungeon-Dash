@@ -110,8 +110,6 @@
 	 public void createNewFireball() {
 		 TimerTask task = new TimerTask() {
 			 public void run() {
-				 System.out.println("Second fireball generated on: " + new Date() + "n" +
-				 "Thread's name: " + Thread.currentThread().getName());
 				 try {
 					 ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
 				 } catch (IOException e) {
