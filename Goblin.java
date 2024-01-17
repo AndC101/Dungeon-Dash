@@ -19,7 +19,7 @@ public class Goblin extends Block {
 	Image runL;
 	Image runR;
 	int runDist = 400;
-	int xBorder;
+	static int xBorder;
 	public int SPEED = 1;
 	public boolean isEnemy;
 	public int xVelocity;
@@ -29,7 +29,7 @@ public class Goblin extends Block {
 
 
 	public Goblin(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
-		super(x,y,l,w);
+		super(xBorder,y,l,w);
 		runL = left;
 		runR = right;
 		if(enemy) {
@@ -37,6 +37,7 @@ public class Goblin extends Block {
 			// System.out.println("new gob: " + xBorder);
 		}
 		isEnemy = enemy;
+		
 	}
 
 
@@ -78,16 +79,8 @@ public class Goblin extends Block {
 	public void draw(Graphics2D g) {
 		if(isEnemy) {
 			g.setColor(Color.white);
-			// if(!Player.oneScreen) {
-				// if(GamePanel.shift > 0) {
-					g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
-				// } else {
-				// 	g.fillRect(xBorder+GamePanel.shift, 2, 2, 1000); //debugging
-				// }
-			// } else {
-			// 	g.fillRect(xBorder, 40, 10, 1000); //debugging
+			g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
 
-			// }
 
 			if(r) {
 				g.drawImage(runR, x, y, null);
