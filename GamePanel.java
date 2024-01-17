@@ -201,7 +201,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		 tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
 		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				 crackedStoneImage);
- 
+		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
+
 		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
@@ -214,7 +215,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		 blockSidebar.add(tabIce);
 		 blockSidebar.add(tabLadder);
 		 blockSidebar.add(tabCrackedStone);
- 
+		 blockSidebar.add(tabChest);
+
 		 enemySidebar.add(tabGoblin);
 		 enemySidebar.add(tabTurret);
  
@@ -455,23 +457,23 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	 // handles all the collision checks
 	 // handles all collision detection and responds accordingly
 	 public void checkCollision() {
- 
-		 if (edit) {
-			 // doesn't allow blocks to be dragged off the screen
-			 if (curSelected != null) {
- 
-				 if (curSelected.x <= 0)
-					 curSelected.x = 0;
-				 if (curSelected.x + curSelected.width >= GAME_WIDTH)
-					 curSelected.x = GAME_WIDTH - curSelected.width;
-				 if (curSelected.y <= 0)
-					 curSelected.y = 0;
-				 if (curSelected.y + curSelected.height >= GAME_HEIGHT)
-					 curSelected.y = FLOOR - curSelected.height;
-			 }
 
- 
-		 } else if (play && !spawn) {
+		if (edit) {
+			// doesn't allow blocks to be dragged off the screen
+			if (curSelected != null) {
+
+				if (curSelected.x <= 0)
+					curSelected.x = 0;
+				if (curSelected.x + curSelected.width >= GAME_WIDTH)
+					curSelected.x = GAME_WIDTH - curSelected.width;
+				if (curSelected.y <= 0)
+					curSelected.y = 0;
+				if (curSelected.y + curSelected.height >= FLOOR)
+					curSelected.y = FLOOR - curSelected.height;
+			}
+
+		} else if (play && !spawn) {
+
 			// doesn't allow the player to walk off the screen
 			if (knight.x <= 0) {
 				knight.x = 0;
@@ -486,7 +488,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				checkVertical = false;
 				if (getClass(b).equals("Portal") || getClass(b).equals("Goblin") || getClass(b).equals("Chest")) {
 					continue;
-
+				}
 
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
@@ -543,8 +545,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 		}
- 
-	 }
+
+	}
  
 	 // run() method is what makes the game continue running without end.
 	 // other methods to move objects, check for collision, and update the screen
