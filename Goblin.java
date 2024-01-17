@@ -52,23 +52,26 @@ public class Goblin extends Block {
 	public void keyReleased(KeyEvent e) {
 		//check for errors
 		keysPressed.remove(e.getKeyChar());
-		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+		if(isEnemy) {
+			if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 
-			if(e.getKeyChar() == 'a') {
-				if(l) {
-					setXDirection(-SPEED);
-				} else {
-					setXDirection(SPEED);
+				if(e.getKeyChar() == 'a') {
+					if(l) {
+						setXDirection(-SPEED);
+					} else {
+						setXDirection(SPEED);
+					}
 				}
-			}
-			else if(e.getKeyChar() == 'd') {
-				if(l) {
-					setXDirection(-SPEED);
-				} else {
-					setXDirection(SPEED);
+				else if(e.getKeyChar() == 'd') {
+					if(l) {
+						setXDirection(-SPEED);
+					} else {
+						setXDirection(SPEED);
+					}
 				}
+	
 			}
-
+	
 		}
 
 	}
@@ -78,10 +81,11 @@ public class Goblin extends Block {
 
 
 	public void draw(Graphics2D g) {
+		g.setColor(Color.white);
+		g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
+
 		if(isEnemy) {
 
-			g.setColor(Color.white);
-			g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
 			System.out.println(GamePanel.adjust);
 
 			if(r) {
@@ -102,10 +106,6 @@ public class Goblin extends Block {
 	}
 
 	public void move() {
-		// if(GamePanel.spawn) {
-		// 	return;
-		// } 
-		System.out.println(keysPressed);
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
 				// System.out.println(Player.isCentered + " " +  GamePanel.edit);
@@ -117,9 +117,12 @@ public class Goblin extends Block {
 				}
 				// xBorder-=Block.SPEED;
 			}
-			if(Player.isCentered || GamePanel.edit) {
+			if(Player.isCentered) {
 				// System.out.println("hello");
 				xBorder-=Block.SPEED;
+			}
+			if(GamePanel.edit){
+				x-=Block.SPEED;
 			}
 
 		} else if (keysPressed.contains('a')) {
@@ -134,13 +137,21 @@ public class Goblin extends Block {
 				// xBorder+=Block.SPEED;
 			}
 			if(Player.isCentered || GamePanel.edit) {
-
 				xBorder+=Block.SPEED;
 			}
+			if(GamePanel.edit){
+				System.out.println("hi");
+				x+=Block.SPEED;
+			}
+
 
 		}
 		
+
+
 		if(!Player.isCentered) {
+			// System.out.println("jagdkjhgwr");
+
 			if(l) {
 				setXDirection(-SPEED);
 			} else if (r) {

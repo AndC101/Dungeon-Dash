@@ -139,7 +139,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean turLeft = false;
 	public boolean turRight = true;
 	public int flipNum = 0;
-	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -714,6 +713,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			 } else if (e.getKeyCode() == KeyEvent.VK_2) {
 				 // enter play mode;
 				 edit = false;
+				 if(!newLevelTitle.isEmpty()) {
+					try {
+						new GameFrame(false, false, true, newLevelTitle);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}	
+				 } else {
+					try {
+						new GameFrame(false, false, true, prevSavedTitle);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}	
+				 }
 				 play = true;
 			 }
  
@@ -1372,7 +1384,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		} else if (className.equals("Chest")) {
 			return new Chest(x, y, width, height, b.img);
 		} else if (className.equals("Goblin")) {
-			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
+			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, false);
 		} else if (className.equals("Turret")) {
 
 			if (flipNum % 2 != 0) {
