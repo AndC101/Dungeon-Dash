@@ -160,10 +160,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			mainMenu = false;
 			this.edit = false;
 			this.play = true;
+		} else {
+			mainMenu = true;
 		}
 
 		// initializes the Player
-		knight = new Player(0, 0, 43, 53);
+		knight = new Player(Integer.MIN_VALUE, Integer.MIN_VALUE, 43, 53);
 
 		// get the title of the save file
 		prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
@@ -232,6 +234,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
 
 		// allows this class to run at the same time as others
+
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -326,7 +329,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		else if (play) {
-
 			// draws the background
 			back.draw(g);
 
@@ -354,47 +356,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				b.draw(g);
 			}
 
-			if (spawn) { // spawns the knight in front of the portal
-				startTime = System.currentTimeMillis();
-				// finds the spawn portal and forces it to the center
-				for (Block b : elements) {
-					if (b.img != null && b.img.equals(portalImage)) {
-						spawnPortal = (Portal) b;
-						shift = spawnPortal.x - GAME_WIDTH / 2 + spawnPortal.width / 2;
-					}
-					if (b.img != null && b.img.equals(closedChestImage)) {
-						endChest = (Chest) b;
-					}
+			// draws the knight
+			knight.draw(g);
+
+			if (endChest != null && knight.intersects(endChest)) {
+				if (endTime == -1) {
+					endTime = System.currentTimeMillis();
 				}
-				// moves all blocks to adjust for the shift to the portal and finds the left and
-				// rightmost block coordinates
-				for (Block b : elements) {
-					b.x -= shift;
-					leftBorder = Math.min(leftBorder, b.x);
-					rightBorder = Math.max(rightBorder, b.x + b.width);
-				}
-
-				if (rightBorder - leftBorder <= GAME_WIDTH) {
-					Player.oneScreen = true;
-				}
-
-				// saves the original position of the portal
-				spawnX = spawnPortal.x;
-				// moves the knight to the portal
-
-				knight.x = spawnPortal.x + spawnPortal.width / 2 - knight.width / 2;
-				knight.y = spawnPortal.y + (spawnPortal.height - knight.height);
-
+				gameEnd = true;
+				win = true;
+				gameEnd(g);
 			}
 
-			// checks which half of the level the knight is on
-			if (Math.abs(leftBorder + spawnPortal.x - spawnX) <= (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
-				knight.left = true;
-			} else {
-				knight.left = false;
-			}
-
-			// checks if a border is reached
+			if (spawn) initialize(g);
+			
 			if (leftBorder + spawnPortal.x - spawnX >= 0 || rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
 				// checks which border is reached
 				if (leftBorder + spawnPortal.x - spawnX >= 0) {
@@ -412,27 +387,25 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				for (Block b : elements) {
 					b.x -= adjust;
 				}
+				
 				if (spawn) {
 					knight.x -= adjust;
 				}
 
+
 				// since a border is reached, the knight no longer needs to be centered
 				Player.isCentered = false;
 			}
+			
 
-			// draws the knight
-			knight.draw(g);
-
-			if (spawn)
-				spawn = false;
-			if (endChest != null && knight.intersects(endChest)) {
-				if (endTime == -1) {
-					endTime = System.currentTimeMillis();
-				}
-				gameEnd = true;
-				win = true;
-				gameEnd(g);
+			// checks which half of the level the knight is on
+			if (Math.abs(leftBorder + spawnPortal.x - spawnX) <= (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
+				knight.left = true;
+			} else {
+				knight.left = false;
 			}
+			
+			spawn = false;
 
 		}
 
@@ -483,7 +456,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if (getClass(b).equals("Portal") || getClass(b).equals("Goblin") || getClass(b).equals("Chest")) {
 					continue;
 				}
-
+			
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						&& knight.y + knight.height > b.y
@@ -1427,6 +1400,41 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (gameEndAlpha < 455)
 				gameEndAlpha++;
 		}
+
+	}
+
+	public void initialize(Graphics2D g) {
+		System.out.println("spawn = true");
+		startTime = System.currentTimeMillis();
+		// finds the spawn portal and forces it to the center
+		for (Block b : elements) {
+			if (b.img != null && b.img.equals(portalImage)) {
+				spawnPortal = (Portal) b;
+				shift = spawnPortal.x - GAME_WIDTH / 2 + Portal.width / 2;
+			}
+			if (b.img != null && b.img.equals(closedChestImage)) {
+				endChest = (Chest) b;
+			}
+		}
+		// moves all blocks to adjust for the shift to the portal and finds the left and
+		// rightmost block coordinates
+		for (Block b : elements) {
+			b.x -= shift;
+			leftBorder = Math.min(leftBorder, b.x);
+			rightBorder = Math.max(rightBorder, b.x + b.width);
+		}
+
+		if (rightBorder - leftBorder <= GAME_WIDTH) {
+			Player.oneScreen = true;
+		}
+		
+		
+		// saves the original position of the portal
+		spawnX = spawnPortal.x;
+		// moves the knight to the portal
+
+		knight.x = spawnX + Portal.width / 2 - knight.width / 2;
+		knight.y = spawnPortal.y + (Portal.height - knight.height);
 
 	}
 
