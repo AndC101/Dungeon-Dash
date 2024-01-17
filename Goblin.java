@@ -13,15 +13,17 @@ import java.util.HashSet;
 
 public class Goblin extends Block {
 
+
+	//variables
 	public static int height = 50;
 	public static int width = 50;
 	boolean r, l = false;
 	Image runL;
 	Image runR;
 	int runDist = 400;
-	int xBorder;
+	public int xBorder;
 	public int SPEED = 1;
-	public boolean isEnemy;
+	public boolean isEnemy; //makes goblin move
 	public int xVelocity;
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 	public boolean play = false;
@@ -34,9 +36,10 @@ public class Goblin extends Block {
 		runR = right;
 		if(enemy) {
 			xBorder = x;
-			// System.out.println("new gob: " + xBorder);
+			System.out.println("new gob: " + xBorder);
 		}
 		isEnemy = enemy;
+		
 	}
 
 
@@ -46,12 +49,12 @@ public class Goblin extends Block {
 
 	}
 
-	public void keyReleased(KeyEvent e, boolean play) {
-		this.play = play;
+	public void keyReleased(KeyEvent e) {
 		//check for errors
 		keysPressed.remove(e.getKeyChar());
-		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
-			if(play) {
+		if(isEnemy) {
+			if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+
 				if(e.getKeyChar() == 'a') {
 					if(l) {
 						setXDirection(-SPEED);
@@ -66,9 +69,11 @@ public class Goblin extends Block {
 						setXDirection(SPEED);
 					}
 				}
+	
 			}
+	
 		}
-		
+
 	}
 
 	
@@ -76,12 +81,12 @@ public class Goblin extends Block {
 
 
 	public void draw(Graphics2D g) {
+		// g.setColor(Color.white);
+		// g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
+
 		if(isEnemy) {
 
-			g.setColor(Color.white);
-
-					g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
-
+			// System.out.println(GamePanel.adjust);
 
 			if(r) {
 				g.drawImage(runR, x, y, null);
@@ -91,7 +96,6 @@ public class Goblin extends Block {
 				g.drawImage(runR, x, y, null);
 			}
 		} else {			
-
 			g.drawImage(runR, x, y, null);
 		}
 	}
@@ -101,7 +105,6 @@ public class Goblin extends Block {
 	}
 
 	public void move() {
-		if(GamePanel.spawn) return;
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
 
@@ -115,6 +118,9 @@ public class Goblin extends Block {
 			if(Player.isCentered) {
 				xBorder-=Block.SPEED;
 			}
+			if(GamePanel.edit){
+				x-=Block.SPEED;
+			}
 
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
@@ -127,13 +133,22 @@ public class Goblin extends Block {
 
 				// xBorder+=Block.SPEED;
 			}
-			if(Player.isCentered) {
+			if(Player.isCentered || GamePanel.edit) {
 				xBorder+=Block.SPEED;
 			}
+			if(GamePanel.edit){
+				System.out.println("hi");
+				x+=Block.SPEED;
+			}
+
 
 		}
 		
+
+
 		if(!Player.isCentered) {
+			// System.out.println("jagdkjhgwr");
+
 			if(l) {
 				setXDirection(-SPEED);
 			} else if (r) {
@@ -144,15 +159,15 @@ public class Goblin extends Block {
 		x += xVelocity;
 
 		if(isEnemy) {
-			if(x <= xBorder-GamePanel.shift) {
-				x = xBorder-GamePanel.shift;
-				System.out.println(GamePanel.shift);
+			// System.out.println("new xborder " + (xBorder-GamePanel.shift));
+			if(x <= xBorder-GamePanel.shift-GamePanel.adjust) {
+				x = xBorder-GamePanel.shift-GamePanel.adjust;
 				r = true;
 
 				l = false;
 				setXDirection(SPEED);
-			} else if (x >= xBorder-GamePanel.shift+runDist) {
-				x=xBorder-GamePanel.shift+runDist;
+			} else if (x >= xBorder-GamePanel.shift-GamePanel.adjust+runDist) {
+				x=xBorder-GamePanel.shift-GamePanel.adjust+runDist;
 				l = true;
 				r = false;
 				setXDirection(-SPEED);
