@@ -42,36 +42,37 @@ public class Projectile extends Rectangle {
 		keysPressed.remove(e.getKeyChar());
 		// System.out.println(keysPressed + " " + keysPressed.size());
 
-		if (e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 
-			if (e.getKeyChar() == 'a') {
-				if (l) {
+			if(e.getKeyChar() == 'a') {
+				if(l) {
 					setXDirection(-SPEED);
 				} else {
 					setXDirection(SPEED);
 				}
-			} else if (e.getKeyChar() == 'd') {
-				if (l) {
-					setXDirection(-SPEED);
-				} else {
-					setXDirection(SPEED);
-				}
-
 			}
-		}
+			else if(e.getKeyChar() == 'd') {
+				if(l) {
+					setXDirection(-SPEED);
+				} else {
+					setXDirection(SPEED);
+				}
+			}
 
+		}
 	}
+
+	
 
 	// draw the image from the block class
 	public void draw(Graphics2D g) {
-		if (isEnemy) {
-			// System.out.println("working");
+		if(isEnemy) {
 			g.setColor(Color.red);
-			g.fillRect(xBorder - GamePanel.shift, 40, 10, 1000); // debugging
+			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
 			if (r) {
 				g.drawImage(runR, x, y, null);
 			} else if (l) {
-				g.drawImage(runL, x, y, null);
+				g.drawImage(runL, x-10, y, null);
 			} else {
 				g.drawImage(runR, x, y, null);
 			}

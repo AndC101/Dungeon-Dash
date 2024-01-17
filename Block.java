@@ -44,6 +44,7 @@ public class Block extends Rectangle {
 	// handles when the mouse is released
 	public void mouseReleased(MouseEvent e) {
 		drag = false;
+
 	}
 
 	// handles when the mouse is dragged
@@ -64,7 +65,7 @@ public class Block extends Rectangle {
 
 	// handles when a key is released
 	public void keyReleased(KeyEvent e) {
-		keysPressed.remove(e.getKeyChar());
+		keysPressed.remove(e.getKeyChar());		
 	}
 
 	// sets the xVelocity variable
@@ -82,6 +83,7 @@ public class Block extends Rectangle {
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered) {
 				setXDirection(SPEED);
+
 			}
 		} else {
 			setXDirection(0);

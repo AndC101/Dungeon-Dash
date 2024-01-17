@@ -8,7 +8,6 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import javax.swing.ImageIcon;

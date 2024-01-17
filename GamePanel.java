@@ -142,7 +142,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
 
 	public boolean onTop = false;
-
 	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		// initializes the variables handling the different screens
 		if (levelSelect) {
@@ -160,6 +159,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			mainMenu = false;
 			this.edit = false;
 			this.play = true;
+			
 		} else {
 			mainMenu = true;
 		}
@@ -202,21 +202,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
 		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				crackedStoneImage);
+
 		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
-		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
-		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
-
-		tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
-		tabSpeedBoost = new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
-
-		// add the sidebar objects to the sidebar ArrayLists
-		blockSidebar.add(tabPortal);
-		blockSidebar.add(tabStone);
-		blockSidebar.add(tabIce);
-		blockSidebar.add(tabLadder);
-		blockSidebar.add(tabCrackedStone);
-		blockSidebar.add(tabChest);
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
+		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
+ 
+		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
+		 tabSpeedBoost = new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
+ 
+		 // add the sidebar objects to the sidebar ArrayLists
+		 blockSidebar.add(tabPortal);
+		 blockSidebar.add(tabStone);
+		 blockSidebar.add(tabIce);
+		 blockSidebar.add(tabLadder);
+		 blockSidebar.add(tabCrackedStone);
+		 blockSidebar.add(tabChest);
 
 		enemySidebar.add(tabGoblin);
 		enemySidebar.add(tabTurret);
@@ -358,72 +359,41 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			// draws the knight
 			knight.draw(g);
-
-			if (endChest != null && knight.intersects(endChest)) {
-				if (endTime == -1) {
-					endTime = System.currentTimeMillis();
-				}
-				gameEnd = true;
-				win = true;
-				gameEnd(g);
-			}
-
-			if (spawn) initialize(g);
-			
-			if (leftBorder + spawnPortal.x - spawnX >= 0 || rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
-				// checks which border is reached
-				if (leftBorder + spawnPortal.x - spawnX >= 0) {
-					// calculates how much is needed to move so that the block appears right on the
-					// edge
-					adjust = leftBorder + spawnPortal.x - spawnX;
-				}
-				// same as above
-				else if (rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
-					adjust = (rightBorder + spawnPortal.x - spawnX) - GAME_WIDTH;
-
-				}
-
-				// moves all blocks accordingly and the knight if it was just spawned
-				for (Block b : elements) {
-					b.x -= adjust;
-				}
-				
-				if (spawn) {
-					knight.x -= adjust;
-				}
-
-
-				// since a border is reached, the knight no longer needs to be centered
-				Player.isCentered = false;
-			}
-			
-
-			// checks which half of the level the knight is on
-			if (Math.abs(leftBorder + spawnPortal.x - spawnX) <= (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
-				knight.left = true;
-			} else {
-				knight.left = false;
-			}
-			
-			spawn = false;
-
-		}
-
+		 enemySidebar.add(tabGoblin);
+		 enemySidebar.add(tabTurret);
+ 
+		 powerUpSidebar.add(tabOneUp);
+		 powerUpSidebar.add(tabSpeedBoost);
+ 
+		 // total height for the scrollpane
+		 // make the scrollpane height slightly bigger than the height of each button *
+		 // the num of buttons which makes the levelSelect
+		 // frame scrollable and adjusts to however many buttons the app needs
+		 // names.size() refers to the number of names of levels (how many levels AKA
+		 // buttons since each level requires space for it's button label)
+		 totalHeight = names.size() * numButtons;
+		 this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
+ 
+		 // allows this class to run at the same time as others
+		 gameThread = new Thread(this);
+		 gameThread.start();
+	 }
+ 
 	}
-
-	// calls the move method of all other methods
-	// laggy
-	public void move() {
-		knight.move();
-		for (Block b : elements) {
-			b.move();
-		}
-		back.move();
-	}
-
-	// handles all the collision checks
-	// handles all collision detection and responds accordingly
-	public void checkCollision() {
+ 
+	 // calls the move method of all other methods
+	 // laggy
+	 public void move() {
+		 knight.move();
+		 for (Block b : elements) {
+			 b.move();
+		 }
+		 back.move();
+	 }
+ 
+	 // handles all the collision checks
+	 // handles all collision detection and responds accordingly
+	 public void checkCollision() {
 
 		if (edit) {
 			// doesn't allow blocks to be dragged off the screen
@@ -514,183 +484,184 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 	}
+ 
+	 // run() method is what makes the game continue running without end.
+	 // other methods to move objects, check for collision, and update the screen
+	 public void run() {
+		 // slows down the code
+		 long lastTime = System.nanoTime();
+		 double amountOfTicks = 60;
+		 double ns = 1000000000 / amountOfTicks;
+		 double delta = 0;
+		 long now;
+ 
+		 while (true) { // this is the infinite game loop
+			 now = System.nanoTime();
+			 delta = delta + (now - lastTime) / ns;
+			 lastTime = now;
+ 
+			 // only move objects around and update screen if enough time has passed
+			 if (delta >= 1) {
+				 move();
+				 checkCollision();
+				 repaint();
+				 delta--;
+			 }
+		 }
+	 }
+ 
+	 // handles keyPresses
+	 public void keyPressed(KeyEvent e) {
+		 // checks which screen is displayed
+		 if(gameEnd){
 
-	// run() method is what makes the game continue running without end.
-	// other methods to move objects, check for collision, and update the screen
-	public void run() {
-		// slows down the code
-		long lastTime = System.nanoTime();
-		double amountOfTicks = 60;
-		double ns = 1000000000 / amountOfTicks;
-		double delta = 0;
-		long now;
+		 }
 
-		while (true) { // this is the infinite game loop
-			now = System.nanoTime();
-			delta = delta + (now - lastTime) / ns;
-			lastTime = now;
-
-			// only move objects around and update screen if enough time has passed
-			if (delta >= 1) {
-				move();
-				checkCollision();
-				repaint();
-				delta--;
-			}
-		}
-	}
-
-	// handles keyPresses
-	public void keyPressed(KeyEvent e) {
-		if (gameEnd) {
-
-		}
-		// checks which screen is displayed
 		else if (mainMenu) {
-			// checks which option is being selected
-			if (e.getKeyCode() == 10 && indicatorPos == 320) {
-				levelSelect = false;
-				edit = true;
-				mainMenu = false;
-			} else if (e.getKeyCode() == 10 && indicatorPos == 250) {
-				// enter the levelSelect menu
-
-				mainMenu = false;
-				edit = false;
-				levelSelect = true;
-				// create a new gameframe in the levelSelect menu
-				try {
-					new GameFrame(true, false, false, "");
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-			// if arrow keys are pressed, move the indicator
-			else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
-				indicatorPos = 250;
-			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
-				indicatorPos = 320;
-			}
-		} else if (edit) {
-			// checks arrow keys and moves the selected block by 1 pixel
-			if (e.getKeyCode() == 37) {
-				if (curSelected != null && !checkAllIntersection(curSelected))
-					curSelected.x--;
-			} else if (e.getKeyCode() == 39) {
-				if (curSelected != null && !checkAllIntersection(curSelected))
-					curSelected.x++;
-			} else if (e.getKeyCode() == 38) {
-				if (curSelected != null && !checkAllIntersection(curSelected))
-					curSelected.y--;
-			} else if (e.getKeyCode() == 40) {
-				if (curSelected != null && !checkAllIntersection(curSelected))
-					curSelected.y++;
-			} else if (e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
-				// scrolls the screen
-				back.keyPressed(e);
-				for (Block b : elements) {
-					b.keyPressed(e);
-				}
-
-			} else if (e.getKeyCode() == 70 && curSelected != null) {
-				// if the objected is flipped, we replace the original object with a flipped
-				// version
-				elements.remove(curSelected);
-				try {
-					// adds the flipped image
-					elements.add(hFlip(curSelected));
-				} catch (IOException e1) {
-				}
-				// changes the selected and dragging accordingly
-				curSelected = elements.get(elements.size() - 1);
-				curDragging = curSelected;
-			} else if (e.getKeyCode() == 8) {
-				// if backspace is pressed, delete the selected block
-				if (curSelected != null) {
-					elements.remove(curSelected);
-					curSelected = null;
-				}
-
-				// check if file is saved OR saved and played
-			} else if (e.getKeyCode() == KeyEvent.VK_1) {
-				// save the file
-				updatedSave = "";
-				if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is created a fresh new level
-					// Create a JTextField for user input
-					JTextField textField = new JTextField();
-
-					// Show an input dialog with the text field
-					int option = JOptionPane.showOptionDialog(this, textField, "Name your level!",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-
-					// Check if the user clicked OK
-					if (option == JOptionPane.OK_OPTION) {
-						// Get the entered name from the text field
-						newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without
-																				// whitespace
-						if (!names.contains(newLevelTitle)) {
-							for (Block b : elements) {
-								updatedSave += b.toString() + ": ";
-							}
-							replaceLine(newLevelTitle, updatedSave);
-
-							addTitle(newLevelTitle); // add the title
-
-							// Display a message indicating that the level has been saved
-							JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-									JOptionPane.INFORMATION_MESSAGE);
-							levelSaved = true;
-						} else {
-							// Display a message indicating that the level has not been saved
-							JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
-									"Invalid Save", JOptionPane.INFORMATION_MESSAGE);
-						}
-					} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-						JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save",
-								JOptionPane.INFORMATION_MESSAGE);
-					}
-				} else if (levelSaved && prevSavedTitle.isEmpty()) {
-					// if previously saved, then update the entry
-					for (Block b : elements) {
-						updatedSave += b.toString() + ": ";
-					}
-					levelSaved = true;
-					// System.out.println(elements + " " + updatedSave);
-					replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
-																// ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
-																// THEIR NEW DUNGEON
-
-					// display saved
-					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-							JOptionPane.INFORMATION_MESSAGE);
-				} else if (!prevSavedTitle.isEmpty() && !levelSaved) {
-					for (Block b : elements) {
-						updatedSave += b.toString() + ": ";
-					}
-					replaceLine(prevSavedTitle, updatedSave); // replace line with the given title
-
-					// display saved
-					JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-							JOptionPane.INFORMATION_MESSAGE);
-
-				}
-			} else if (e.getKeyCode() == KeyEvent.VK_2) {
-				// enter play mode;
-				edit = false;
-				play = true;
-			}
-
-		}
-
-		else if (play) {
-
-			// checks the knight, Blocks, and the background to see what should change to
-			// each one
-			knight.keyPressed(e);
-			back.keyPressed(e);
-
-			for (Block b : elements) {
-				b.keyPressed(e);
+			 // checks which option is being selected
+			 if (e.getKeyCode() == 10 && indicatorPos == 320) {
+				 levelSelect = false;
+				 edit = true;
+				 mainMenu = false;
+			 } else if (e.getKeyCode() == 10 && indicatorPos == 250) {
+				 // enter the levelSelect menu
+ 
+				 mainMenu = false;
+				 edit = false;
+				 levelSelect = true;
+				 // create a new gameframe in the levelSelect menu
+				 try {
+					 new GameFrame(true, false, false, "");
+				 } catch (IOException e1) {
+					 e1.printStackTrace();
+				 }
+			 }
+			 // if arrow keys are pressed, move the indicator
+			 else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
+				 indicatorPos = 250;
+			 } else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
+				 indicatorPos = 320;
+			 }
+		 } else if (edit) {
+			 // checks arrow keys and moves the selected block by 1 pixel
+			 if (e.getKeyCode() == 37) {
+				 if (curSelected != null && !checkAllIntersection(curSelected))
+					 curSelected.x--;
+			 } else if (e.getKeyCode() == 39) {
+				 if (curSelected != null && !checkAllIntersection(curSelected))
+					 curSelected.x++;
+			 } else if (e.getKeyCode() == 38) {
+				 if (curSelected != null && !checkAllIntersection(curSelected))
+					 curSelected.y--;
+			 } else if (e.getKeyCode() == 40) {
+				 if (curSelected != null && !checkAllIntersection(curSelected))
+					 curSelected.y++;
+			 } else if (e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+				 // scrolls the screen
+				 back.keyPressed(e);
+				 for (Block b : elements) {
+					 b.keyPressed(e);
+				 }
+ 
+			 } else if (e.getKeyCode() == 70 && curSelected != null) {
+				 // if the objected is flipped, we replace the original object with a flipped
+				 // version
+				 elements.remove(curSelected);
+				 try {
+					 // adds the flipped image
+					 elements.add(hFlip(curSelected));
+				 } catch (IOException e1) {
+				 }
+				 // changes the selected and dragging accordingly
+				 curSelected = elements.get(elements.size() - 1);
+				 curDragging = curSelected;
+			 } else if (e.getKeyCode() == 8) {
+				 // if backspace is pressed, delete the selected block
+				 if (curSelected != null) {
+					 elements.remove(curSelected);
+					 curSelected = null;
+				 }
+ 
+				 // check if file is saved OR saved and played
+			 } else if (e.getKeyCode() == KeyEvent.VK_1) {
+				 // save the file
+				 updatedSave = "";
+				 if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is created a fresh new level
+					 // Create a JTextField for user input
+					 JTextField textField = new JTextField();
+ 
+					 // Show an input dialog with the text field
+					 int option = JOptionPane.showOptionDialog(this, textField, "Name your level!",
+							 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+ 
+					 // Check if the user clicked OK
+					 if (option == JOptionPane.OK_OPTION) {
+						 // Get the entered name from the text field
+						 newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without
+																				 // whitespace
+						 if (!names.contains(newLevelTitle)) {
+							 for (Block b : elements) {
+								 updatedSave += b.toString() + ": ";
+							 }
+							 replaceLine(newLevelTitle, updatedSave);
+ 
+							 addTitle(newLevelTitle); // add the title
+ 
+							 // Display a message indicating that the level has been saved
+							 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+									 JOptionPane.INFORMATION_MESSAGE);
+							 levelSaved = true;
+						 } else {
+							 // Display a message indicating that the level has not been saved
+							 JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
+									 "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
+						 }
+					 } else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+						 JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save",
+								 JOptionPane.INFORMATION_MESSAGE);
+					 }
+				 } else if (levelSaved && prevSavedTitle.isEmpty()) {
+					 // if previously saved, then update the entry
+					 for (Block b : elements) {
+						 updatedSave += b.toString() + ": ";
+					 }
+					 levelSaved = true;
+					 // System.out.println(elements + " " + updatedSave);
+					 replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
+																 // ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
+																 // THEIR NEW DUNGEON
+ 
+					 // display saved
+					 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+							 JOptionPane.INFORMATION_MESSAGE);
+				 } else if (!prevSavedTitle.isEmpty() && !levelSaved) {
+					 for (Block b : elements) {
+						 updatedSave += b.toString() + ": ";
+					 }
+					 replaceLine(prevSavedTitle, updatedSave); // replace line with the given title
+ 
+					 // display saved
+					 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+							 JOptionPane.INFORMATION_MESSAGE);
+ 
+				 }
+			 } else if (e.getKeyCode() == KeyEvent.VK_2) {
+				 // enter play mode;
+				 edit = false;
+				 play = true;
+			 }
+ 
+		 }
+ 
+		 else if (play) {
+ 
+			 // checks the knight, Blocks, and the background to see what should change to
+			 // each one
+			 knight.keyPressed(e);
+			 back.keyPressed(e);
+ 
+			 for (Block b : elements) {
+				b.keyPressed(e);	
 			}
 			// a.keyPressed(e);
 		}
@@ -948,344 +919,344 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								turRight = true;
 							}
 
-							elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft,
-									turRight, true));
-						} catch (IOException IOE) {
-						}
-						curDragging = elements.get(elements.size() - 1);
-					}
-				} else {
-					if (curDragging.equals(tabOneUp)) {
-						try {
-							elements.add(new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage));
-						} catch (IOException IOE) {
-						}
-						curDragging = elements.get(elements.size() - 1);
-					} else if (curDragging.equals(tabSpeedBoost)) {
-						try {
-							elements.add(new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height,
-									speedBoostImage));
-						} catch (IOException IOE) {
-						}
-						curDragging = elements.get(elements.size() - 1);
-					}
-				}
-
-				sidebarPressed = false;
-			}
-			// calls mouseDragged of the dragged block
-			curDragging.mouseDragged(e);
-
-			// loops through all the elements
-			boolean intersected = false;
-			onTop = false;
-			for (int i = 0; i < elements.size(); i++) {
-				Block b = elements.get(i);
-				// skips the block if it is the one being dragged
-				if (b == curDragging)
-					continue;
-				// checks if it is dragged onto another piece
-				if (curDragging.intersects(b)) {
-
-					tmpX = curDragging.x;
-					tmpY = curDragging.y;
-					centerX = tmpX + curDragging.width / 2;
-					centerY = tmpY + curDragging.height / 2;
-					// looks for the nearest edge and forces it there
-
-					// LEFT EDGE
-					if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
-							&& Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
-							&& Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
-
-						try {
-							// creates a holographic image of where the block would be if released
-							hover = decipherBlock(curDragging, b.x - curDragging.width, curDragging.y,
-									curDragging.width, curDragging.height);
-
-						} catch (IOException e1) {
-						}
-					}
-					// RIGHT EDGE
-					else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
-							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
-							&& Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
-
-						try {
-							hover = decipherBlock(curDragging, b.x + b.width, curDragging.y, curDragging.width,
-									curDragging.height);
-						} catch (IOException e1) {
-						}
-
-						curDragging.x++;
-
-					}
-					// TOP EDGE
-					else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
-							&& Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
-							&& Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
-
-						try {
-							hover = decipherBlock(curDragging, curDragging.x, b.y - curDragging.height,
-									curDragging.width, curDragging.height);
-							onTop = true;
-						} catch (IOException e1) {
-						}
-						curDragging.y--;
-
-					}
-					// BOTTOM EDGE
-					else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
-							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
-							&& Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
-
-						try {
-							hover = decipherBlock(curDragging, curDragging.x, b.y + b.height, curDragging.width,
-									curDragging.height);
-						} catch (IOException e1) {
-						}
-
-					}
-					// if the hover is intersecting an existing block it can not be placed
-					if (hover != null && ((checkAllIntersection(hover) || hover.x + hover.height >= FLOOR))) {
-						hover = null;
-					}
-					intersected = true;
-				}
-			}
-			if (!intersected)
-				hover = null;
-		}
-
-	}
-
-	public void mouseMoved(MouseEvent e) {
-
-	}
-
-	// draws the sidebar
-	public void drawSidebar(Graphics2D g) {
-		// sets the colour of the rectangle and draws it
-		g.setColor(Color.white);
-		g.fillRect(0, 0, 128, GAME_HEIGHT);
-		g.setColor(Color.black);
-
-		g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
-
-		// checks which tab to load, and draw the sidebar associated with it
-		if (tabPressed.equals("blocks")) {
-			g.setColor(Color.green);
-			g.fillRect(TAB_X, 0, TAB_WIDTH + 20, TAB_HEIGHT);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Blocks", GAME_WIDTH / 7 + 20, 10);
-
-			tabPortal.draw(g);
-			tabStone.draw(g);
-			tabIce.draw(g);
-			tabLadder.draw(g);
-			tabCrackedStone.draw(g);
-			tabChest.draw(g);
-
-		} else {
-			// if not loaded then the tab looks different
-			g.setColor(Color.green);
-			g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Blocks", GAME_WIDTH / 7 + 10, 10);
-		}
-
-		if (tabPressed.equals("enemies")) {
-			g.setColor(Color.orange);
-			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH + 20, TAB_HEIGHT + 20);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Enemies", GAME_WIDTH / 7 + 20, 10 + TAB_HEIGHT);
-
-			tabGoblin.draw(g);
-			tabTurret.draw(g);
-
-		} else {
-			g.setColor(Color.orange);
-			g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Enemies", GAME_WIDTH / 7 + 10, 10 + TAB_HEIGHT);
-		}
-
-		if (tabPressed.equals("powerups")) {
-			g.setColor(Color.CYAN);
-			g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH + 20, TAB_HEIGHT + 40);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Powerups", GAME_WIDTH / 7 + 20, 2 * TAB_HEIGHT + 30);
-
-			tabOneUp.draw(g);
-			tabSpeedBoost.draw(g);
-
-		} else {
-			g.setColor(Color.CYAN);
-			g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH, TAB_HEIGHT + 40);
-			g.setColor(Color.black);
-			g.setFont(rotatedFont);
-			g.drawString("Powerups", GAME_WIDTH / 7 + 10, 2 * TAB_HEIGHT + 30);
-		}
-
-	}
-
-	// checks if a block is intersecting with the Block block
-	public boolean checkAllIntersection(Block block) {
-		// loops all elements
-		for (int i = 0; i < elements.size() - 1; i++) {
-			Block b = elements.get(i);
-			// if intersecting return true
-			if (!block.equals(b) && block.intersects(b) && !b.equals(curDragging))
-				return true;
-		}
-		return false;
-
-	}
-
-	// resizes an image to preferred width and height
-	public static BufferedImage resize(BufferedImage img, int newW, int newH) {
-		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-		Graphics2D g2d = dimg.createGraphics();
-		g2d.drawImage(tmp, 0, 0, null);
-		g2d.dispose();
-
-		return dimg;
-	}
-
-	// add title if user creates a new level to the names.txt file to prevent
-	// duplicate titles.
-	public void addTitle(String title) {
-		// adds a title to the names.txt file for easy checking if there are any
-		// duplicate names (bad)
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
-			writer.write(title + ", ");
-			writer.close();
-		} catch (Exception e) {
-			System.out.println("Problem adding name.");
-		}
-	}
-
-	// rewrites the LevelSave.txt file into a temp input stream and then overwrites
-	// the previous save file to
-	// imitate the effect of "overwritting" a save level. (this is the only viable
-	// way to overwrite in java file io)
-	public static void replaceLine(String title, String save) {
-
-		try {
-			// input the (modified) file content to the StringBuffer "input"
-			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
-			StringBuffer inputBuffer = new StringBuffer();
-			String line;
-			boolean containedTitle = false;
-
-			while ((line = file.readLine()) != null) {
-
-				if (line.startsWith(title)) {
-					line = title + ": " + save; // replace the line here
-					inputBuffer.append(line);
-					inputBuffer.append('\n');
-					containedTitle = true;
-				} else {
-					inputBuffer.append(line);
-					inputBuffer.append('\n');
-				}
-
-			}
-
-			if (!containedTitle) {
-				line = title + ": " + save; // replace the line here
-				inputBuffer.append(line);
-				inputBuffer.append('\n');
-			}
-
-			file.close();
-
-			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
-			fileOut.write(inputBuffer.toString().getBytes());
-			fileOut.close();
-
-		} catch (Exception e) {
-			System.out.println("Problem reading file.");
-		}
-	}
-
-	// reads the first words (AKA titles) for each level into the names arraylist so
-	// no duplicate titles are made (our unique ID sys for levels relies on unique
-	// names)
-	// also required for num of buttons and height of scrollpane
-	public void readFirstWords() {
-		// read titles to check for no duplicates
-
-		String filePath = "names.txt"; // Provide the path to your text file
-		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-			String line;
-
-			while ((line = reader.readLine()) != null) {
-				// Split the line into words using space as the delimiter
-				String[] words = line.split(", ");
-				for (String name : words) {
-					names.add(name);
-				}
-			}
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	// reads the data for a specific level and adds all blocks of that level into
-	// the elements arraylist
-	// so the level can be loaded and played/edited
-	public void readData(String title) {
-		// if the title is not found or there is no title
-
-		if (title.equals("")) {
-			return;
-		} else {
-			String filePath = "LevelSave.txt"; // Provide the path to your text file
-			try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-				String line;
-
-				while ((line = reader.readLine()) != null) {
-					// Split the line into words using space as the delimiter
-					if (line.startsWith(title)) {
-						String[] words = line.split(": ");
-						for (int i = 1; i < words.length; i++) {
-							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
-							// in the title itself
-							String[] inputs = words[i].split(" "); // splits based on space
-							if (inputs[0].equals("Ice")) {
-								elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Ice.width, Ice.height, iceImage));
-							} else if (inputs[0].equals("Stone")) {
-								elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Stone.width, Stone.height, stoneImage));
-							} else if (inputs[0].equals("Portal")) {
-								elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Portal.width, Portal.height, portalImage));
-							} else if (inputs[0].equals("Ladder")) {
-								elements.add(new Ladder(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Ladder.width, Ladder.height, ladderImage));
-							} else if (inputs[0].equals("CrackedStone")) {
-								elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										CrackedStone.width, CrackedStone.height, crackedStoneImage));
-							} else if (inputs[0].equals("Chest")) {
+							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, true));
+						 } catch (IOException IOE) {
+						 }
+						 curDragging = elements.get(elements.size() - 1);
+					 }
+				 } else {
+					 if (curDragging.equals(tabOneUp)) {
+						 try {
+							 elements.add(new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage));
+						 } catch (IOException IOE) {
+						 }
+						 curDragging = elements.get(elements.size() - 1);
+					 } else if (curDragging.equals(tabSpeedBoost)) {
+						 try {
+							 elements.add(new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height,
+									 speedBoostImage));
+						 } catch (IOException IOE) {
+						 }
+						 curDragging = elements.get(elements.size() - 1);
+					 }
+				 }
+ 
+				 sidebarPressed = false;
+			 }
+			 //calls mouseDragged of the dragged block
+			 curDragging.mouseDragged(e);
+ 
+			 // loops through all the elements
+			 boolean intersected = false;
+			 onTop = false;
+			 for (int i = 0; i < elements.size(); i++) {
+				 Block b = elements.get(i);
+				 //skips the block if it is the one being dragged
+				 if (b == curDragging)
+					 continue;
+				 // checks if it is dragged onto another piece
+				 if (curDragging.intersects(b)) {
+					 
+					 tmpX = curDragging.x;
+					 tmpY = curDragging.y;
+					 centerX = tmpX + curDragging.width / 2;
+					 centerY = tmpY + curDragging.height / 2;
+					 // looks for the nearest edge and forces it there
+ 
+					 // LEFT EDGE
+					 if (Math.abs(b.x - centerX) <= Math.abs(b.x + b.width - centerX)
+							 && Math.abs(b.x - centerX) <= Math.abs(b.y - centerY)
+							 && Math.abs(b.x - centerX) <= Math.abs(b.y + b.height - centerY)) {
+ 
+						 try {
+							 //creates a holographic image of where the block would be if released
+							 hover = decipherBlock(curDragging, b.x - curDragging.width, curDragging.y,
+									 curDragging.width, curDragging.height);
+									 
+						 } catch (IOException e1) {
+						 }
+					 }
+					 //RIGHT EDGE
+					 else if (Math.abs(b.x + b.width - centerX) <= Math.abs(b.x - centerX)
+							 && Math.abs(b.x + b.width - centerX) <= Math.abs(b.y - centerY)
+							 && Math.abs(b.x + b.width - centerX) <= Math.abs(b.y + b.height - centerY)) {
+ 
+						 try {
+							 hover = decipherBlock(curDragging, b.x + b.width, curDragging.y, curDragging.width,
+									 curDragging.height);
+						 } catch (IOException e1) {
+						 }
+ 
+						 curDragging.x++;
+ 
+					 }
+					 //TOP EDGE
+					 else if (Math.abs(b.y - centerY) <= Math.abs(b.x + b.width - centerX)
+							 && Math.abs(b.y - centerY) <= Math.abs(b.x - centerX)
+							 && Math.abs(b.y - centerY) <= Math.abs(b.y + b.height - centerY)) {
+								
+						 try {
+							 hover = decipherBlock(curDragging, curDragging.x, b.y - curDragging.height,
+									 curDragging.width, curDragging.height);
+									 onTop = true;
+						 } catch (IOException e1) {
+						 }
+						 curDragging.y--;
+ 
+					 }
+					 //BOTTOM EDGE
+					 else if (Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - centerX)
+							 && Math.abs(b.y + b.height - centerY) <= Math.abs(b.y - centerY)
+							 && Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
+ 
+						 try {
+							 hover = decipherBlock(curDragging, curDragging.x, b.y + b.height, curDragging.width,
+									 curDragging.height);
+						 } catch (IOException e1) {
+						 }
+ 
+					 }
+					 //if the hover is intersecting an existing block it can not be placed
+					 if (hover != null && checkAllIntersection(hover)) {
+						 hover = null;
+					 }
+					 intersected = true;
+				 }
+			 }
+			 if (!intersected)
+				 hover = null;
+		 }
+ 
+	 }
+ 
+ 
+	 public void mouseMoved(MouseEvent e) {
+ 
+	 }
+	 //draws the sidebar
+	 public void drawSidebar(Graphics2D g) {
+		 //sets the colour of the rectangle and draws it
+		 g.setColor(Color.white);
+		 g.fillRect(0, 0, 128, GAME_HEIGHT);
+		 g.setColor(Color.black);
+ 
+		 g.fillRect(TAB_X - 5, 0, 5, GAME_HEIGHT);
+ 
+		 //checks which tab to load, and draw the sidebar associated with it
+		 if (tabPressed.equals("blocks")) {
+			 g.setColor(Color.green);
+			 g.fillRect(TAB_X, 0, TAB_WIDTH + 20, TAB_HEIGHT);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Blocks", GAME_WIDTH / 7 + 20, 10);
+ 
+			 tabPortal.draw(g);
+			 tabStone.draw(g);
+			 tabIce.draw(g);
+			 tabLadder.draw(g);
+			 tabCrackedStone.draw(g);
+			 tabChest.draw(g);
+ 
+		 } else {
+			 //if not loaded then the tab looks different
+			 g.setColor(Color.green);
+			 g.fillRect(TAB_X, 0, TAB_WIDTH, TAB_HEIGHT);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Blocks", GAME_WIDTH / 7 + 10, 10);
+		 }
+ 
+		 if (tabPressed.equals("enemies")) {
+			 g.setColor(Color.orange);
+			 g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH + 20, TAB_HEIGHT + 20);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Enemies", GAME_WIDTH / 7 + 20, 10 + TAB_HEIGHT);
+ 
+			 tabGoblin.draw(g);
+			 tabTurret.draw(g);
+ 
+		 } else {
+			 g.setColor(Color.orange);
+			 g.fillRect(TAB_X, TAB_HEIGHT, TAB_WIDTH, TAB_HEIGHT + 20);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Enemies", GAME_WIDTH / 7 + 10, 10 + TAB_HEIGHT);
+		 }
+ 
+		 if (tabPressed.equals("powerups")) {
+			 g.setColor(Color.CYAN);
+			 g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH + 20, TAB_HEIGHT + 40);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Powerups", GAME_WIDTH / 7 + 20, 2 * TAB_HEIGHT + 30);
+ 
+			 tabOneUp.draw(g);
+			 tabSpeedBoost.draw(g);
+ 
+		 } else {
+			 g.setColor(Color.CYAN);
+			 g.fillRect(TAB_X, 2 * TAB_HEIGHT + 20, TAB_WIDTH, TAB_HEIGHT + 40);
+			 g.setColor(Color.black);
+			 g.setFont(rotatedFont);
+			 g.drawString("Powerups", GAME_WIDTH / 7 + 10, 2 * TAB_HEIGHT + 30);
+		 }
+ 
+	 }
+ 
+	 //checks if a block is intersecting with the Block block
+	 public boolean checkAllIntersection(Block block) {
+		 //loops all elements
+		 for (int i = 0; i < elements.size() - 1; i++) {
+			 Block b = elements.get(i);
+			 //if intersecting return true
+			 if (!block.equals(b) && block.intersects(b) && !b.equals(curDragging))
+				 return true;
+		 }
+		 return false;
+ 
+	 }
+ 
+	 // resizes an image to preferred width and height
+	 public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+		 Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		 BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+ 
+		 Graphics2D g2d = dimg.createGraphics();
+		 g2d.drawImage(tmp, 0, 0, null);
+		 g2d.dispose();
+ 
+		 return dimg;
+	 }
+ 
+	 // add title if user creates a new level to the names.txt file to prevent
+	 // duplicate titles.
+	 public void addTitle(String title) {
+		 // adds a title to the names.txt file for easy checking if there are any
+		 // duplicate names (bad)
+		 try {
+			 BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
+			 writer.write(title + ", ");
+			 writer.close();
+		 } catch (Exception e) {
+			 System.out.println("Problem adding name.");
+		 }
+	 }
+ 
+	 // rewrites the LevelSave.txt file into a temp input stream and then overwrites
+	 // the previous save file to
+	 // imitate the effect of "overwritting" a save level. (this is the only viable
+	 // way to overwrite in java file io)
+	 public static void replaceLine(String title, String save) {
+ 
+		 try {
+			 // input the (modified) file content to the StringBuffer "input"
+			 BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			 StringBuffer inputBuffer = new StringBuffer();
+			 String line;
+			 boolean containedTitle = false;
+ 
+			 while ((line = file.readLine()) != null) {
+ 
+				 if (line.startsWith(title)) {
+					 line = title + ": " + save; // replace the line here
+					 inputBuffer.append(line);
+					 inputBuffer.append('\n');
+					 containedTitle = true;
+				 } else {
+					 inputBuffer.append(line);
+					 inputBuffer.append('\n');
+				 }
+ 
+			 }
+ 
+			 if (!containedTitle) {
+				 line = title + ": " + save; // replace the line here
+				 inputBuffer.append(line);
+				 inputBuffer.append('\n');
+			 }
+ 
+			 file.close();
+ 
+			 // write the new string with the replaced line OVER the same file
+			 FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
+			 fileOut.write(inputBuffer.toString().getBytes());
+			 fileOut.close();
+ 
+		 } catch (Exception e) {
+			 System.out.println("Problem reading file.");
+		 }
+	 }
+ 
+	 // reads the first words (AKA titles) for each level into the names arraylist so
+	 // no duplicate titles are made (our unique ID sys for levels relies on unique
+	 // names)
+	 // also required for num of buttons and height of scrollpane
+	 public void readFirstWords() {
+		 // read titles to check for no duplicates
+ 
+		 String filePath = "names.txt"; // Provide the path to your text file
+		 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+			 String line;
+ 
+			 while ((line = reader.readLine()) != null) {
+				 // Split the line into words using space as the delimiter
+				 String[] words = line.split(", ");
+				 for (String name : words) {
+					 names.add(name);
+				 }
+			 }
+ 
+		 } catch (IOException e) {
+			 e.printStackTrace();
+		 }
+ 
+	 }
+ 
+	 // reads the data for a specific level and adds all blocks of that level into
+	 // the elements arraylist
+	 // so the level can be loaded and played/edited
+	 public void readData(String title) {
+		 // if the title is not found or there is no title
+ 
+		 if (title.equals("")) {
+			 return;
+		 } else {
+			 String filePath = "LevelSave.txt"; // Provide the path to your text file
+			 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+				 String line;
+ 
+				 while ((line = reader.readLine()) != null) {
+					 // Split the line into words using space as the delimiter
+					 if (line.startsWith(title)) {
+						 String[] words = line.split(": ");
+						 for (int i = 1; i < words.length; i++) {
+							 // i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
+							 // in the title itself
+							 String[] inputs = words[i].split(" "); // splits based on space
+							 if (inputs[0].equals("Ice")) {
+								 elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 Ice.width, Ice.height, iceImage));
+							 } else if (inputs[0].equals("Stone")) {
+								 elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 Stone.width, Stone.height, stoneImage));
+							 } else if (inputs[0].equals("Portal")) {
+								 elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 Portal.width, Portal.height, portalImage));
+							 } else if (inputs[0].equals("Ladder")) {
+								 elements.add(new Ladder(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 Ladder.width, Ladder.height, ladderImage));
+							 } else if (inputs[0].equals("CrackedStone")) {
+								 elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 CrackedStone.width, CrackedStone.height, crackedStoneImage));
+							 } else if (inputs[0].equals("Chest")) {
 								elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Chest.width, Chest.height, closedChestImage));
-							} else if (inputs[0].equals("Goblin")) {
-								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
-							} else if (inputs[0].equals("Turret")) {
+ 
+							  } else if (inputs[0].equals("Goblin")) {
+								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+							 } else if (inputs[0].equals("Turret")) {
 
 								if (flipNum % 2 != 0) {
 									turLeft = true;
