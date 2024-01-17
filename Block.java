@@ -65,29 +65,8 @@ public class Block extends Rectangle {
 	}
 
 	//handles when a key is released
-	public void keyReleased(KeyEvent e, boolean play) {
-		keysPressed.remove(e.getKeyChar());
-		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
-			if(play) {
-
-				if(e.getKeyChar() == 'a' && keysPressed.contains('d')) {
-					setXDirection(-SPEED);
-					Player.isRight = true;
-				}
-				else if(e.getKeyChar() == 'd' && keysPressed.contains('a')) {
-					setXDirection(SPEED);
-					Player.isLeft = true;
-				}
-				else {
-					setXDirection(0);
-				}
-				
-			}
-			else {
-				setXDirection(0);
-			}
-		}
-		
+	public void keyReleased(KeyEvent e) {
+		keysPressed.remove(e.getKeyChar());		
 	}
 
 	//sets the xVelocity variable
@@ -107,6 +86,8 @@ public class Block extends Rectangle {
 				if (Player.isCentered) {
 					setXDirection(SPEED);
 				}
+			} else {
+				setXDirection(0);
 			}
 			// if the player is not centered, blocks should not move
 			if(!Player.isCentered) setXDirection(0);

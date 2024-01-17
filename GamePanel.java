@@ -5,134 +5,141 @@
  * GamePanel class is the main class to run the game
  */
 
- import java.awt.*;
- import java.awt.event.*;
- import java.awt.geom.AffineTransform;
- import java.awt.image.BufferedImage;
- 
- import javax.imageio.ImageIO;
- import javax.swing.*;
- import java.util.*;
- 
- //imports for file io
- import java.io.File;
- import java.io.FileOutputStream;
- import java.io.FileReader;
- import java.io.IOException;
- import java.io.FileWriter;
- import java.io.BufferedReader;
- import java.io.BufferedWriter;
- 
- public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
- 
-	 // dimensions of window
-	 public static final int GAME_WIDTH = 900;
-	 public static final int GAME_HEIGHT = 550;
-	 public static final int TITLE_SIZE = 120;
-	 public static final int FONT_SIZE = 30;
-	 public static final int TAB_HEIGHT = 100;
-	 public static final int TAB_WIDTH = 30;
-	 public static final int TAB_X = GAME_WIDTH / 7 + 5;
- 	public static final int FLOOR = GAME_HEIGHT - 25;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
-	 public Thread gameThread;
-	 public Graphics graphics;
- 
-	 // font variables
-	 AffineTransform affineTransform = new AffineTransform();
-	 Font font = new Font(null, Font.PLAIN, 25);
-	 Font rotatedFont;
- 
-	 // imports for graphics
-	 Image image;
-	 public BufferedImage portalImage = ImageIO.read(new File("Images/Start_Portal.png"));
-	 public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
-	 public BufferedImage openChestImage = ImageIO.read(new File("Images/OpenChest.png"));
-	 public BufferedImage closedChestImage = ImageIO.read(new File("Images/ClosedChest.png"));
-	 public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
-	 public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
-	 public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
-	 public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
-	 public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
-	 public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
-	 public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
- 
-	 Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
-	 Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
-	 Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
-	 Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.util.*;
 
-	 public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
- 
-	 // this is the player
-	 public Player knight;
- 
-	 // imports for text effects
-	 public int alpha = 0;
- 
-	 // for states of the frame
-	 public static boolean mainMenu = true;
-	 public static boolean edit = false;
-	 public boolean levelSelect = false;
-	 public boolean alphaUp = true;
-	 public boolean sidebarPressed = false;
-	 public boolean fixed = false;
-	 public static boolean play = false;
-	 public boolean spawn = true;
-	 public boolean powerUpUp = true;
-	 public boolean checkVertical = false;
+//imports for file io
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 
- 
-	 public int indicatorPos = 250;
- 
-	 public String tabPressed = "blocks";
- 
-	 // declare level widget variables
-	 public int totalHeight;
-	 public int numButtons = 0; // to be changed once file IO works
-	 public int leftBorder = 1000000000, rightBorder = -1;
-	 public static int shift;
-	 public int spawnX = 0;
-	 public int adjust = 0;
-	 public int powerUpBob = 0;
-	 public int buffer = 5;
- 
-	 public Block curDragging, curSelected;
- 
-	 // sidebar objects
-	 public Portal tabPortal;
-	 public Block spawnPortal;
-	 public Stone tabStone;
-	 public Ice tabIce;
-	 public Ladder tabLadder;
-	 public CrackedStone tabCrackedStone;
-	 public Goblin tabGoblin;
-	 public Turret tabTurret;
-	 public OneUp tabOneUp;
-	 public SpeedBoost tabSpeedBoost;
- 
-	 // all elements are in the elements ArrayList
-	 // the sidebar ArrayLists contain the different sidebar objects
-	 public static ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
-	 Block hover = null;
- 
-	 // for file IO
-	 public BufferedWriter writer;
-	 public boolean levelSaved = false;
-	 public String updatedSave = "";
-	 public ArrayList<String> names = new ArrayList<>(); // to prevent duplicate named levels
- 
-	 public String newLevelTitle = ""; // if new level
-	 public String prevSavedTitle = ""; // for files that exist and are revisited (level select -> play/edit button)
- 
-	 // creates the background image
-	 public Background back = new Background(0, 0, playBackground);
-	
+public class GamePanel extends JPanel implements Runnable, KeyListener, MouseListener, MouseMotionListener {
+
+	// dimensions of window
+	public static final int GAME_WIDTH = 900;
+	public static final int GAME_HEIGHT = 550;
+	public static final int TITLE_SIZE = 120;
+	public static final int FONT_SIZE = 30;
+	public static final int TAB_HEIGHT = 100;
+	public static final int TAB_WIDTH = 30;
+	public static final int TAB_X = GAME_WIDTH / 7 + 5;
+	public static final int FLOOR = GAME_HEIGHT - 25;
+
+	public Thread gameThread;
+	public Graphics graphics;
+
+	// font variables
+	AffineTransform affineTransform = new AffineTransform();
+	Font font = new Font(null, Font.PLAIN, 25);
+	Font rotatedFont;
+
+	// imports for graphics
+	Image image;
+	public BufferedImage portalImage = ImageIO.read(new File("Images/Start_Portal.png"));
+	public BufferedImage menuBackground = ImageIO.read(new File("Images/menu.png"));
+	public BufferedImage openChestImage = ImageIO.read(new File("Images/OpenChest.png"));
+	public BufferedImage closedChestImage = ImageIO.read(new File("Images/ClosedChest.png"));
+	public BufferedImage iceImage = ImageIO.read(new File("Images/Ice.png"));
+	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
+	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
+	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
+	public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
+	public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
+	public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
+
+	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
+	Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
+	Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
+	Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
+
+	public BufferedImage playBackground = ImageIO.read(new File("Images/back.png"));
+
+	// this is the player
+	public Player knight;
+
+	// imports for text effects
+	public int alpha = 0;
+
+	// for states of the frame
+	public static boolean mainMenu = true;
+	public static boolean edit = false;
+	public boolean levelSelect = false;
+	public boolean alphaUp = true;
+	public boolean sidebarPressed = false;
+	public boolean fixed = false;
+	public static boolean play = false;
+	public static boolean spawn = true;
+	public boolean powerUpUp = true;
+	public boolean checkVertical = false;
+	public boolean win = false;
+	public boolean gameEnd = false;
+
+	public int indicatorPos = 250;
+
+	public String tabPressed = "blocks";
+
+	// declare level widget variables
+	public int totalHeight;
+	public int numButtons = 0; // to be changed once file IO works
+	public int leftBorder = 1000000000, rightBorder = -1;
+	public static int shift = 0;
+	public int spawnX = 0;
+	public static int adjust = 0;
+	public int powerUpBob = 0;
+	public int buffer = 5;
+	public int gameEndAlpha = 0;
+
+	public long startTime;
+	public long endTime = -1;
+
+	public Block curDragging, curSelected;
+
+	// sidebar objects
+	public Portal tabPortal;
+	public Stone tabStone;
+	public Ice tabIce;
+	public Ladder tabLadder;
+	public CrackedStone tabCrackedStone;
+	public Chest tabChest;
+	public Goblin tabGoblin;
+	public Turret tabTurret;
+	public OneUp tabOneUp;
+	public SpeedBoost tabSpeedBoost;
+
+	public Portal spawnPortal;
+	public Chest endChest;
+
+	// all elements are in the elements ArrayList
+	// the sidebar ArrayLists contain the different sidebar objects
+	public static ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
+	Block hover = null;
+
+	// for file IO
+	public BufferedWriter writer;
+	public boolean levelSaved = false;
+	public String updatedSave = "";
+	public ArrayList<String> names = new ArrayList<>(); // to prevent duplicate named levels
+
+	public String newLevelTitle = ""; // if new level
+	public String prevSavedTitle = ""; // for files that exist and are revisited (level select -> play/edit button)
+
+	// creates the background image
+	public Background back = new Background(0, 0, playBackground);
+
 	public boolean turLeft = false;
 	public boolean turRight = true;
 	public int flipNum = 0;
 	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
-
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -153,7 +160,7 @@
 			 this.edit = false;
 			 this.play = true;
 		 } else {
-			mainMenu=true;
+			mainMenu = true;
 		 }
  
 		 // initializes the Player
@@ -194,8 +201,9 @@
 		 tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
 		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				 crackedStoneImage);
- 
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
+		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
+
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
@@ -207,7 +215,8 @@
 		 blockSidebar.add(tabIce);
 		 blockSidebar.add(tabLadder);
 		 blockSidebar.add(tabCrackedStone);
- 
+		 blockSidebar.add(tabChest);
+
 		 enemySidebar.add(tabGoblin);
 		 enemySidebar.add(tabTurret);
  
@@ -347,14 +356,19 @@
 			 }
  
 			 if (spawn) { // spawns the knight in front of the portal
- 
+				startTime = System.currentTimeMillis();
+
 				 // finds the spawn portal and forces it to the center
 				 for (Block b : elements) {
 					 if (b.img != null && b.img.equals(portalImage)) {
-						 spawnPortal = b;
+						 spawnPortal = (Portal) b;
 						 shift = spawnPortal.x - GAME_WIDTH / 2 + spawnPortal.width / 2;
 						 break;
 					 }
+					 if (b.img != null && b.img.equals(closedChestImage)) {
+						endChest = (Chest) b;
+					}
+
 				 }
 				 // moves all blocks to adjust for the shift to the portal and finds the left and
 				 // rightmost block coordinates
@@ -364,9 +378,9 @@
 					 rightBorder = Math.max(rightBorder, b.x + b.width);
 				 }
 				 
-				 if(spawn && rightBorder - leftBorder <= GAME_WIDTH) {
-					 Player.oneScreen = true;
-				 }
+				 if (rightBorder - leftBorder <= GAME_WIDTH) {
+					Player.oneScreen = true;
+				}
 				 
 				 // saves the original position of the portal
 				 spawnX = spawnPortal.x;
@@ -415,9 +429,17 @@
 			 // draws the knight
 			 knight.draw(g);
  
-			 if (spawn) spawn = false;
-				 
- 
+			 if (spawn)
+			 spawn = false;
+			if (endChest != null && knight.intersects(endChest)) {
+				if (endTime == -1) {
+					endTime = System.currentTimeMillis();
+				}
+				gameEnd = true;
+				win = true;
+				gameEnd(g);
+			}
+
 		 }
 		 
 	 }
@@ -435,23 +457,23 @@
 	 // handles all the collision checks
 	 // handles all collision detection and responds accordingly
 	 public void checkCollision() {
- 
-		 if (edit) {
-			 // doesn't allow blocks to be dragged off the screen
-			 if (curSelected != null) {
- 
-				 if (curSelected.x <= 0)
-					 curSelected.x = 0;
-				 if (curSelected.x + curSelected.width >= GAME_WIDTH)
-					 curSelected.x = GAME_WIDTH - curSelected.width;
-				 if (curSelected.y <= 0)
-					 curSelected.y = 0;
-				 if (curSelected.y + curSelected.height >= GAME_HEIGHT)
-					 curSelected.y = GAME_HEIGHT - curSelected.height;
-			 }
 
- 
-		 } else if (play && !spawn) {
+		if (edit) {
+			// doesn't allow blocks to be dragged off the screen
+			if (curSelected != null) {
+
+				if (curSelected.x <= 0)
+					curSelected.x = 0;
+				if (curSelected.x + curSelected.width >= GAME_WIDTH)
+					curSelected.x = GAME_WIDTH - curSelected.width;
+				if (curSelected.y <= 0)
+					curSelected.y = 0;
+				if (curSelected.y + curSelected.height >= FLOOR)
+					curSelected.y = FLOOR - curSelected.height;
+			}
+
+		} else if (play && !spawn) {
+
 			// doesn't allow the player to walk off the screen
 			if (knight.x <= 0) {
 				knight.x = 0;
@@ -461,42 +483,39 @@
 				knight.x = GAME_WIDTH - knight.width;
 				Player.setXDirection(0);
 			}
-			
 
-			// unfinished code
 			for (Block b : elements) {
-
-				if (getClass(b).equals("Portal"))
+				checkVertical = false;
+				if (getClass(b).equals("Portal") || getClass(b).equals("Goblin") || getClass(b).equals("Chest")) {
 					continue;
-
-				// System.out.println("Knight x " + knight.x + " B x " + b.x);
-				// System.out.println("Knight y " + knight.y + " B y " + b.y);
+				}
 
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y && knight.y + knight.height < (double)(b.y + (double)(b.height) * 0.20)) {
+						&& knight.y + knight.height > b.y
+						&& knight.y + knight.height < (double) (b.y + (double) (b.height) * 0.20)) {
 					knight.y = b.y - knight.height - 1;
 					knight.isJumping = false;
 					knight.falling = false;
 					knight.yVelocity = 0;
 					checkVertical = true;
 				}
-				
+
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height && knight.y > (double)(b.y + (double)(b.height) * 0.80)) {
-					if(b.y + b.height + knight.height + 1 <= FLOOR) {
+						&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height
+						&& knight.y > (double) (b.y + (double) (b.height) * 0.80)) {
+					if (b.y + b.height + knight.height + 1 <= FLOOR) {
 						System.out.println("hit bot");
 						knight.y = b.y + b.height + 1;
 						knight.isJumping = true;
 						knight.falling = true;
 						checkVertical = true;
-						
+
 					}
-					
-					
+
 				}
-				
+
 				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
 								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
@@ -504,37 +523,30 @@
 					knight.x = b.x - knight.width - 1;
 					if (!Player.isCentered) {
 						Player.setXDirection(0);
-					}
-					else {
+					} else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
 				}
-	
-				
 
 				if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
 								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
-						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x + b.width + 1;
 					if (!Player.isCentered) {
 						Player.setXDirection(0);
-					}
-					else {
+					} else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
 					}
 				}
-				
-				
-				checkVertical = false;
 
 			}
 
 		}
- 
-	 }
+
+	}
  
 	 // run() method is what makes the game continue running without end.
 	 // other methods to move objects, check for collision, and update the screen
@@ -564,7 +576,11 @@
 	 // handles keyPresses
 	 public void keyPressed(KeyEvent e) {
 		 // checks which screen is displayed
-		 if (mainMenu) {
+		 if(gameEnd){
+
+		 }
+
+		else if (mainMenu) {
 			 // checks which option is being selected
 			 if (e.getKeyCode() == 10 && indicatorPos == 320) {
 				 levelSelect = false;
@@ -711,249 +727,254 @@
 				b.keyPressed(e);	
 			}
 			// a.keyPressed(e);
-		 }
- 
-	 }
- 
-	 public void keyReleased(KeyEvent e) {
-		 // checks which screen is displayed
-		 if (edit) {
-			 // calls keyReleased for background and all blocks
-			 back.keyReleased(e);
-			 for (Block b : elements) {
-				 b.keyReleased(e, false);
-				 
-			 }
-		 }
- 
-		 else if (play) {
-			 //calls keyReleased for background, the knight, and all blocks
-			 knight.keyReleased(e);
- 
-			 back.keyReleased(e);
-			 for (Block b : elements) {
-				 b.keyReleased(e, true);
+		}
 
-			 }
-		 }
-	 }
- 
-	 public void keyTyped(KeyEvent e) {
- 
-	 }
- 
- 
-	 public void mouseClicked(MouseEvent e) {
-	 }
-	 
-	 //handles mousePresses
-	 public void mousePressed(MouseEvent e) {
-		 //checks which screen is displayed`
-		 if (edit) {
-			 // checks if an existing block is pressed
-			 boolean chosen = false;
-			 for (Block b : elements) {
-				 if (mousePressedBlock(b, e)) {
-					 //calls the block's mousePressed, the block can now be dragged, is selected, and is not part of the sidebar
-					 b.mousePressed(e);
-					 curDragging = b;
-					 curSelected = b;
-					 sidebarPressed = false;
-					 chosen = true;
-				 }
-			 }
- 
-			 if (!chosen)
-				 curSelected = null;
- 
-			 // checks if the block pressed is from the sidebar
-			 // splits the sidebar based on tabs
-			 if (tabPressed.equals("blocks")) {
-				 for (Block b : blockSidebar) {
-					 if (mousePressedBlock(b, e)) {
-						 //calls mousePressed from b, b is now being dragged, the sideBar was pressed
-						 b.mousePressed(e);
-						 curDragging = b;
-						 sidebarPressed = true;
-						 chosen = true;
-					 }
-				 }
-			 } else if (tabPressed.equals("enemies")) {
-				 for (Block b : enemySidebar) {
-					 if (mousePressedBlock(b, e)) {
-						 b.mousePressed(e);
-						 curDragging = b;
-						 sidebarPressed = true;
-						 chosen = true;
-					 }
-				 }
-			 } else {
-				 for (Block b : powerUpSidebar) {
-					 if (mousePressedBlock(b, e)) {
-						 b.mousePressed(e);
-						 curDragging = b;
-						 sidebarPressed = true;
-						 chosen = true;
-					 }
-				 }
-			 }
- 
-			 // checks if a tab is pressed
-			 if (e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
-				 if (e.getY() >= 2 * TAB_HEIGHT + 20) {
-					 // powerups was chosen
-					 tabPressed = "powerups";
-				 } else if (e.getY() >= TAB_HEIGHT) {
-					 // enemies was chosen
-					 tabPressed = "enemies";
-				 } else {
-					 // blocks was chosen
-					 tabPressed = "blocks";
-				 }
-			 }
- 
-		 }
- 
-	 }
- 
- 
-	 //handles when the mouse is released
-	 public void mouseReleased(MouseEvent e) {
- 
-		 if (edit) {
- 
-			 // if there IS a block being dragged
-			 if (curDragging != null) {
-				 // checks if it is still on the sidebar
-				 if (curDragging.x <= TAB_X) {
-					 // remove it if it's still on the sidebar and not dragged into the sandbox
-					 elements.remove(curDragging);
-					 curSelected = null;
-				 } else if (hover != null) { // if there IS a block being hovered over b the curDragging block
- 
-					 // loops through all the blocks
-					 boolean works = true;
-					 for (int i = 0; i < elements.size(); i++) {
-						 Block b = elements.get(i);
-						 // if its the one that is already being dragged continue (no point on checking
-						 // it to itself)
-						 if (b == curDragging)
-							 continue;
-						 // if the snapped piece is also going to intersect a piece then don't add it
-						 if (hover.intersects(b)) {
-							 elements.remove(curDragging);
-							 curSelected = null;
-							 works = false;
-							 break;
-						 }
-					 }
-					 // if the snapped piece does not intersect another piece then you can add it
-					 if (works) {
-						 elements.remove(curDragging);
-						 elements.add(hover);
-						 if(hover instanceof Goblin && !onTop) {
+	}
+
+	public void keyReleased(KeyEvent e) {
+
+		if (gameEnd)
+			return;
+
+		// checks which screen is displayed
+		else if (edit) {
+			// calls keyReleased for background and all blocks
+			back.keyReleased(e);
+			for (Block b : elements) {
+				b.keyReleased(e);
+			}
+		}
+
+		else if (play) {
+			// calls keyReleased for background, the knight, and all blocks
+			knight.keyReleased(e);
+
+			back.keyReleased(e);
+			for (Block b : elements) {
+				b.keyReleased(e);
+
+			}
+		}
+	}
+
+	public void keyTyped(KeyEvent e) {
+
+	}
+
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	// handles mousePresses
+	public void mousePressed(MouseEvent e) {
+		// checks which screen is displayed`
+		if (edit) {
+			// checks if an existing block is pressed
+			boolean chosen = false;
+			for (Block b : elements) {
+				if (mousePressedBlock(b, e)) {
+					// calls the block's mousePressed, the block can now be dragged, is selected,
+					// and is not part of the sidebar
+					b.mousePressed(e);
+					curDragging = b;
+					curSelected = b;
+					sidebarPressed = false;
+					chosen = true;
+				}
+			}
+
+			if (!chosen)
+				curSelected = null;
+
+			// checks if the block pressed is from the sidebar
+			// splits the sidebar based on tabs
+			if (tabPressed.equals("blocks")) {
+				for (Block b : blockSidebar) {
+					if (mousePressedBlock(b, e)) {
+						// calls mousePressed from b, b is now being dragged, the sideBar was pressed
+						b.mousePressed(e);
+						curDragging = b;
+						sidebarPressed = true;
+						chosen = true;
+					}
+				}
+			} else if (tabPressed.equals("enemies")) {
+				for (Block b : enemySidebar) {
+					if (mousePressedBlock(b, e)) {
+						b.mousePressed(e);
+						curDragging = b;
+						sidebarPressed = true;
+						chosen = true;
+					}
+				}
+			} else {
+				for (Block b : powerUpSidebar) {
+					if (mousePressedBlock(b, e)) {
+						b.mousePressed(e);
+						curDragging = b;
+						sidebarPressed = true;
+						chosen = true;
+					}
+				}
+			}
+
+			// checks if a tab is pressed
+			if (e.getX() >= TAB_X && e.getX() <= TAB_X + TAB_WIDTH && e.getY() <= 3 * TAB_HEIGHT + 60) {
+				if (e.getY() >= 2 * TAB_HEIGHT + 20) {
+					// powerups was chosen
+					tabPressed = "powerups";
+				} else if (e.getY() >= TAB_HEIGHT) {
+					// enemies was chosen
+					tabPressed = "enemies";
+				} else {
+					// blocks was chosen
+					tabPressed = "blocks";
+				}
+			}
+
+		}
+
+	}
+
+	// handles when the mouse is released
+	public void mouseReleased(MouseEvent e) {
+
+		if (edit) {
+
+			// if there IS a block being dragged
+			if (curDragging != null) {
+				// checks if it is still on the sidebar
+				if (curDragging.x <= TAB_X) {
+					// remove it if it's still on the sidebar and not dragged into the sandbox
+					elements.remove(curDragging);
+					curSelected = null;
+				} else if (hover != null) { // if there IS a block being hovered over b the curDragging block
+
+					// loops through all the blocks
+					boolean works = true;
+					for (int i = 0; i < elements.size(); i++) {
+						Block b = elements.get(i);
+						// if its the one that is already being dragged continue (no point on checking
+						// it to itself)
+						if (b == curDragging)
+							continue;
+						// if the snapped piece is also going to intersect a piece then don't add it
+						if (hover.intersects(b)) {
+							elements.remove(curDragging);
+							curSelected = null;
+							works = false;
+							break;
+						}
+					}
+					// if the snapped piece does not intersect another piece then you can add it
+					if (works) {
+						elements.remove(curDragging);
+						elements.add(hover);
+						if (hover instanceof Goblin && !onTop) {
 							elements.remove(hover);
-						 }
+						}
 
-						 curSelected = hover;
-					 }
-				 //checks if a block is trying to be placed on an existing block
-				 } else if (hover == null && checkAllIntersection(curDragging)) {
-					 elements.remove(curDragging);
-					 curSelected = null;
-				 }else {
-					if(hover == null && curDragging instanceof Goblin) {
+						curSelected = hover;
+					}
+					// checks if a block is trying to be placed on an existing block
+				} else if (hover == null && checkAllIntersection(curDragging)) {
+					elements.remove(curDragging);
+					curSelected = null;
+				} else {
+					if (hover == null && curDragging instanceof Goblin) {
 						elements.remove(curDragging);
 					}
-				 }
-			 }
-			 //once mouse is released
-			 curDragging = null;
-			 hover = null;
-		 }
-	 
-	 
-	 }
- 
- 
-	 public void mouseEntered(MouseEvent e) {
- 
-	 }
- 
- 
-	 public void mouseExited(MouseEvent e) {
- 
-	 }
- 
- 
-	 //handles when the mouse is dragged
-	 public void mouseDragged(MouseEvent e) {
-		 //variable declarations
-		 int tmpX;
-		 int tmpY;
-		 int centerX;
-		 int centerY;
-		 
-		 if (edit && curDragging != null) {
-			 //the selected block is now dragged
-			 curSelected = curDragging;
-			 // checks if the sidebar is being pressed
-			 if (sidebarPressed) {
-				 // checks for the element pressed and makes a new element of the correct type
-				 if (tabPressed.equals("blocks")) {
-					 if (curDragging.equals(tabPortal)) {
-						 try {
-							 elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
- 
-					 else if (curDragging.equals(tabStone)) {
-						 try {
-							 elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
- 
-					 else if (curDragging.equals(tabIce)) {
-						 try {
-							 elements.add(new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
- 
-					 else if (curDragging.equals(tabLadder)) {
-						 try {
-							 elements.add(new Ladder(TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
- 
-					 else if (curDragging.equals(tabCrackedStone)) {
-						 try {
-							 elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height,
-									 crackedStoneImage));
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
-				 } else if (tabPressed.equals("enemies")) {
-					 if (curDragging.equals(tabGoblin)) {
-						 try {
-							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
-							
-						 } catch (IOException IOE) {
-						 }
-						 curDragging = elements.get(elements.size() - 1);
-					 }
-					 if (curDragging.equals(tabTurret)) {
-						 try {
+				}
+			}
+			// once mouse is released
+			curDragging = null;
+			hover = null;
+		}
 
-							if(flipNum % 2 != 0) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	// handles when the mouse is dragged
+	public void mouseDragged(MouseEvent e) {
+		// variable declarations
+		int tmpX;
+		int tmpY;
+		int centerX;
+		int centerY;
+
+		if (edit && curDragging != null) {
+			// the selected block is now dragged
+			curSelected = curDragging;
+			// checks if the sidebar is being pressed
+			if (sidebarPressed) {
+				// checks for the element pressed and makes a new element of the correct type
+				if (tabPressed.equals("blocks")) {
+					if (curDragging.equals(tabPortal)) {
+						try {
+							elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+
+					else if (curDragging.equals(tabStone)) {
+						try {
+							elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+
+					else if (curDragging.equals(tabIce)) {
+						try {
+							elements.add(new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+
+					else if (curDragging.equals(tabLadder)) {
+						try {
+							elements.add(new Ladder(TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+
+					else if (curDragging.equals(tabCrackedStone)) {
+						try {
+							elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height,
+									crackedStoneImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					} else if (curDragging.equals(tabChest)) {
+						try {
+							elements.add(new Chest(TAB_X - 110, 340, Chest.width, Chest.height, closedChestImage));
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+				} else if (tabPressed.equals("enemies")) {
+					if (curDragging.equals(tabGoblin)) {
+						try {
+							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft,
+									goblinRunRight, true));
+
+						} catch (IOException IOE) {
+						}
+						curDragging = elements.get(elements.size() - 1);
+					}
+					if (curDragging.equals(tabTurret)) {
+						try {
+
+							if (flipNum % 2 != 0) {
 								turLeft = true;
 								turRight = false;
 							} else {
@@ -1097,6 +1118,7 @@
 			 tabIce.draw(g);
 			 tabLadder.draw(g);
 			 tabCrackedStone.draw(g);
+			 tabChest.draw(g);
  
 		 } else {
 			 //if not loaded then the tab looks different
@@ -1290,12 +1312,16 @@
 							 } else if (inputs[0].equals("CrackedStone")) {
 								 elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										 CrackedStone.width, CrackedStone.height, crackedStoneImage));
-							 } else if (inputs[0].equals("Goblin")) {
+							 } else if (inputs[0].equals("Chest")) {
+								elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										Chest.width, Chest.height, closedChestImage));
+ 
+							  } else if (inputs[0].equals("Goblin")) {
 								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
 							 } else if (inputs[0].equals("Turret")) {
 
-								if(flipNum % 2 != 0) {
+								if (flipNum % 2 != 0) {
 									turLeft = true;
 									turRight = false;
 								} else {
@@ -1303,47 +1329,49 @@
 									turRight = true;
 								}
 
-								 elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Turret.width, Turret.height, turretImage, turLeft, turRight, true));
-							 } else if (inputs[0].equals("OneUp")) {
-								 elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 OneUp.width, OneUp.height, oneUpImage));
-							 } else if (inputs[0].equals("SpeedBoost")) {
-								 elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 SpeedBoost.width, SpeedBoost.height, speedBoostImage));
-							 }
-						 }
-						 return;
-					 }
- 
-				 }
-			 } catch (IOException e) {
-				 e.printStackTrace();
-			 }
- 
-		 }
- 
-	 }
- 
-	 //returns a Block as a more specific class depending on what the className is
-	 public Block decipherBlock(Block b, int x, int y, int width, int height) throws IOException {
-		 Class<?> type = b.getClass();
-		 String className = type.getName();
-		 if (className.equals("Stone")) {
-			 return new Stone(x, y, width, height, b.img);
-		 } else if (className.equals("Ice")) {
-			 return new Ice(x, y, width, height, b.img);
-		 } else if (className.equals("Portal")) {
-			 return new Portal(x, y, width, height, b.img);
-		 } else if (className.equals("Ladder")) {
-			 return new Ladder(x, y, width, height, b.img);
-		 } else if (className.equals("CrackedStone")) {
-			 return new CrackedStone(x, y, width, height, b.img);
-		 } else if (className.equals("Goblin")) {
-			 return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
-		 } else if (className.equals("Turret")) {
+								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										Turret.width, Turret.height, turretImage, turLeft, turRight, true));
+							} else if (inputs[0].equals("OneUp")) {
+								elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										OneUp.width, OneUp.height, oneUpImage));
+							} else if (inputs[0].equals("SpeedBoost")) {
+								elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+										SpeedBoost.width, SpeedBoost.height, speedBoostImage));
+							}
+						}
+						return;
+					}
 
-			if(flipNum % 2 != 0){
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	// returns a Block as a more specific class depending on what the className is
+	public Block decipherBlock(Block b, int x, int y, int width, int height) throws IOException {
+		Class<?> type = b.getClass();
+		String className = type.getName();
+		if (className.equals("Stone")) {
+			return new Stone(x, y, width, height, b.img);
+		} else if (className.equals("Ice")) {
+			return new Ice(x, y, width, height, b.img);
+		} else if (className.equals("Portal")) {
+			return new Portal(x, y, width, height, b.img);
+		} else if (className.equals("Ladder")) {
+			return new Ladder(x, y, width, height, b.img);
+		} else if (className.equals("CrackedStone")) {
+			return new CrackedStone(x, y, width, height, b.img);
+		} else if (className.equals("Chest")) {
+			return new Chest(x, y, width, height, b.img);
+		} else if (className.equals("Goblin")) {
+			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
+		} else if (className.equals("Turret")) {
+
+			if (flipNum % 2 != 0) {
 				turLeft = true;
 				turRight = false;
 			} else {
@@ -1351,37 +1379,62 @@
 				turRight = true;
 			}
 
-			 return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
-		 } else if (className.equals("OneUp")) {
-			 return new OneUp(x, y, width, height, b.img);
-		 } else if (className.equals("SpeedBoost")) {
-			 return new SpeedBoost(x, y, width, height, b.img);
-		 }
-		 return b;
-	 }
- 
-	 //returns the name of the class of Block b
-	 public static String getClass(Block b) {
-		 Class<?> type = b.getClass();
-		 return type.getName();
-	 }
- 
-	 //returns a Block that is horizontally flipped compared to b
-	 public Block hFlip(Block b) throws IOException {
-		if(b instanceof Turret) {
-			flipNum++; //used to account for turret flips
+			return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
+		} else if (className.equals("OneUp")) {
+			return new OneUp(x, y, width, height, b.img);
+		} else if (className.equals("SpeedBoost")) {
+			return new SpeedBoost(x, y, width, height, b.img);
+		}
+
+		return b;
+	}
+
+	// returns the name of the class of Block b
+	public static String getClass(Block b) {
+		Class<?> type = b.getClass();
+		return type.getName();
+	}
+
+	// returns a Block that is horizontally flipped compared to b
+	public Block hFlip(Block b) throws IOException {
+		if (b instanceof Turret) {
+			flipNum++; // used to account for turret flips
 			System.out.println("hi " + flipNum);
 		}
-		 return decipherBlock(b, b.x + b.width, b.y, -b.width, b.height);
-	 }
- 
-	 //checks if the mouse is on a block, flip is counted for
-	 public boolean mousePressedBlock(Block b, MouseEvent e) {
-		 if (b.width < 0) {
-			 return b.x + b.width <= e.getX() && b.x >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY();
-		 } else {
-			 return b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY();
-		 }
-	 }
- 
- }
+		return decipherBlock(b, b.x + b.width, b.y, -b.width, b.height);
+	}
+
+	// checks if the mouse is on a block, flip is counted for
+	public boolean mousePressedBlock(Block b, MouseEvent e) {
+		if (b.width < 0) {
+			return b.x + b.width <= e.getX() && b.x >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY();
+		} else {
+			return b.x <= e.getX() && b.x + b.width >= e.getX() && b.y <= e.getY() && b.y + b.height >= e.getY();
+		}
+	}
+
+	public void gameEnd(Graphics2D g) {
+		g.setColor(new Color(255, 255, 255, 150));
+		g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+		repaint();
+		knight.keysPressed.clear();
+		back.keysPressed.clear();
+		Block.keysPressed.clear();
+		Player.xVelocity = 0;
+		Block.xVelocity = 0;
+		back.xVelocity = 0;
+		if (win) {
+			endChest.img = openChestImage;
+			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
+			g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
+			g.drawString("YOU WIN", 250, 300);
+			g.setColor(new Color(0, 0, 0, gameEndAlpha < 200 ? 0 : gameEndAlpha - 200));
+			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+			g.drawString("Time: " + (endTime - startTime) / 1000, 380, 350);
+			if (gameEndAlpha < 455)
+				gameEndAlpha++;
+		}
+
+	}
+
+}

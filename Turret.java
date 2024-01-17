@@ -1,4 +1,3 @@
-
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
@@ -18,9 +17,11 @@
  
  public class Turret extends Block {
 	 
+	
 	 public static int width = 60;
 	 public static int height = 60;
-	 public BufferedImage i; //img for turret
+
+
 	 public boolean l, r = false;
 	 public boolean isEnemy = false;
 	 public int fireDist = 100;
@@ -40,7 +41,9 @@
 		 } catch (IOException e) {
 			 e.printStackTrace();
 		 }
-		 createNewFireball();
+		 if(isEnemy) {
+			createNewFireball();
+		 }
  
 	 }
 	 
@@ -57,11 +60,11 @@
 		 ball.draw(g);
 			 // System.out.println(ball.xVelocity);
 	 }
-	 public void keyReleased(KeyEvent e, boolean play) {
-		 super.keyReleased(e, play);
-		 ball.keyReleased(e, play);
+	 public void keyReleased(KeyEvent e) {
+		 super.keyReleased(e);
+		 ball.keyReleased(e);
 		 if(ballTwo != null) {
-			 ballTwo.keyReleased(e, play);
+			 ballTwo.keyReleased(e);
 		 }
  
 	 }
