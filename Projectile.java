@@ -97,7 +97,13 @@ public class Projectile extends Rectangle {
 
 				}
 				// xBorder+=-5;
+	
 			}
+			if(GamePanel.edit){
+				System.out.println("hejhkjhkjhkhjgkjh");
+				x-=Block.SPEED;
+			}
+
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
 
@@ -107,9 +113,13 @@ public class Projectile extends Rectangle {
 				} else if (l) {
 					setXDirection(0);
 				}
-
 				// xBorder+=5;
 			}
+			if(GamePanel.edit){
+				System.out.println("aaaaaaaaaaaaaaaaaaa");
+				x+=Block.SPEED;
+			}
+
 		}
 
 		if (!Player.isCentered) {
