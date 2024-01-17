@@ -60,11 +60,11 @@
 		 ball.draw(g);
 			 // System.out.println(ball.xVelocity);
 	 }
-	 public void keyReleased(KeyEvent e, boolean play) {
-		 super.keyReleased(e, play);
-		 ball.keyReleased(e, play);
+	 public void keyReleased(KeyEvent e) {
+		 super.keyReleased(e);
+		 ball.keyReleased(e);
 		 if(ballTwo != null) {
-			 ballTwo.keyReleased(e, play);
+			 ballTwo.keyReleased(e);
 		 }
  
 	 }

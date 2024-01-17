@@ -1,6 +1,3 @@
 
 Hardest Level Ever!: Portal 579 452 60 75: Ice 902 436 60 40: Ice 962 436 60 40: Ice 1022 436 60 40: Stone 842 436 60 40: CrackedStone 1130 340 60 40: Stone 1190 340 60 40: Ladder 1061 395 20 40: Ladder 1061 355 20 40: Ladder 1061 315 20 40: Ladder 1061 235 20 40: Stone 1083 237 60 40: Ice 1204 199 60 40: Stone 1143 198 60 40: Ladder 1061 275 20 40: Ice 1264 199 60 40: Ice 73 270 60 40: Ice 133 270 60 40: Ice -1027 331 60 40: OneUp 901 376 60 60: SpeedBoost 1088 192 45 45: Goblin 325 386 50 50: Turret 184 463 60 60: 
 Collision Testing: Portal 207 450 60 75: CrackedStone 303 485 60 40: CrackedStone 473 430 60 40: Ice 69 426 60 40: Stone 756 446 60 40: Ice 512 380 60 40: 
-turtest2: Portal 935 449 60 75: Ice 105 456 60 40: Stone 1402 431 60 40: Turret 377 457 60 60: 
-123: Portal 882 454 60 75: Ice 9 467 60 40: CrackedStone 1605 477 60 40: Turret 273 468 60 60: 
-enemy test: Turret 192 471 60 60: Goblin 506 421 50 50: 
