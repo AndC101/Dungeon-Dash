@@ -100,7 +100,7 @@ public class Player extends Rectangle {
     
     //moves the player
     public void move() {
-    	System.out.println(x);
+    	// System.out.println(x);
     	//no need to move if the screen is following the player
     	if(isCentered) {
     		setXDirection(0);

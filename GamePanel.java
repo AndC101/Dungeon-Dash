@@ -91,7 +91,7 @@
 	 public int totalHeight;
 	 public int numButtons = 0; // to be changed once file IO works
 	 public int leftBorder = 1000000000, rightBorder = -1;
-	 public static int shift = 0;
+	 public static int shift;
 	 public int spawnX = 0;
 	 public int adjust = 0;
 	 public int powerUpBob = 0;
@@ -152,6 +152,8 @@
 			 mainMenu = false;
 			 this.edit = false;
 			 this.play = true;
+		 } else {
+			mainMenu=true;
 		 }
  
 		 // initializes the Player
@@ -193,7 +195,7 @@
 		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				 crackedStoneImage);
  
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
 		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
  
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);

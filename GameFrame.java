@@ -6,6 +6,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.*;
@@ -14,7 +17,7 @@ public class GameFrame extends JFrame implements ActionListener{
 
     private static GameFrame currentGameFrame; // keeps track of current GameFrame instance
 	GamePanel panel;
-
+	JPanel mainPanel;
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 		
 		//dispose old gameframes 
@@ -47,7 +50,7 @@ public class GameFrame extends JFrame implements ActionListener{
 
 			//layout
 			SpringLayout layout = new SpringLayout();
-			JPanel mainPanel = new JPanel();
+			mainPanel = new JPanel();
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
 
@@ -60,12 +63,15 @@ public class GameFrame extends JFrame implements ActionListener{
 				JLabel label = new JLabel("Title: " + title);
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
+				JButton deleteButton = new JButton("Delete");
+
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
 
 				//add and format the information
 				mainPanel.add(label);
 				mainPanel.add(playButton);
 				mainPanel.add(editButton);
+				mainPanel.add(deleteButton);
 				layout.putConstraint(SpringLayout.WEST, label, 20, SpringLayout.WEST,
 								contentPane);
 				layout.putConstraint(SpringLayout.NORTH, label, j, SpringLayout.NORTH,
@@ -78,9 +84,17 @@ public class GameFrame extends JFrame implements ActionListener{
 								contentPane);
 				layout.putConstraint(SpringLayout.WEST, editButton, 20, SpringLayout.EAST,
 								playButton);
-				
-				addPlayButtonListener(playButton, title); //when play/edit button is pressed, the title of the level is sent to gamepanel for processing
+				layout.putConstraint(SpringLayout.NORTH, deleteButton, j, SpringLayout.NORTH,
+				contentPane);
+				layout.putConstraint(SpringLayout.WEST, deleteButton, 20, SpringLayout.EAST,
+				editButton);
+
+
+
+							
+				addPlayButtonListener(playButton, title); //when play/edit/delete button is pressed, the title of the level is sent to gamepanel for processing
 				addEditButtonListener(editButton, title);
+				addDeleteButtonListener(deleteButton, title);
 
 				j+=60;
 			}
@@ -143,6 +157,30 @@ public class GameFrame extends JFrame implements ActionListener{
 			});
     }
 
+	private void addDeleteButtonListener(JButton playButton, String title) {
+        playButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+                // debug for play button pressed
+                System.out.println("Delete button in row " + title + " pressed!");
+				deleteLevel(title);
+				deleteLevelName(title);
+
+				JOptionPane.showMessageDialog(mainPanel,  "Level deleted!", "Delete Confirmation",
+				JOptionPane.INFORMATION_MESSAGE);
+				try {
+					new GameFrame(true,false, false, "");
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+	
+
+            }
+        });
+    }
+
+
+
 	//checks if a button is pressed (back button only)
 	public void actionPerformed(ActionEvent e) {
 		//if back button pressed
@@ -152,12 +190,73 @@ public class GameFrame extends JFrame implements ActionListener{
 
             //opens new frame back to the main mennu
             try {
-                new GameFrame(false, false, false, "");
+                new GameFrame(false,false, false, "");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         } 
 		
 	}
-  
+
+	public void deleteLevel(String title) {
+	// if the title is not found or there is no title
+
+		try {
+			// input the (modified) file content to the StringBuffer "input"
+			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+
+				if (!line.startsWith(title)) {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				} 
+			}
+
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+	}	
+
+	public void deleteLevelName(String title) {
+		// if the title is not found or there is no title
+	
+			try {
+				// input the (modified) file content to the StringBuffer "input"
+				BufferedReader file = new BufferedReader(new FileReader("names.txt"));
+				StringBuffer inputBuffer = new StringBuffer();
+				String line = file.readLine();
+				String newTitles = "";
+				String[] names = line.split(", ");
+				for(String name: names){
+					if(!name.equals(title)){
+						newTitles += name + ", ";
+					}
+				}
+				inputBuffer.append(newTitles);
+				file.close();
+	
+				// write the new string with the replaced line OVER the same file
+				FileOutputStream fileOut = new FileOutputStream("names.txt");
+				fileOut.write(inputBuffer.toString().getBytes());
+				fileOut.close();
+	
+			} catch (Exception e) {
+				System.out.println("Problem reading file.");
+			}
+		}	
+	
+
+
 }
+
+  
