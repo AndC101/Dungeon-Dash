@@ -35,6 +35,7 @@ public class Player extends Rectangle {
 	public final int JUMP_SPEED = 6;
 	public double initY = 0;
 	public static boolean canJump = true;
+	public static int lastMoved = 0;
 
 	// has to do with speed
 
@@ -102,7 +103,6 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
-		if(x != 0 && x != Integer.MIN_VALUE) System.out.println(canFall());
 		// no need to move if the screen is following the player
 		if (isCentered) {
 			setXDirection(0);
@@ -112,18 +112,26 @@ public class Player extends Rectangle {
 		// in that direction
 		if (keysPressed.contains('d')) {
 			isRight = true;
-
 			isLeft = false;
-
+			lastMoved = 1;
 			if (!isCentered) {
-				setXDirection(SPEED);
+				setXDirection(SPEED + ((under != null && GamePanel.getClass(under).equals("Ice"))? 2:0));
 			}
 
 		} else if (keysPressed.contains('a')) {
 			isLeft = true;
 			isRight = false;
+			lastMoved = -1;
 			if (!isCentered) {
-				setXDirection(-SPEED);
+				setXDirection(-SPEED + ((under != null && GamePanel.getClass(under).equals("Ice"))? -2:0));
+			}
+		}
+		else {
+			if(under != null && GamePanel.getClass(under).equals("Ice")) {
+				setXDirection(2*lastMoved);
+			}
+			else {
+				setXDirection(0);
 			}
 		}
 

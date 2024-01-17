@@ -142,67 +142,65 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
 
 	public boolean onTop = false;
-	public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
-		// initializes the variables handling the different screens
-		if (levelSelect) {
-			this.levelSelect = true;
-			mainMenu = false;
-			this.edit = false;
-			this.play = false;
-		} else if (edit) {
-			this.levelSelect = false;
-			mainMenu = false;
-			this.edit = true;
-			this.play = false;
-		} else if (play) {
-			this.levelSelect = false;
-			mainMenu = false;
-			this.edit = false;
-			this.play = true;
-			
-		} else {
+	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
+		 // initializes the variables handling the different screens
+		 if (levelSelect) {
+			 this.levelSelect = true;
+			 mainMenu = false;
+			 this.edit = false;
+			 this.play = false;
+		 } else if (edit) {
+			 this.levelSelect = false;
+			 mainMenu = false;
+			 this.edit = true;
+			 this.play = false;
+		 } else if (play) {
+			 this.levelSelect = false;
+			 mainMenu = false;
+			 this.edit = false;
+			 this.play = true;
+		 } else {
 			mainMenu = true;
-		}
-
-		// initializes the Player
-		knight = new Player(Integer.MIN_VALUE, Integer.MIN_VALUE, 43, 53);
-
-		// get the title of the save file
-		prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
-
-		// read the titles of each entry in LevelSave into arraylist names so no
-		// duplicate is made
-		readFirstWords();
-
-		// make everything in this class appear on the screen
-		this.setFocusable(true);
-
-		// start listening for keyboard and mouse input
-		this.addKeyListener(this);
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-
-		// code to rotate the text for the "block" description
-		affineTransform.rotate(Math.toRadians(90), 0, 0);
-		rotatedFont = font.deriveFont(affineTransform);
-
-		// initializes the ArrayLists
-		elements = new ArrayList<Block>();
-		blockSidebar = new ArrayList<Block>();
-		enemySidebar = new ArrayList<Block>();
-		powerUpSidebar = new ArrayList<Block>();
-
-		readData(prevSavedTitle); // populates the elements ArrayList with the blocks for the save level
-		// if not applicable, prevSavedTitle = "";
-
-		// creates the objects for the sidebar objects
-		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
-		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
-		tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
-		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
-		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
-				crackedStoneImage);
-
+		 }
+ 
+		 // initializes the Player
+		 knight = new Player(0, 0, 43, 53);
+ 
+		 // get the title of the save file
+		 prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
+ 
+		 // read the titles of each entry in LevelSave into arraylist names so no
+		 // duplicate is made
+		 readFirstWords();
+ 
+		 // make everything in this class appear on the screen
+		 this.setFocusable(true);
+ 
+		 // start listening for keyboard and mouse input
+		 this.addKeyListener(this);
+		 this.addMouseListener(this);
+		 this.addMouseMotionListener(this);
+ 
+		 // code to rotate the text for the "block" description
+		 affineTransform.rotate(Math.toRadians(90), 0, 0);
+		 rotatedFont = font.deriveFont(affineTransform);
+ 
+		 // initializes the ArrayLists
+		 elements = new ArrayList<Block>();
+		 blockSidebar = new ArrayList<Block>();
+		 enemySidebar = new ArrayList<Block>();
+		 powerUpSidebar = new ArrayList<Block>();
+ 
+		 readData(prevSavedTitle); // populates the elements ArrayList with the blocks for the save level
+		 // if not applicable, prevSavedTitle = "";
+ 
+		 // creates the objects for the sidebar objects
+		 tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
+		 tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
+		 tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
+		 tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
+		 tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
+				 crackedStoneImage);
 		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
 		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
@@ -219,146 +217,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		 blockSidebar.add(tabCrackedStone);
 		 blockSidebar.add(tabChest);
 
-		enemySidebar.add(tabGoblin);
-		enemySidebar.add(tabTurret);
-
-		powerUpSidebar.add(tabOneUp);
-		powerUpSidebar.add(tabSpeedBoost);
-
-		// total height for the scrollpane
-		// make the scrollpane height slightly bigger than the height of each button *
-		// the num of buttons which makes the levelSelect
-		// frame scrollable and adjusts to however many buttons the app needs
-		// names.size() refers to the number of names of levels (how many levels AKA
-		// buttons since each level requires space for it's button label)
-		totalHeight = names.size() * numButtons;
-		this.setPreferredSize(new Dimension(GAME_WIDTH, GAME_HEIGHT));
-
-		// allows this class to run at the same time as others
-
-		gameThread = new Thread(this);
-		gameThread.start();
-	}
-
-	// overriding the paint method
-	public void paint(Graphics g) {
-		// double buffering
-		image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
-		graphics = image.getGraphics();
-		draw((Graphics2D) graphics);// update the positions of everything on the screen
-		g.drawImage(image, 0, 0, this); // move the image on the screen
-
-	}
-
-	// draws everything on the screen
-	// call the draw methods in each class to update positions as things move
-	public void draw(Graphics2D g) {
-		// checks which screen should be displayed
-		if (mainMenu) {
-			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
-			g.drawImage(menuBackground, 0, 0, this);
-			g.setColor(Color.white);
-			// display text for the title
-			g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
-			g.setColor(new Color(255, 255, 255, alpha));
-
-			// causes the text to fade in and out by adjusting transparancy value
-			if (alphaUp)
-				alpha += 2;
-			else
-				alpha -= 2;
-
-			if (alpha >= 250)
-				alphaUp = false;
-			if (alpha <= 100)
-				alphaUp = true;
-
-			// display text for the menu
-			// indicator pos allows user to use up and down keys to position their choice in
-			// the menu
-			g.drawString("> ", 300, indicatorPos);
-			g.drawString("Level selection", 325, 250);
-			g.drawString("Create new dungeon", 325, 320);
-
-		} else if (edit) {
-
-			// draw the background
-			back.draw(g);
-
-			// draw strings for user instruction for save and play
-			g.setColor(Color.white);
-			g.drawString("Enter \"1\" to SAVE level.", 200, 10);
-			g.drawString("Enter \"2\" to PLAY level.", 200, 25);
-
-			g.setColor(Color.black);
-
-			// draws all elements on the screen
-			for (Block b : elements) {
-				b.draw(g);
-			}
-			// draws the sidebar
-			drawSidebar(g);
-
-			// check if its being hovered and makes it like transparent
-			if (hover != null) {
-				Graphics2D g2d = (Graphics2D) g;
-				AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
-				g2d.setComposite(ac);
-				hover.draw(g2d);
-			}
-			// draws the outline of the the selected object
-			if (curSelected != null) {
-				g.setColor(Color.yellow);
-				// checks if the image is reflected
-				if (curSelected.width < 0) {
-					g.fillRect(curSelected.x + curSelected.width - 3, curSelected.y - 3, -curSelected.width + 3, 3);
-					g.fillRect(curSelected.x + curSelected.width - 3, curSelected.y - 3, 3, curSelected.height + 3);
-					g.fillRect(curSelected.x, curSelected.y, 3, curSelected.height + 3);
-					g.fillRect(curSelected.x + curSelected.width, curSelected.y + curSelected.height,
-							-curSelected.width + 3, 3);
-				} else {
-					g.fillRect(curSelected.x - 3, curSelected.y - 3, curSelected.width + 3, 3);
-					g.fillRect(curSelected.x - 3, curSelected.y - 3, 3, curSelected.height + 3);
-					g.fillRect(curSelected.x + curSelected.width, curSelected.y, 3, curSelected.height + 3);
-					g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width + 3, 3);
-				}
-
-			}
-
-		} else if (levelSelect) {
-			// to be filled (draw the image background?)
-		}
-
-		else if (play) {
-			// draws the background
-			back.draw(g);
-
-			// loops through all elements
-			for (Block b : elements) {
-				// checks if it is a powerup and if so make it bob up and down
-				if (getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
-					if (powerUpUp) {
-						powerUpBob++;
-						if (powerUpBob % 2 == 0)
-							b.y++;
-					} else {
-						powerUpBob--;
-						if (powerUpBob % 2 == 0)
-							b.y--;
-					}
-
-					if (powerUpBob >= 20)
-						powerUpUp = false;
-					if (powerUpBob <= -20)
-						powerUpUp = true;
-
-				}
-				// draws all the Blocks
-				b.draw(g);
-			}
-
-			// draws the knight
-			knight.draw(g);
 		 enemySidebar.add(tabGoblin);
 		 enemySidebar.add(tabTurret);
  
@@ -379,7 +237,212 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		 gameThread.start();
 	 }
  
-	}
+	 // overriding the paint method
+	 public void paint(Graphics g) {
+		 // double buffering
+		 image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
+		 graphics = image.getGraphics();
+		 draw((Graphics2D) graphics);// update the positions of everything on the screen
+		 g.drawImage(image, 0, 0, this); // move the image on the screen
+ 
+	 }
+ 
+	 // draws everything on the screen
+	 // call the draw methods in each class to update positions as things move
+	 public void draw(Graphics2D g) {
+		 // checks which screen should be displayed
+		 if (mainMenu) {
+			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+			 g.drawImage(menuBackground, 0, 0, this);
+			 g.setColor(Color.white);
+			 // display text for the title
+			 g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+			 g.setColor(new Color(255, 255, 255, alpha));
+ 
+			 // causes the text to fade in and out by adjusting transparancy value
+			 if (alphaUp)
+				 alpha += 2;
+			 else
+				 alpha -= 2;
+ 
+			 if (alpha >= 250)
+				 alphaUp = false;
+			 if (alpha <= 100)
+				 alphaUp = true;
+ 
+			 // display text for the menu
+			 // indicator pos allows user to use up and down keys to position their choice in
+			 // the menu
+			 g.drawString("> ", 300, indicatorPos);
+			 g.drawString("Level selection", 325, 250);
+			 g.drawString("Create new dungeon", 325, 320);
+ 
+		 } else if (edit) {
+ 
+			 // draw the background
+			 back.draw(g);
+ 
+			 // draw strings for user instruction for save and play
+			 g.setColor(Color.white);
+			 g.drawString("Enter \"1\" to SAVE level.", 200, 10);
+			 g.drawString("Enter \"2\" to PLAY level.", 200, 25);
+ 
+			 g.setColor(Color.black);
+ 
+			 // draws all elements on the screen
+			 for (Block b : elements) {
+				 b.draw(g);
+			 }
+			 // draws the sidebar
+			 drawSidebar(g);
+ 
+			 // check if its being hovered and makes it like transparent
+			 if (hover != null) {
+				 Graphics2D g2d = (Graphics2D) g;
+				 AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+				 g2d.setComposite(ac);
+				 hover.draw(g2d);
+			 }
+			 // draws the outline of the the selected object
+			 if (curSelected != null) {
+				 g.setColor(Color.yellow);
+				 // checks if the image is reflected
+				 if (curSelected.width < 0) {
+					 g.fillRect(curSelected.x + curSelected.width - 3, curSelected.y - 3, -curSelected.width + 3, 3);
+					 g.fillRect(curSelected.x + curSelected.width - 3, curSelected.y - 3, 3, curSelected.height + 3);
+					 g.fillRect(curSelected.x, curSelected.y, 3, curSelected.height + 3);
+					 g.fillRect(curSelected.x + curSelected.width, curSelected.y + curSelected.height,
+							 -curSelected.width + 3, 3);
+				 } else {
+					 g.fillRect(curSelected.x - 3, curSelected.y - 3, curSelected.width + 3, 3);
+					 g.fillRect(curSelected.x - 3, curSelected.y - 3, 3, curSelected.height + 3);
+					 g.fillRect(curSelected.x + curSelected.width, curSelected.y, 3, curSelected.height + 3);
+					 g.fillRect(curSelected.x, curSelected.y + curSelected.height, curSelected.width + 3, 3);
+				 }
+ 
+			 }
+ 
+		 } else if (levelSelect) {
+			 // to be filled (draw the image background?)
+		 }
+ 
+		 else if (play) {
+ 
+			 // draws the background
+			 back.draw(g);
+ 
+			 // loops through all elements
+			 for (Block b : elements) {
+				 // checks if it is a powerup and if so make it bob up and down
+				 if (getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
+					 if (powerUpUp) {
+						 powerUpBob++;
+						 if (powerUpBob % 2 == 0)
+							 b.y++;
+					 } else {
+						 powerUpBob--;
+						 if (powerUpBob % 2 == 0)
+							 b.y--;
+					 }
+ 
+					 if (powerUpBob >= 20)
+						 powerUpUp = false;
+					 if (powerUpBob <= -20)
+						 powerUpUp = true;
+ 
+				 }
+				 // draws all the Blocks
+				 b.draw(g);
+			 }
+ 
+			 if (spawn) { // spawns the knight in front of the portal
+				startTime = System.currentTimeMillis();
+
+				 // finds the spawn portal and forces it to the center
+				 for (Block b : elements) {
+					 if (b.img != null && b.img.equals(portalImage)) {
+						 spawnPortal = (Portal) b;
+						 shift = spawnPortal.x - GAME_WIDTH / 2 + spawnPortal.width / 2;
+						 break;
+					 }
+					 if (b.img != null && b.img.equals(closedChestImage)) {
+						endChest = (Chest) b;
+					}
+
+				 }
+				 // moves all blocks to adjust for the shift to the portal and finds the left and
+				 // rightmost block coordinates
+				 for (Block b : elements) {
+					 b.x -= shift;
+					 leftBorder = Math.min(leftBorder, b.x);
+					 rightBorder = Math.max(rightBorder, b.x + b.width);
+				 }
+				 
+				 if (rightBorder - leftBorder <= GAME_WIDTH) {
+					Player.oneScreen = true;
+				}
+				 
+				 // saves the original position of the portal
+				 spawnX = spawnPortal.x;
+				 // moves the knight to the portal
+				 
+				 knight.x = spawnPortal.x + spawnPortal.width / 2 - knight.width / 2;
+				 knight.y = spawnPortal.y + (spawnPortal.height - knight.height);
+				 
+ 
+			 }
+ 
+			 // checks which half of the level the knight is on
+			 if (Math.abs(leftBorder + spawnPortal.x - spawnX) <= (rightBorder + spawnPortal.x - spawnX - GAME_WIDTH)) {
+				 knight.left = true;
+			 } else {
+				 knight.left = false;
+			 }
+ 
+			 // checks if a border is reached
+			 if (leftBorder + spawnPortal.x - spawnX >= 0 || rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+				 // checks which border is reached
+				 if (leftBorder + spawnPortal.x - spawnX >= 0) {
+					 // calculates how much is needed to move so that the block appears right on the
+					 // edge
+					 adjust = leftBorder + spawnPortal.x - spawnX;
+				 }
+				 // same as above
+				 else if (rightBorder + spawnPortal.x - spawnX <= GAME_WIDTH) {
+					 adjust = (rightBorder + spawnPortal.x - spawnX) - GAME_WIDTH;
+ 
+				 }
+ 
+				 // moves all blocks accordingly and the knight if it was just spawned
+				 for (Block b : elements) {
+					 b.x -= adjust;
+				 }
+				 if (spawn) {
+					 knight.x -= adjust;
+				 }
+				 
+ 
+				 // since a border is reached, the knight no longer needs to be centered
+				 Player.isCentered = false;
+			 }
+ 
+			 // draws the knight
+			 knight.draw(g);
+ 
+			 if (spawn)
+			 spawn = false;
+			if (endChest != null && knight.intersects(endChest)) {
+				if (endTime == -1) {
+					endTime = System.currentTimeMillis();
+				}
+				gameEnd = true;
+				win = true;
+				gameEnd(g);
+			}
+
+		 }
+		 
+	 }
  
 	 // calls the move method of all other methods
 	 // laggy
@@ -426,7 +489,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if (getClass(b).equals("Portal") || getClass(b).equals("Goblin") || getClass(b).equals("Chest")) {
 					continue;
 				}
-			
+
 				if (((knight.x > b.x && knight.x < b.x + b.width)
 						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						&& knight.y + knight.height > b.y
@@ -1371,41 +1434,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (gameEndAlpha < 455)
 				gameEndAlpha++;
 		}
-
-	}
-
-	public void initialize(Graphics2D g) {
-		System.out.println("spawn = true");
-		startTime = System.currentTimeMillis();
-		// finds the spawn portal and forces it to the center
-		for (Block b : elements) {
-			if (b.img != null && b.img.equals(portalImage)) {
-				spawnPortal = (Portal) b;
-				shift = spawnPortal.x - GAME_WIDTH / 2 + Portal.width / 2;
-			}
-			if (b.img != null && b.img.equals(closedChestImage)) {
-				endChest = (Chest) b;
-			}
-		}
-		// moves all blocks to adjust for the shift to the portal and finds the left and
-		// rightmost block coordinates
-		for (Block b : elements) {
-			b.x -= shift;
-			leftBorder = Math.min(leftBorder, b.x);
-			rightBorder = Math.max(rightBorder, b.x + b.width);
-		}
-
-		if (rightBorder - leftBorder <= GAME_WIDTH) {
-			Player.oneScreen = true;
-		}
-		
-		
-		// saves the original position of the portal
-		spawnX = spawnPortal.x;
-		// moves the knight to the portal
-
-		knight.x = spawnX + Portal.width / 2 - knight.width / 2;
-		knight.y = spawnPortal.y + (Portal.height - knight.height);
 
 	}
 
