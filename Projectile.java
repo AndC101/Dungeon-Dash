@@ -18,7 +18,7 @@ public class Projectile extends Rectangle {
 	public Image runR;
 	public int shootDist = 400;
 	public int xBorder;
-	public int SPEED = 3;
+	public int SPEED = 2;
 	public boolean isEnemy;
 	public int xVelocity;
 	public HashSet<Character> keysPressed = new HashSet<Character>();
@@ -46,19 +46,20 @@ public class Projectile extends Rectangle {
 
 			if (e.getKeyChar() == 'a') {
 				if (l) {
-					setXDirection(-3);
+					setXDirection(-SPEED);
 				} else {
-					setXDirection(3);
+					setXDirection(SPEED);
 				}
 			} else if (e.getKeyChar() == 'd') {
 				if (l) {
-					setXDirection(-3);
+					setXDirection(-SPEED);
 				} else {
-					setXDirection(3);
+					setXDirection(SPEED);
 				}
-			}
 
+			}
 		}
+
 	}
 
 	// draw the image from the block class
@@ -89,9 +90,10 @@ public class Projectile extends Rectangle {
 			if (Player.isCentered && Player.isRight) {
 
 				if (r) {
-					setXDirection(-2); // good
+					setXDirection(0); // good
 				} else if (l) {
-					setXDirection(-7); // good
+					setXDirection(-4); // good
+
 				}
 				// xBorder+=-5;
 			}
@@ -99,9 +101,10 @@ public class Projectile extends Rectangle {
 			if (Player.isCentered && Player.isLeft) {
 
 				if (r) {
-					setXDirection(7); // good
+					setXDirection(4); // good
+
 				} else if (l) {
-					setXDirection(2);
+					setXDirection(0);
 				}
 
 				// xBorder+=5;
@@ -110,9 +113,10 @@ public class Projectile extends Rectangle {
 
 		if (!Player.isCentered) {
 			if (l) {
-				setXDirection(-3);
+				setXDirection(-SPEED);
+
 			} else if (r) {
-				setXDirection(3);
+				setXDirection(SPEED);
 			}
 		}
 

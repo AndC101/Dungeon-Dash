@@ -3,5 +3,5 @@ Hardest Level Ever!: Portal 579 452 60 75: Ice 902 436 60 40: Ice 962 436 60 40:
 
 ee: Ice 380 458 60 40: Ice 421 402 60 40: 
 Hardest Level Ever!ee: Stone 406 462 60 40: Portal 285 450 60 75: Stone 446 401 60 40: 
-Goblin testing: Stone 329 434 60 40: Portal 214 450 60 75: Goblin 324 384 50 50: 
+Goblin testing: Stone 319 434 60 40: Portal 204 450 60 75: Goblin 324 384 50 50: Chest 674 485 60 40: 
 Chest Test: Portal 220 450 60 75: Chest 594 485 60 40: 

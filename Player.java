@@ -124,7 +124,7 @@ public class Player extends Rectangle {
             }
         } 
         
-        if (keysPressed.contains('w') && !isJumping && canJump) {
+        if (keysPressed.contains('w') && !isJumping && canJump && !falling) {
             // Only allow jumping if not already jumping 
             jump();
             canJump = false;

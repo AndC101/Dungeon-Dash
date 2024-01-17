@@ -98,7 +98,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int powerUpBob = 0;
 	public int buffer = 5;
 	public int gameEndAlpha = 0;
-	
+
 	public long startTime;
 	public long endTime = -1;
 
@@ -277,7 +277,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("Create new dungeon", 325, 320);
 
 		} else if (edit) {
-			
+
 			// draw the background
 			back.draw(g);
 
@@ -326,8 +326,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		else if (play) {
-			
-			
+
 			// draws the background
 			back.draw(g);
 
@@ -363,7 +362,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						spawnPortal = (Portal) b;
 						shift = spawnPortal.x - GAME_WIDTH / 2 + spawnPortal.width / 2;
 					}
-					if (b.img.equals(closedChestImage)) {
+					if (b.img != null && b.img.equals(closedChestImage)) {
 						endChest = (Chest) b;
 					}
 				}
@@ -427,15 +426,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (spawn)
 				spawn = false;
 			if (endChest != null && knight.intersects(endChest)) {
-				if(endTime == -1) {
+				if (endTime == -1) {
 					endTime = System.currentTimeMillis();
 				}
 				gameEnd = true;
 				win = true;
 				gameEnd(g);
 			}
-				
-			
 
 		}
 
@@ -572,8 +569,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// handles keyPresses
 	public void keyPressed(KeyEvent e) {
-		if(gameEnd) {
-			
+		if (gameEnd) {
+
 		}
 		// checks which screen is displayed
 		else if (mainMenu) {
@@ -729,8 +726,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public void keyReleased(KeyEvent e) {
 
-		if(gameEnd) return;
-		
+		if (gameEnd)
+			return;
+
 		// checks which screen is displayed
 		else if (edit) {
 			// calls keyReleased for background and all blocks
@@ -1418,18 +1416,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		Player.xVelocity = 0;
 		Block.xVelocity = 0;
 		back.xVelocity = 0;
-		if(win) {
+		if (win) {
 			endChest.img = openChestImage;
 			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
-			g.setColor(new Color(0,0,0,gameEndAlpha > 255? 255:gameEndAlpha));
+			g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
 			g.drawString("YOU WIN", 250, 300);
-			g.setColor(new Color(0,0,0,gameEndAlpha < 200? 0:gameEndAlpha - 200));
+			g.setColor(new Color(0, 0, 0, gameEndAlpha < 200 ? 0 : gameEndAlpha - 200));
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawString("Time: " + (endTime - startTime) / 1000, 380, 350);
-			if(gameEndAlpha < 455) gameEndAlpha++;	
+			if (gameEndAlpha < 455)
+				gameEndAlpha++;
 		}
-		
-		
+
 	}
 
 }
