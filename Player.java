@@ -100,7 +100,6 @@ public class Player extends Rectangle {
     
     //moves the player
     public void move() {
-    	// System.out.println(x);
     	//no need to move if the screen is following the player
     	if(isCentered) {
     		setXDirection(0);
@@ -125,7 +124,7 @@ public class Player extends Rectangle {
             }
         } 
         
-        if (keysPressed.contains('w') && !isJumping && canJump) {
+        if (keysPressed.contains('w') && !isJumping && canJump && !falling) {
             // Only allow jumping if not already jumping 
             jump();
             canJump = false;
@@ -203,7 +202,7 @@ public class Player extends Rectangle {
     public boolean canFall() {
 		 int botRightX = x + width; int botRightY = y + height;	
 		 for(Block b: GamePanel.elements) {
-			 if(GamePanel.getClass(b).equals("Portal")) continue;
+			 if(GamePanel.getClass(b).equals("Portal") || GamePanel.getClass(b).equals("Goblin") || GamePanel.getClass(b).equals("Chest")) continue;
 			 if((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
 					 || (x >= b.x && botRightX <= b.x + b.width))
 					 && botRightY >= b.y && y <= b.y)) {
