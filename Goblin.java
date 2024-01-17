@@ -73,8 +73,6 @@ public class Goblin extends Block {
 	public void draw(Graphics2D g) {
 		if(isEnemy) {
 			// System.out.println("working");
-			g.setColor(Color.white);
-			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
 
 			if(r) {
 				g.drawImage(runR, x, y, null);
@@ -94,6 +92,7 @@ public class Goblin extends Block {
 	}
 
 	public void move() {
+		if(GamePanel.spawn) return;
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
 
