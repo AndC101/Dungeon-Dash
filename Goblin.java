@@ -81,19 +81,18 @@ public class Goblin extends Block {
 
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.white);
-		g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
+		// g.setColor(Color.white);
+		// g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
 
 		if(isEnemy) {
 
-			System.out.println(GamePanel.adjust);
+			// System.out.println(GamePanel.adjust);
 
 			if(r) {
 				g.drawImage(runR, x, y, null);
 			} else if (l) {
 				g.drawImage(runL, x, y, null);
 			} else {
-				// System.out.println("hihihihihihihi " +  x);
 				g.drawImage(runR, x, y, null);
 			}
 		} else {			
@@ -108,7 +107,6 @@ public class Goblin extends Block {
 	public void move() {
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
-				// System.out.println(Player.isCentered + " " +  GamePanel.edit);
 
 				if(r) {
 					setXDirection(-1); //good
@@ -118,7 +116,6 @@ public class Goblin extends Block {
 				// xBorder-=Block.SPEED;
 			}
 			if(Player.isCentered) {
-				// System.out.println("hello");
 				xBorder-=Block.SPEED;
 			}
 			if(GamePanel.edit){

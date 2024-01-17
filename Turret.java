@@ -29,18 +29,28 @@
 	 Image fireballRight = new ImageIcon("Images/fireballRight.gif").getImage();
 	 Projectile ball;
 	 Projectile ballTwo; 
-	 boolean spawned = false;
  
 	 public Turret(int x, int y, int len, int w, BufferedImage i, boolean left, boolean right, boolean enemy) throws IOException{
 		 super(x,y,len,w,i); //block constructor
 		 l = left;
 		 r = right;
 		 isEnemy = enemy;
-		 try {
-			 ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
-		 } catch (IOException e) {
-			 e.printStackTrace();
+		 if(r) {
+			try {
+				ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+   
+		 } else if (l) {
+			try {
+				ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		 }
+
 		 if(isEnemy) {
 			createNewFireball();
 		 }
@@ -120,12 +130,21 @@
 	 public void createNewFireball() {
 		 TimerTask task = new TimerTask() {
 			 public void run() {
-				 System.out.println("Second fireball generated on: " + new Date() + "n" +
-				 "Thread's name: " + Thread.currentThread().getName());
-				 try {
-					 ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, true);
-				 } catch (IOException e) {
-					 e.printStackTrace();
+				//  System.out.println("Second fireball generated on: " + new Date() + "n" +
+				//  "Thread's name: " + Thread.currentThread().getName());
+				 if(r) {
+					try {
+						ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}   
+				 } else {
+					try {
+						ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}   
+
 				 }
 			 }
 		 };

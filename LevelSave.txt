@@ -1,9 +1,4 @@
 
-Hardest Level Ever!: Portal 603 452 60 75: Ice 926 436 60 40: Ice 986 436 60 40: Ice 1046 436 60 40: Stone 866 436 60 40: CrackedStone 1154 340 60 40: Stone 1214 340 60 40: Ladder 1085 395 20 40: Ladder 1085 355 20 40: Ladder 1085 315 20 40: Ladder 1085 235 20 40: Stone 1107 237 60 40: Ice 1228 199 60 40: Stone 1167 198 60 40: Ladder 1085 275 20 40: Ice 1288 199 60 40: Ice 97 270 60 40: Ice 157 270 60 40: Ice -1003 331 60 40: OneUp 925 376 60 60: SpeedBoost 1112 192 45 45: Turret 337 465 60 60: Goblin 469 220 50 50: 
-Collision Testing: Portal 207 450 60 75: CrackedStone 303 485 60 40: CrackedStone 473 430 60 40: Ice 69 426 60 40: Stone 756 446 60 40: Ice 512 380 60 40: 
-test: Portal 801 450 60 75: Stone 144 400 60 40: Goblin 374 350 50 50: 
-lkajslkjd: Ice 290 271 60 40: Portal 149 434 60 75: Goblin 589 221 50 50: 
-khskjdhgkhgqkjgr: Portal 486 450 60 75: Stone 239 485 60 40: Ice 159 382 60 40: Goblin 236 435 50 50: 
-kjnbrmnwb,rjhlkjqw: Portal -410 450 60 75: Stone 135 485 60 40: Ice 232 485 60 40: Ice 186 485 60 40: Ice 90 485 60 40: Goblin 246 435 50 50: 
-winwinwin: Portal 127 450 60 75: Stone 572 485 60 40: Ice 633 485 60 40: CrackedStone 694 485 60 40: Chest 754 485 60 40: Goblin 860 435 50 50: 
-khjhgjhg: Portal 507 450 60 75: Stone 264 485 60 40: Goblin 271 435 50 50: 
+Hardest Level Ever!: Portal 355 452 60 75: Ice 678 436 60 40: Ice 738 436 60 40: Ice 798 436 60 40: Stone 618 436 60 40: CrackedStone 906 340 60 40: Stone 966 340 60 40: Ladder 837 395 20 40: Ladder 837 355 20 40: Ladder 837 315 20 40: Ladder 837 235 20 40: Stone 859 237 60 40: Ice 980 199 60 40: Stone 919 198 60 40: Ladder 837 275 20 40: Ice 1040 199 60 40: Ice -151 270 60 40: Ice -91 270 60 40: Ice -1251 331 60 40: OneUp 677 376 60 60: SpeedBoost 864 192 45 45: Turret 89 465 60 60: 
+Collision Testing: Portal 207 450 60 75: CrackedStone 303 485 60 40: Ice 69 426 60 40: Stone 756 446 60 40: Turret 575 321 60 60: CrackedStone 592 433 60 40: Ice 572 380 -60 40: 
+kjhkjh: Portal 542 450 -60 75: CrackedStone 414 267 60 40: Turret 168 465 60 60: Goblin 177 415 50 50: 

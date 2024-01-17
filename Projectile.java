@@ -23,10 +23,12 @@ public class Projectile extends Rectangle {
 	public int xVelocity;
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 
-	public Projectile(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException {
-		super(x, y, l, w);
+	public Projectile(int x, int y, int len, int w, Image left, Image right, boolean le, boolean ri, boolean enemy) throws IOException {
+		super(x, y, len, w);
 		runL = left;
 		runR = right;
+		l = le; 
+		r = ri;
 		if (enemy) {
 			xBorder = x;
 		}
@@ -67,19 +69,17 @@ public class Projectile extends Rectangle {
 	// draw the image from the block class
 	public void draw(Graphics2D g, int yTur) {
 		if(isEnemy) {
-			g.setColor(Color.red);
-			g.fillRect(xBorder-GamePanel.shift-20, 40, 2, 1000); //debugging
+			// g.setColor(Color.red);
 			if (r) {
+				// g.fillRect(xBorder-GamePanel.shift-20, 40, 2, 1000); //debugging
 				g.drawImage(runR, x, yTur-10, null);
 			} else if (l) {
-				g.drawImage(runL, x-10, yTur-10, null);
+				// g.fillRect(xBorder-GamePanel.shift-Turret.width, 40, 2, 1000); //debugging
+				g.drawImage(runL, x-Turret.width, yTur-10, null);
 			} else {
 				g.drawImage(runR, x, yTur-10, null);
 			}
-		} else {
-
-			// g.drawImage(runR, x, yTur-10, null);
-		}
+		} 
 	}
 
 	public void setXDirection(int xDirection) {
@@ -135,17 +135,32 @@ public class Projectile extends Rectangle {
 		x += xVelocity;
 
 		if (isEnemy) {
-			if (x <= xBorder - GamePanel.shift-20) {
-				x = xBorder - GamePanel.shift-20;
-				r = true;
-				l = false;
-				setXDirection(SPEED);
-			} else if (x >= xBorder - GamePanel.shift-20 + shootDist) {
+			if(r) {
+				if (x <= xBorder - GamePanel.shift-20) {
+					x = xBorder - GamePanel.shift-20;
+					r = true;
+					l = false;
+					setXDirection(SPEED);
+				} else if (x >= xBorder - GamePanel.shift-20 + shootDist) {
+	
+					x = xBorder - GamePanel.shift-20;
+					r = true;
+					l = false;
+					setXDirection(SPEED);
+				}
+	
+			} else {
+				if (x <= xBorder - GamePanel.shift-20-Turret.width-shootDist) {
+					x = xBorder - GamePanel.shift-20;
+					r = false;
+					l = true;
+					setXDirection(-SPEED);
+				} else  {
+					r = false;
+					l = true;
+					setXDirection(-SPEED);
+				}
 
-				x = xBorder - GamePanel.shift-20;
-				r = true;
-				l = false;
-				setXDirection(SPEED);
 			}
 		}
 	}

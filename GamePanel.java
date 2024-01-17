@@ -138,8 +138,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public boolean turLeft = false;
 	public boolean turRight = true;
-	public int flipNum = 0;
-	public static int goblinFlipNum = 0;
+	public int turFlipNum = 0;
+	public int goblinFlipNum = 0;
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -990,7 +990,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					if (curDragging.equals(tabTurret)) {
 						try {
 
-							if (flipNum % 2 != 0) {
+							if (turFlipNum % 2 != 0) {
 								turLeft = true;
 								turRight = false;
 							} else {
@@ -1314,31 +1314,32 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							 // in the title itself
 							 String[] inputs = words[i].split(" "); // splits based on space
 							 if (inputs[0].equals("Ice")) {
+								
 								 elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Ice.width, Ice.height, iceImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), iceImage));
 							 } else if (inputs[0].equals("Stone")) {
 								 elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Stone.width, Stone.height, stoneImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), stoneImage));
 							 } else if (inputs[0].equals("Portal")) {
 								 elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Portal.width, Portal.height, portalImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), portalImage));
 							 } else if (inputs[0].equals("Ladder")) {
 								 elements.add(new Ladder(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Ladder.width, Ladder.height, ladderImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), ladderImage));
 							 } else if (inputs[0].equals("CrackedStone")) {
 								 elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 CrackedStone.width, CrackedStone.height, crackedStoneImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), crackedStoneImage));
 							 } else if (inputs[0].equals("Chest")) {
 								elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Chest.width, Chest.height, closedChestImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), closedChestImage));
  
 							  } else if (inputs[0].equals("Goblin")) {
 								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-								 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft, goblinRunRight, true));
 										//  System.out.println(a);
 							 } else if (inputs[0].equals("Turret")) {
 
-								if (flipNum % 2 != 0) {
+								if (turFlipNum % 2 != 0) {
 									turLeft = true;
 									turRight = false;
 								} else {
@@ -1347,13 +1348,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								}
 
 								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Turret.width, Turret.height, turretImage, turLeft, turRight, true));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), turretImage, turLeft, turRight, true));
 							} else if (inputs[0].equals("OneUp")) {
 								elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										OneUp.width, OneUp.height, oneUpImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), oneUpImage));
 							} else if (inputs[0].equals("SpeedBoost")) {
 								elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										SpeedBoost.width, SpeedBoost.height, speedBoostImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), speedBoostImage));
 							}
 						}
 						return;
@@ -1388,7 +1389,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, false);
 		} else if (className.equals("Turret")) {
 
-			if (flipNum % 2 != 0) {
+			if (turFlipNum % 2 != 0) {
 				turLeft = true;
 				turRight = false;
 			} else {
@@ -1415,8 +1416,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// returns a Block that is horizontally flipped compared to b
 	public Block hFlip(Block b) throws IOException {
 		if (b instanceof Turret) {
-			flipNum++; // used to account for turret flips
-			System.out.println("hi " + flipNum);
+			turFlipNum++; // used to account for turret flips
+			System.out.println("hi " + turFlipNum);
 		}
 		if(b instanceof Goblin) {
 			goblinFlipNum++;
