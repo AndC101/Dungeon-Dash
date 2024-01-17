@@ -139,6 +139,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean turLeft = false;
 	public boolean turRight = true;
 	public int flipNum = 0;
+	public static int goblinFlipNum = 0;
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -1416,6 +1417,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (b instanceof Turret) {
 			flipNum++; // used to account for turret flips
 			System.out.println("hi " + flipNum);
+		}
+		if(b instanceof Goblin) {
+			goblinFlipNum++;
 		}
 		return decipherBlock(b, b.x + b.width, b.y, -b.width, b.height);
 	}

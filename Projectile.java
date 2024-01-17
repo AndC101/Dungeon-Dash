@@ -65,20 +65,20 @@ public class Projectile extends Rectangle {
 	
 
 	// draw the image from the block class
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g, int yTur) {
 		if(isEnemy) {
 			g.setColor(Color.red);
-			g.fillRect(xBorder-GamePanel.shift, 40, 10, 1000); //debugging
+			g.fillRect(xBorder-GamePanel.shift-20, 40, 2, 1000); //debugging
 			if (r) {
-				g.drawImage(runR, x, y, null);
+				g.drawImage(runR, x, yTur-10, null);
 			} else if (l) {
-				g.drawImage(runL, x-10, y, null);
+				g.drawImage(runL, x-10, yTur-10, null);
 			} else {
-				g.drawImage(runR, x, y, null);
+				g.drawImage(runR, x, yTur-10, null);
 			}
 		} else {
 
-			g.drawImage(runR, x, y, null);
+			// g.drawImage(runR, x, yTur-10, null);
 		}
 	}
 
@@ -100,7 +100,6 @@ public class Projectile extends Rectangle {
 	
 			}
 			if(GamePanel.edit){
-				System.out.println("hejhkjhkjhkhjgkjh");
 				x-=Block.SPEED;
 			}
 
@@ -136,14 +135,14 @@ public class Projectile extends Rectangle {
 		x += xVelocity;
 
 		if (isEnemy) {
-			if (x <= xBorder - GamePanel.shift) {
-				x = xBorder - GamePanel.shift;
+			if (x <= xBorder - GamePanel.shift-20) {
+				x = xBorder - GamePanel.shift-20;
 				r = true;
 				l = false;
 				setXDirection(SPEED);
-			} else if (x >= xBorder - GamePanel.shift + shootDist) {
+			} else if (x >= xBorder - GamePanel.shift-20 + shootDist) {
 
-				x = xBorder - GamePanel.shift;
+				x = xBorder - GamePanel.shift-20;
 				r = true;
 				l = false;
 				setXDirection(SPEED);

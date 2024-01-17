@@ -54,48 +54,58 @@
 	 public void draw(Graphics2D g) {
  
 		 super.draw(g);
-		 if(ballTwo != null) {
-			 ballTwo.draw(g);
+		 if(isEnemy){
+			if(ballTwo != null) {
+				ballTwo.draw(g, y);
+			}
+			ball.draw(g, y);
+   
 		 }
-		 ball.draw(g);
-			 // System.out.println(ball.xVelocity);
 	 }
 	 public void keyReleased(KeyEvent e) {
 		 super.keyReleased(e);
-		 ball.keyReleased(e);
-		 if(ballTwo != null) {
-			 ballTwo.keyReleased(e);
+		 if(isEnemy) {
+			ball.keyReleased(e);
+			if(ballTwo != null) {
+				ballTwo.keyReleased(e);
+			}
 		 }
+		 
  
 	 }
  
  
 	 public void keyPressed(KeyEvent e) {
-		 ball.keyPressed(e);
 		 super.keyPressed(e);
-		 if(ballTwo != null) {
-			 ballTwo.keyPressed(e);
+		 if(isEnemy){
+			ball.keyPressed(e);
+			if(ballTwo != null) {
+				ballTwo.keyPressed(e);
+			}
+   
 		 }
  
 	 }
  
 	 public void move() {
-		 if(r) {
-			 ball.xBorder = x+GamePanel.shift+width;
-		 } else {
-			 ball.xBorder = x+GamePanel.shift;
-		 }
+		if(isEnemy) {
+			if(r) {
+				ball.xBorder = x+GamePanel.shift+width;
+			} else {
+				ball.xBorder = x+GamePanel.shift;
+			}
+			ball.move();
+			if(ballTwo != null) {
+				if(r) {
+					ballTwo.xBorder = x+GamePanel.shift+width;
+				} else {
+					ballTwo.xBorder = x+GamePanel.shift;
+				}
+		
+				ballTwo.move();
+			}
+		}
 		 super.move();
-		 ball.move();
-		 if(ballTwo != null) {
-			 if(r) {
-				 ballTwo.xBorder = x+GamePanel.shift+width;
-			 } else {
-				 ballTwo.xBorder = x+GamePanel.shift;
-			 }
-	 
-			 ballTwo.move();
-		 }
  
 	 }
  
