@@ -59,9 +59,7 @@ public class Player extends Rectangle {
 
 	// handles key presses
 	public void keyPressed(KeyEvent e) {
-
 		keysPressed.add(e.getKeyChar());
-
 	}
 
 	// handles key releases
@@ -215,9 +213,8 @@ public class Player extends Rectangle {
 		int botRightX = x + width;
 		int botRightY = y + height;
 		for (Block b : GamePanel.elements) {
-			if (GamePanel.getClass(b).equals("Portal") || GamePanel.getClass(b).equals("Goblin")
-					|| GamePanel.getClass(b).equals("Chest"))
-				continue;
+			if (GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
+			
 			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
 					|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 1 && y <= b.y)) {
 				under = b;
