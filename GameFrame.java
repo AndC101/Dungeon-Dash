@@ -15,7 +15,7 @@ import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
 
-    private static GameFrame currentGameFrame; // keeps track of current GameFrame instance
+    public static GameFrame currentGameFrame; // keeps track of current GameFrame instance
 	GamePanel panel;
 	JPanel mainPanel;
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
@@ -33,7 +33,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		this.setTitle("Dungeon Dash"); //set title for frame
 		this.setResizable(false); //frame can't change size
 		this.setBackground(Color.white);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //X button will stop program execution
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //X button will stop program execution
 
 		//if level select menu, the frame must be adjusted to levelselect mode
 		if(panel.levelSelect) {
