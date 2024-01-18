@@ -8,11 +8,11 @@
  import java.awt.event.KeyEvent;
  import java.awt.image.*;
  import java.io.*;
- import java.util.Date;
  import java.util.Timer;
  import java.util.TimerTask;
- 
- import javax.swing.ImageIcon;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
  
  
  public class Turret extends Block {
@@ -27,8 +27,12 @@
 	 public int fireDist = 100;
 	 Image fireballLeft = new ImageIcon("Images/fireballLeft.gif").getImage();
 	 Image fireballRight = new ImageIcon("Images/fireballRight.gif").getImage();
+	public BufferedImage turretRight = ImageIO.read(new File("Images/turret.png"));
+	public BufferedImage turretLeft = ImageIO.read(new File("Images/turLeft.png"));
+
 	 Projectile ball;
 	 Projectile ballTwo; 
+	 public int flipNum;
  
 	 public Turret(int x, int y, int len, int w, BufferedImage i, boolean left, boolean right, boolean enemy) throws IOException{
 		 super(x,y,len,w,i); //block constructor
@@ -54,7 +58,8 @@
 		 if(isEnemy) {
 			createNewFireball();
 		 }
- 
+
+
 	 }
 	 
  
@@ -122,7 +127,7 @@
  
 	 //returns name and constructor info
 	 public String toString () {
-		 return "Turret " + super.toString();
+		 return "Turret " + super.toString() + " " + l;
 	 }
  
  
@@ -130,8 +135,6 @@
 	 public void createNewFireball() {
 		 TimerTask task = new TimerTask() {
 			 public void run() {
-				//  System.out.println("Second fireball generated on: " + new Date() + "n" +
-				//  "Thread's name: " + Thread.currentThread().getName());
 				 if(r) {
 					try {
 						ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
