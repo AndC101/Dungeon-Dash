@@ -471,7 +471,6 @@
 		  back.move();
 	  }
   
-	  // handles all the collision checks
 	  // handles all collision detection and responds accordingly
 	  public void checkCollision() {
  
@@ -501,16 +500,21 @@
 				 Player.setXDirection(0);
 			 }
  
+			 //checks collisions between the player and the blocks
 			 for (Block b : elements) {
 				 checkVertical = false;
+				 
+				 //skips it if the block doesn't need collision
 				 if (getClass(b).equals("Portal") || getClass(b).equals("Goblin") || getClass(b).equals("Chest")) {
 					 continue;
 				 }
- 
+				 
+				 //TOP COLLISION
 				 if (((knight.x > b.x && knight.x < b.x + b.width)
 						 || (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						 && knight.y + knight.height > b.y
 						 && knight.y + knight.height < (double) (b.y + (double) (b.height) * 0.20)) {
+					 //stops all vertical movement
 					 knight.y = b.y - knight.height - 1;
 					 knight.isJumping = false;
 					 knight.falling = false;
@@ -518,12 +522,14 @@
 					 checkVertical = true;
 				 }
  
+				 //BOTTOM COLLISION
 				 if (((knight.x > b.x && knight.x < b.x + b.width)
 						 || (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
 						 && knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height
 						 && knight.y > (double) (b.y + (double) (b.height) * 0.80)) {
+					 //checks to see if the player can fit between the floor and the block
 					 if (b.y + b.height + knight.height + 1 <= FLOOR) {
-						 System.out.println("hit bot");
+						 //stops any jumping
 						 knight.y = b.y + b.height + 1;
 						 knight.isJumping = true;
 						 knight.falling = true;
@@ -533,11 +539,13 @@
  
 				 }
  
+				 //LEFT COLLISION
 				 if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
 						 && ((knight.y >= b.y && knight.y <= b.y + b.height)
 								 || (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
 								 || knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					 knight.x = b.x - knight.width - 1;
+					 //stops horizontal movement
 					 if (!Player.isCentered) {
 						 Player.setXDirection(0);
 					 } else {
@@ -546,11 +554,13 @@
 					 }
 				 }
  
+				 //RIGHT COLLISION
 				 if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
 						 && ((knight.y >= b.y && knight.y <= b.y + b.height)
 								 || (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
 								 || knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					 knight.x = b.x + b.width + 1;
+					 //stops horizontal movement
 					 if (!Player.isCentered) {
 						 Player.setXDirection(0);
 					 } else {
@@ -1459,17 +1469,22 @@
 		 }
 	 }
  
+	 //called when the player either wins or loses
 	 public void gameEnd(Graphics2D g) {
+		 //draws the translucent film on the screen
 		 g.setColor(new Color(255, 255, 255, 150));
 		 g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		 repaint();
+		 //stops all movement
 		 knight.keysPressed.clear();
 		 back.keysPressed.clear();
 		 Block.keysPressed.clear();
 		 Player.xVelocity = 0;
 		 Block.xVelocity = 0;
 		 back.xVelocity = 0;
+		 //checks to see if the player won
 		 if (win) {
+			 //opens the chest and displays the winning message
 			 endChest.img = openChestImage;
 			 g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
 			 g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
