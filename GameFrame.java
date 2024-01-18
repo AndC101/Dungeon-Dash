@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.*;
 
@@ -131,6 +133,10 @@ public class GameFrame extends JFrame implements ActionListener{
                 System.out.println("Play button in row " + title + " pressed!");
 				
 				try {
+					GamePanel.adjust = 0;
+					GamePanel.shift = 0;
+					GamePanel.elements = new ArrayList<>();
+					GamePanel.walkThrough = new HashSet<String>(); 
 					new GameFrame(false, false, true, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();

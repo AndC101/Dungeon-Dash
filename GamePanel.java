@@ -267,7 +267,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		graphics = image.getGraphics();
 		draw((Graphics2D) graphics);// update the positions of everything on the screen
 		g.drawImage(image, 0, 0, this); // move the image on the screen
-
 	}
 
 	// draws everything on the screen
@@ -502,103 +501,103 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// handles all collision detection and responds accordingly
 	public void checkCollision() {
 
-		if (edit) {
-			// doesn't allow blocks to be dragged off the screen
-			if (curSelected != null) {
+		// if (edit) {
+		// 	// doesn't allow blocks to be dragged off the screen
+		// 	if (curSelected != null) {
 
-				if (curSelected.x <= 0)
-					curSelected.x = 0;
-				if (curSelected.x + curSelected.width >= GAME_WIDTH)
-					curSelected.x = GAME_WIDTH - curSelected.width;
-				if (curSelected.y <= 0)
-					curSelected.y = 0;
-				if (curSelected.y + curSelected.height >= FLOOR)
-					curSelected.y = FLOOR - curSelected.height;
-			}
+		// 		if (curSelected.x <= 0)
+		// 			curSelected.x = 0;
+		// 		if (curSelected.x + curSelected.width >= GAME_WIDTH)
+		// 			curSelected.x = GAME_WIDTH - curSelected.width;
+		// 		if (curSelected.y <= 0)
+		// 			curSelected.y = 0;
+		// 		if (curSelected.y + curSelected.height >= FLOOR)
+		// 			curSelected.y = FLOOR - curSelected.height;
+		// 	}
 
-		} else if (play && !spawn) {
+		// } else if (play && !spawn) {
 
-			// doesn't allow the player to walk off the screen
-			if (knight.x <= 0) {
-				knight.x = 0;
-				Player.setXDirection(0);
-			}
-			if (knight.x + knight.width >= GAME_WIDTH) {
-				knight.x = GAME_WIDTH - knight.width;
-				Player.setXDirection(0);
-			}
+		// 	// doesn't allow the player to walk off the screen
+		// 	if (knight.x <= 0) {
+		// 		knight.x = 0;
+		// 		Player.setXDirection(0);
+		// 	}
+		// 	if (knight.x + knight.width >= GAME_WIDTH) {
+		// 		knight.x = GAME_WIDTH - knight.width;
+		// 		Player.setXDirection(0);
+		// 	}
 
-			// checks collisions between the player and the blocks
-			for (Block b : elements) {
-				checkVertical = false;
+		// 	// checks collisions between the player and the blocks
+		// 	for (Block b : elements) {
+		// 		checkVertical = false;
 
-				// skips it if the block doesn't need collision
-				if (walkThrough.contains(getClass(b)))
-					continue;
+		// 		// skips it if the block doesn't need collision
+		// 		if (walkThrough.contains(getClass(b)))
+		// 			continue;
 
-				// TOP COLLISION
-				if (((knight.x > b.x && knight.x < b.x + b.width)
-						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y
-						&& knight.y + knight.height < (double) (b.y + (double) (b.height) * 0.20)) {
-					// stops all vertical movement
-					knight.y = b.y - knight.height - 1;
-					knight.isJumping = false;
-					knight.falling = false;
-					knight.yVelocity = 0;
-					checkVertical = true;
-				}
+		// 		// TOP COLLISION
+		// 		if (((knight.x > b.x && knight.x < b.x + b.width)
+		// 				|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+		// 				&& knight.y + knight.height > b.y
+		// 				&& knight.y + knight.height < (double) (b.y + (double) (b.height) * 0.20)) {
+		// 			// stops all vertical movement
+		// 			knight.y = b.y - knight.height - 1;
+		// 			knight.isJumping = false;
+		// 			knight.falling = false;
+		// 			knight.yVelocity = 0;
+		// 			checkVertical = true;
+		// 		}
 
-				// BOTTOM COLLISION
-				if (((knight.x > b.x && knight.x < b.x + b.width)
-						|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
-						&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height
-						&& knight.y > (double) (b.y + (double) (b.height) * 0.80)) {
-					// checks to see if the player can fit between the floor and the block
-					if (b.y + b.height + knight.height + 1 <= FLOOR) {
-						// stops any jumping
-						knight.y = b.y + b.height + 1;
-						knight.isJumping = true;
-						knight.falling = true;
-						checkVertical = true;
+		// 		// BOTTOM COLLISION
+		// 		if (((knight.x > b.x && knight.x < b.x + b.width)
+		// 				|| (knight.x + knight.width > b.x && knight.x + knight.width < b.x + b.width))
+		// 				&& knight.y + knight.height > b.y + b.height && knight.y < b.y + b.height
+		// 				&& knight.y > (double) (b.y + (double) (b.height) * 0.80)) {
+		// 			// checks to see if the player can fit between the floor and the block
+		// 			if (b.y + b.height + knight.height + 1 <= FLOOR) {
+		// 				// stops any jumping
+		// 				knight.y = b.y + b.height + 1;
+		// 				knight.isJumping = true;
+		// 				knight.falling = true;
+		// 				checkVertical = true;
 
-					}
+		// 			}
 
-				}
+		// 		}
 
-				// LEFT COLLISION
-				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
-						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
-								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
-								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
-					knight.x = b.x - knight.width - 1;
-					// stops horizontal movement
-					if (!Player.isCentered) {
-						Player.setXDirection(0);
-					} else {
-						back.xVelocity = 0;
-						Block.xVelocity = 0;
-					}
-				}
+		// 		// LEFT COLLISION
+		// 		if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
+		// 				&& ((knight.y >= b.y && knight.y <= b.y + b.height)
+		// 						|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+		// 						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+		// 			knight.x = b.x - knight.width - 1;
+		// 			// stops horizontal movement
+		// 			if (!Player.isCentered) {
+		// 				Player.setXDirection(0);
+		// 			} else {
+		// 				back.xVelocity = 0;
+		// 				Block.xVelocity = 0;
+		// 			}
+		// 		}
 
-				// RIGHT COLLISION
-				if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
-						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
-								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
-								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
-					knight.x = b.x + b.width + 1;
-					// stops horizontal movement
-					if (!Player.isCentered) {
-						Player.setXDirection(0);
-					} else {
-						back.xVelocity = 0;
-						Block.xVelocity = 0;
-					}
-				}
+		// 		// RIGHT COLLISION
+		// 		if (!checkVertical && knight.x <= b.x + b.width && knight.x + knight.width >= b.x + b.width
+		// 				&& ((knight.y >= b.y && knight.y <= b.y + b.height)
+		// 						|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+		// 						|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
+		// 			knight.x = b.x + b.width + 1;
+		// 			// stops horizontal movement
+		// 			if (!Player.isCentered) {
+		// 				Player.setXDirection(0);
+		// 			} else {
+		// 				back.xVelocity = 0;
+		// 				Block.xVelocity = 0;
+		// 			}
+		// 		}
 
-			}
+		// 	}
 
-		}
+		// }
 
 	}
 
