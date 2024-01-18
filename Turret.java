@@ -32,7 +32,6 @@ import javax.swing.ImageIcon;
 
 	 Projectile ball;
 	 Projectile ballTwo; 
-	 public int flipNum;
  
 	 public Turret(int x, int y, int len, int w, BufferedImage i, boolean left, boolean right, boolean enemy) throws IOException{
 		 super(x,y,len,w,i); //block constructor

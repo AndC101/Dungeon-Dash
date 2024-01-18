@@ -6,4 +6,3 @@ win: Chest 793 485 60 40: Portal 196 450 60 75: Turret 694 465 -60 60:
 e: Portal 156 450 60 75: Turret 582 465 60 60: 
 testng: Turret 342 465 60 60 1: Portal 145 450 60 75: 
 testing: Turret 592 465 60 60 1: Portal 188 450 60 75: 
-jhkjh: Turret 334 465 60 60 0: Turret -194 465 60 60 0: Portal 63 450 60 75: OneUp 231 465 60 60: Stone 662 485 60 40: Goblin 660 435 50 50: 
