@@ -1461,16 +1461,20 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	}
 
 	public void gameEnd(Graphics2D g) {
+		//draws the translucent film
 		g.setColor(new Color(255, 255, 255, 150));
 		g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 		repaint();
+		//stops everything from moving
 		knight.keysPressed.clear();
 		back.keysPressed.clear();
 		Block.keysPressed.clear();
 		Player.xVelocity = 0;
 		Block.xVelocity = 0;
 		back.xVelocity = 0;
+		//checks if the player won
 		if (win) {
+			//opens the chest and prints the win message
 			endChest.img = openChestImage;
 			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
 			g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
