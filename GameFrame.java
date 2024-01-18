@@ -148,7 +148,6 @@ public class GameFrame extends JFrame implements ActionListener{
 				System.out.println("Edit button in row " + title + " pressed!");
 				
 				try {
-					// System.out.println("WE GOOD" + title);
 					new GameFrame(false, true, false, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -188,7 +187,7 @@ public class GameFrame extends JFrame implements ActionListener{
             
             dispose(); //close the current frame
 
-            //opens new frame back to the main mennu
+            //opens new frame back to the main menu
             try {
                 new GameFrame(false,false, false, "");
             } catch (IOException ex) {
@@ -207,6 +206,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
 
+			//read and append each line except title
 			while ((line = file.readLine()) != null) {
 
 				if (!line.startsWith(title)) {
@@ -228,15 +228,20 @@ public class GameFrame extends JFrame implements ActionListener{
 	}	
 
 	public void deleteLevelName(String title) {
+		String[] names;
+		String newTitles = "";
+		String line ="";
+		BufferedReader file;
+		StringBuffer inputBuffer = new StringBuffer();
+		FileOutputStream fileOut;
 		// if the title is not found or there is no title
 	
 			try {
 				// input the (modified) file content to the StringBuffer "input"
-				BufferedReader file = new BufferedReader(new FileReader("names.txt"));
-				StringBuffer inputBuffer = new StringBuffer();
-				String line = file.readLine();
-				String newTitles = "";
-				String[] names = line.split(", ");
+				file = new BufferedReader(new FileReader("names.txt"));
+				line = file.readLine();
+				names = line.split(", ");
+				//splits based on regex , and adds all names except title;
 				for(String name: names){
 					if(!name.equals(title)){
 						newTitles += name + ", ";
@@ -246,7 +251,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				file.close();
 	
 				// write the new string with the replaced line OVER the same file
-				FileOutputStream fileOut = new FileOutputStream("names.txt");
+				fileOut = new FileOutputStream("names.txt");
 				fileOut.write(inputBuffer.toString().getBytes());
 				fileOut.close();
 	
