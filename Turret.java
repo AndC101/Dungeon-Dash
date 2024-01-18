@@ -30,31 +30,24 @@ import javax.swing.ImageIcon;
 	public BufferedImage turretRight = ImageIO.read(new File("Images/turret.png"));
 	public BufferedImage turretLeft = ImageIO.read(new File("Images/turLeft.png"));
 
-	 Projectile ball;
+	 Projectile ball; //projectiles that come out of turret
 	 Projectile ballTwo; 
-	 public int flipNum;
  
 	 public Turret(int x, int y, int len, int w, BufferedImage i, boolean left, boolean right, boolean enemy) throws IOException{
 		 super(x,y,len,w,i); //block constructor
 		 l = left;
 		 r = right;
 		 isEnemy = enemy;
-		 if(r) {
-			try {
-				ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
+		 //create first projectile
+		try {
+			ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
    
-		 } else if (l) {
-			try {
-				ball = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		 }
-
+		 
+		//create the second projectile 1 second after using threads
 		 if(isEnemy) {
 			createNewFireball();
 		 }
@@ -62,13 +55,11 @@ import javax.swing.ImageIcon;
 
 	 }
 	 
- 
- 
- 
 	 //draw the image from the block class
 	 public void draw(Graphics2D g) {
  
 		 super.draw(g);
+		 //draw the projectiles
 		 if(isEnemy){
 			if(ballTwo != null) {
 				ballTwo.draw(g, y);
@@ -77,8 +68,11 @@ import javax.swing.ImageIcon;
    
 		 }
 	 }
+
+	 
 	 public void keyReleased(KeyEvent e) {
 		 super.keyReleased(e);
+		 //logic for projectile keyreleased
 		 if(isEnemy) {
 			ball.keyReleased(e);
 			if(ballTwo != null) {
@@ -90,6 +84,7 @@ import javax.swing.ImageIcon;
 	 }
  
  
+	 //keypressed logic
 	 public void keyPressed(KeyEvent e) {
 		 super.keyPressed(e);
 		 if(isEnemy){
@@ -103,6 +98,8 @@ import javax.swing.ImageIcon;
 	 }
  
 	 public void move() {
+
+		//move at relative speed to appear as if moving
 		if(isEnemy) {
 			if(r) {
 				ball.xBorder = x+GamePanel.shift+width;
@@ -131,24 +128,16 @@ import javax.swing.ImageIcon;
 	 }
  
  
- 
+	 //thread to create a new fireball 1 second after
 	 public void createNewFireball() {
 		 TimerTask task = new TimerTask() {
 			 public void run() {
-				 if(r) {
-					try {
-						ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}   
-				 } else {
-					try {
-						ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}   
-
-				 }
+				try {
+					ballTwo = new Projectile(x, y-10, 30, 30, fireballLeft, fireballRight, l, r, true);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}   
+				 
 			 }
 		 };
 		 Timer timer = new Timer("Timer");

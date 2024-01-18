@@ -155,10 +155,10 @@ public class GameFrame extends JFrame implements ActionListener{
 			}
 			});
     }
-	
+
 	//same logic as play button, but sends deletes level from file io and displays message
-	private void addDeleteButtonListener(JButton playButton, String title) {
-        playButton.addActionListener(new ActionListener() {
+	private void addDeleteButtonListener(JButton deleteButton, String title) {
+        deleteButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
                 // debug for play button pressed
