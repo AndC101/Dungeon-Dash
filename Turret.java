@@ -61,9 +61,6 @@ import javax.swing.ImageIcon;
 
 	 }
 	 
- 
- 
- 
 	 //draw the image from the block class
 	 public void draw(Graphics2D g) {
  
