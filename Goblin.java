@@ -34,6 +34,8 @@ public class Goblin extends Block {
 		super(x,y,l,w);
 		runL = left;
 		runR = right;
+		
+		//if enemy, the goblin starts moving and x border init
 		if(enemy) {
 			xBorder = x;
 			System.out.println("new gob: " + xBorder);
@@ -45,16 +47,19 @@ public class Goblin extends Block {
 
 	
 	public void keyPressed(KeyEvent e) {
-		keysPressed.add(e.getKeyChar());
+		keysPressed.add(e.getKeyChar()); //add to hashset
 
 	}
 
 	public void keyReleased(KeyEvent e) {
 		//check for errors
-		keysPressed.remove(e.getKeyChar());
+		keysPressed.remove(e.getKeyChar()); 
+
+		//if enemy, start movement
 		if(isEnemy) {
 			if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
 
+				//set speed to appropriate levels when key released
 				if(e.getKeyChar() == 'a') {
 					if(l) {
 						setXDirection(-SPEED);
@@ -78,16 +83,11 @@ public class Goblin extends Block {
 
 	
 	//draw the image from the block class
-
-
 	public void draw(Graphics2D g) {
-		// g.setColor(Color.white);
-		// g.fillRect(xBorder-GamePanel.shift, 2, 2, 1000); //debugging
 
+		//update the sprite
 		if(isEnemy) {
-
 			// System.out.println(GamePanel.adjust);
-
 			if(r) {
 				g.drawImage(runR, x, y, null);
 			} else if (l) {
@@ -100,6 +100,7 @@ public class Goblin extends Block {
 		}
 	}
 
+	//set the speed
 	public void setXDirection(int xDirection) {
 		xVelocity = xDirection;
 	}
@@ -107,7 +108,7 @@ public class Goblin extends Block {
 	public void move() {
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered && Player.isRight) {
-
+				//updates the relative speed to blocks to make it appear like its moving
 				if(r) {
 					setXDirection(-1); //good
 				} else if (l) {
@@ -118,10 +119,13 @@ public class Goblin extends Block {
 			if(Player.isCentered) {
 				xBorder-=Block.SPEED;
 			}
+
+			//in edit the speed is adjusted like the blocks
 			if(GamePanel.edit){
 				x-=Block.SPEED;
 			}
 
+			//same as above but for left movement
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered && Player.isLeft) {
 
@@ -145,9 +149,8 @@ public class Goblin extends Block {
 		}
 		
 
-
+		//if knight not centered
 		if(!Player.isCentered) {
-			// System.out.println("jagdkjhgwr");
 
 			if(l) {
 				setXDirection(-SPEED);
@@ -158,6 +161,7 @@ public class Goblin extends Block {
 
 		x += xVelocity;
 
+		//make goblin move left to right and back again
 		if(isEnemy) {
 			// System.out.println("new xborder " + (xBorder-GamePanel.shift));
 			if(x <= xBorder-GamePanel.shift-GamePanel.adjust) {
