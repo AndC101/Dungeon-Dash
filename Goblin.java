@@ -110,9 +110,9 @@ public class Goblin extends Block {
 			if (Player.isCentered && Player.isRight) {
 				//updates the relative speed to blocks to make it appear like its moving
 				if(r) {
-					setXDirection(-1); //good
+					setXDirection(-Block.SPEED+SPEED); //good
 				} else if (l) {
-					setXDirection(-3); //good
+					setXDirection(-Block.SPEED-SPEED); //good
 				}
 				// xBorder-=Block.SPEED;
 			}
@@ -130,9 +130,9 @@ public class Goblin extends Block {
 			if (Player.isCentered && Player.isLeft) {
 
 				if(r) {
-					setXDirection(3); //good
+					setXDirection(Block.SPEED+SPEED); //good
 				} else if (l) {
-					setXDirection(1);
+					setXDirection(Block.SPEED-SPEED);
 				}
 
 				// xBorder+=Block.SPEED;

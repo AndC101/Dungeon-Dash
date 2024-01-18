@@ -633,8 +633,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		if (gameEnd) {
 			if (e.getKeyCode() == 27) {
 				try {
+					GameFrame.currentGameFrame.dispose();
                     new GameFrame(false
                     		, false, false, "");
+							
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -654,6 +656,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				levelSelect = true;
 				// create a new gameframe in the levelSelect menu
 				try {
+					GameFrame.currentGameFrame.dispose();
+
 					new GameFrame(true, false, false, "");
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -689,6 +693,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			} else if (e.getKeyCode() == 27) {
 				edit = false;
 				try {
+					GameFrame.currentGameFrame.dispose();
+
                     new GameFrame(true, false, false, "");
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -789,12 +795,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				// Intake elements from file io and start game
 				if (!newLevelTitle.isEmpty()) {
 					try {
+						GameFrame.currentGameFrame.dispose();
+
 						new GameFrame(false, false, true, newLevelTitle);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 				} else {
 					try {
+						GameFrame.currentGameFrame.dispose();
+
 						new GameFrame(false, false, true, prevSavedTitle);
 					} catch (IOException e1) {
 						e1.printStackTrace();
@@ -810,6 +820,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if(e.getKeyCode() == 27) {
 				play = false;
 				try {
+					GameFrame.currentGameFrame.dispose();
+
                     new GameFrame(false, false, false, "");
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -829,6 +841,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		else if(levelSelect) {
 			if(e.getKeyCode() == 27) {
 				try {
+					GameFrame.currentGameFrame.dispose();
+
                     new GameFrame(false, false, false, "");
                 } catch (IOException e1) {
                     e1.printStackTrace();
