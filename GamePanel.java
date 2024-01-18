@@ -445,8 +445,9 @@
 			  // draws the knight
 			  knight.draw(g);
   
-			  if (spawn)
-			  spawn = false;
+			  if (spawn){
+				spawn = false;
+			  }
  
 			 //checks if the knight has touched the chest, trigger game end 
 			 if (endChest != null && knight.intersects(endChest)) {
