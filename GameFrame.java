@@ -169,6 +169,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(mainPanel,  "Level deleted!", "Delete Confirmation",
 				JOptionPane.INFORMATION_MESSAGE);
 				try {
+					
 					new GameFrame(true,false, false, "");
 				} catch (IOException ex) {
 					ex.printStackTrace();
