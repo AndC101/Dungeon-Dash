@@ -53,7 +53,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage ladderImage = ImageIO.read(new File("Images/Ladder.png"));
 	public BufferedImage stoneImage = ImageIO.read(new File("Images/Stone.png"));
 	public BufferedImage crackedStoneImage = ImageIO.read(new File("Images/CrackedStone.png"));
-	public BufferedImage turretImage = ImageIO.read(new File("Images/turret.png"));
+	public BufferedImage turretRight = ImageIO.read(new File("Images/turret.png"));
+	public BufferedImage turretLeft = ImageIO.read(new File("Images/turLeft.png"));
 	public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
 	public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
 
@@ -113,6 +114,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public Chest tabChest;
 	public Goblin tabGoblin;
 	public Turret tabTurret;
+	public Turret tabTurretLeft;
+
 	public OneUp tabOneUp;
 	public SpeedBoost tabSpeedBoost;
 
@@ -138,8 +141,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	public boolean turLeft = false;
 	public boolean turRight = true;
-	public int flipNum = 0;
-	public Projectile a = new Projectile(100, 100, 30, 30, goblinRunLeft, goblinRunRight, true);
+	public int turFlipNum = 0;
+	public int goblinFlipNum = 0;
 
 	public boolean onTop = false;
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
@@ -203,9 +206,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				 crackedStoneImage);
 		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
-		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true);
-		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, false);
- 
+		 tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
+		 tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft, turRight, false);
+		 tabTurretLeft = new Turret(TAB_X - 110, 170, Turret.width, Turret.height, turretLeft, true, false, false);
+
 		 tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
 		 tabSpeedBoost = new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
  
@@ -219,6 +223,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		 enemySidebar.add(tabGoblin);
 		 enemySidebar.add(tabTurret);
+		 enemySidebar.add(tabTurretLeft);
+
  
 		 powerUpSidebar.add(tabOneUp);
 		 powerUpSidebar.add(tabSpeedBoost);
@@ -416,6 +422,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				 // moves all blocks accordingly and the knight if it was just spawned
 				 for (Block b : elements) {
 					 b.x -= adjust;
+					 if(b instanceof Goblin) {
+						((Goblin)b).xBorder-=adjust;
+					 }
 				 }
 				 if (spawn) {
 					 knight.x -= adjust;
@@ -449,7 +458,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	 public void move() {
 		 knight.move();
 		 for (Block b : elements) {
-			 b.move();
+			b.move();			 
 		 }
 		 back.move();
 	 }
@@ -630,10 +639,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				 // if the objected is flipped, we replace the original object with a flipped
 				 // version
 				 elements.remove(curSelected);
-				 try {
-					 // adds the flipped image
-					 elements.add(hFlip(curSelected));
-				 } catch (IOException e1) {
+				 if(curSelected instanceof Goblin || curSelected instanceof Turret) {
+					try {
+						// adds the flipped image
+						elements.add(hFlip(curSelected));
+					} catch (IOException e1) {
+					}
+   
 				 }
 				 // changes the selected and dragging accordingly
 				 curSelected = elements.get(elements.size() - 1);
@@ -711,6 +723,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			 } else if (e.getKeyCode() == KeyEvent.VK_2) {
 				 // enter play mode;
 				 edit = false;
+				 if(!newLevelTitle.isEmpty()) {
+					try {
+						new GameFrame(false, false, true, newLevelTitle);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}	
+				 } else {
+					try {
+						new GameFrame(false, false, true, prevSavedTitle);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}	
+				 }
 				 play = true;
 			 }
  
@@ -965,7 +990,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					if (curDragging.equals(tabGoblin)) {
 						try {
 							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft,
-									goblinRunRight, true));
+									goblinRunRight, false));
 
 						} catch (IOException IOE) {
 						}
@@ -973,16 +998,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 					if (curDragging.equals(tabTurret)) {
 						try {
-
-							if (flipNum % 2 != 0) {
-								turLeft = true;
-								turRight = false;
-							} else {
-								turLeft = false;
-								turRight = true;
-							}
-
-							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretImage, turLeft, turRight, true));
+							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft, turRight, true));
+						 } catch (IOException IOE) {
+						 }
+						 curDragging = elements.get(elements.size() - 1);
+					 }
+					 if (curDragging.equals(tabTurretLeft)) {
+						try {
+							 elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretLeft, true, false, true));
 						 } catch (IOException IOE) {
 						 }
 						 curDragging = elements.get(elements.size() - 1);
@@ -1073,8 +1096,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							 && Math.abs(b.y + b.height - centerY) <= Math.abs(b.x - b.width - centerX)) {
  
 						 try {
-							 hover = decipherBlock(curDragging, curDragging.x, b.y + b.height, curDragging.width,
-									 curDragging.height);
+							if(hover instanceof Turret) {
+								if( ((Turret)hover).l){
+									hover = new Turret(curDragging.x, b.y+b.height, curDragging.width, curDragging.height, turretLeft, true, false, true);
+								} else if (((Turret)hover).r){
+									hover = new Turret(curDragging.x, b.y+b.height, curDragging.width, curDragging.height, turretRight, true, false, true);
+								}
+							} else {
+								hover = decipherBlock(curDragging, curDragging.x, b.y + b.height, curDragging.width,
+								curDragging.height);
+
+							}
 						 } catch (IOException e1) {
 						 }
  
@@ -1138,6 +1170,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
  
 			 tabGoblin.draw(g);
 			 tabTurret.draw(g);
+			 tabTurretLeft.draw(g);
  
 		 } else {
 			 g.setColor(Color.orange);
@@ -1298,45 +1331,46 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							 // in the title itself
 							 String[] inputs = words[i].split(" "); // splits based on space
 							 if (inputs[0].equals("Ice")) {
+								
 								 elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Ice.width, Ice.height, iceImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), iceImage));
 							 } else if (inputs[0].equals("Stone")) {
 								 elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Stone.width, Stone.height, stoneImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), stoneImage));
 							 } else if (inputs[0].equals("Portal")) {
 								 elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Portal.width, Portal.height, portalImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), portalImage));
 							 } else if (inputs[0].equals("Ladder")) {
 								 elements.add(new Ladder(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Ladder.width, Ladder.height, ladderImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), ladderImage));
 							 } else if (inputs[0].equals("CrackedStone")) {
 								 elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 CrackedStone.width, CrackedStone.height, crackedStoneImage));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), crackedStoneImage));
 							 } else if (inputs[0].equals("Chest")) {
 								elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Chest.width, Chest.height, closedChestImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), closedChestImage));
  
 							  } else if (inputs[0].equals("Goblin")) {
 								 elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, true));
+								 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft, goblinRunRight, true));
+										//  System.out.println(a);
 							 } else if (inputs[0].equals("Turret")) {
-
-								if (flipNum % 2 != 0) {
-									turLeft = true;
-									turRight = false;
+								if(inputs[5].equals("true")){
+									elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), turretLeft, true, false, true));
+	
 								} else {
-									turLeft = false;
-									turRight = true;
+									elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), turretRight, turLeft, turRight, true));
+	
 								}
 
-								elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										Turret.width, Turret.height, turretImage, turLeft, turRight, true));
 							} else if (inputs[0].equals("OneUp")) {
 								elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										OneUp.width, OneUp.height, oneUpImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), oneUpImage));
 							} else if (inputs[0].equals("SpeedBoost")) {
 								elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										SpeedBoost.width, SpeedBoost.height, speedBoostImage));
+								Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), speedBoostImage));
 							}
 						}
 						return;
@@ -1368,18 +1402,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		} else if (className.equals("Chest")) {
 			return new Chest(x, y, width, height, b.img);
 		} else if (className.equals("Goblin")) {
-			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, true);
-		} else if (className.equals("Turret")) {
-
-			if (flipNum % 2 != 0) {
-				turLeft = true;
-				turRight = false;
-			} else {
-				turLeft = false;
-				turRight = true;
-			}
-
-			return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
+			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, false);
+		// } 
+		// else if (className.equals("Turret")) {
+		// 	return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
 		} else if (className.equals("OneUp")) {
 			return new OneUp(x, y, width, height, b.img);
 		} else if (className.equals("SpeedBoost")) {
@@ -1398,10 +1424,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// returns a Block that is horizontally flipped compared to b
 	public Block hFlip(Block b) throws IOException {
 		if (b instanceof Turret) {
-			flipNum++; // used to account for turret flips
-			System.out.println("hi " + flipNum);
+			turFlipNum++; // used to account for turret flips
+			System.out.println("hi " + turFlipNum);
 		}
-		return decipherBlock(b, b.x + b.width, b.y, -b.width, b.height);
+		if(b instanceof Goblin) {
+			goblinFlipNum++;
+		}
+		return decipherBlock(b, b.x, b.y, b.width, b.height);
 	}
 
 	// checks if the mouse is on a block, flip is counted for
