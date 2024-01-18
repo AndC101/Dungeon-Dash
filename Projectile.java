@@ -75,7 +75,7 @@ public class Projectile extends Rectangle {
 				g.drawImage(runR, x, yTur-10, null);
 			} else if (l) {
 				// g.fillRect(xBorder-GamePanel.shift-Turret.width, 40, 2, 1000); //debugging
-				g.drawImage(runL, x-Turret.width, yTur-10, null);
+				g.drawImage(runL, x, yTur-10, null);
 			} else {
 				g.drawImage(runR, x, yTur-10, null);
 			}
