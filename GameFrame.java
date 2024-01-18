@@ -155,7 +155,8 @@ public class GameFrame extends JFrame implements ActionListener{
 			}
 			});
     }
-
+	
+	//same logic as play button, but sends deletes level from file io and displays message
 	private void addDeleteButtonListener(JButton playButton, String title) {
         playButton.addActionListener(new ActionListener() {
 
@@ -197,6 +198,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		
 	}
 
+	//deletes the level information from file
 	public void deleteLevel(String title) {
 	// if the title is not found or there is no title
 
@@ -227,6 +229,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		}
 	}	
 
+	//deletes the name of the level from the file
 	public void deleteLevelName(String title) {
 		String[] names;
 		String newTitles = "";
@@ -247,6 +250,7 @@ public class GameFrame extends JFrame implements ActionListener{
 						newTitles += name + ", ";
 					}
 				}
+				//append all titles excluding the "title"
 				inputBuffer.append(newTitles);
 				file.close();
 	

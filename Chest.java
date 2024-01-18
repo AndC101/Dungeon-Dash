@@ -1,7 +1,7 @@
 /*
  * Ethan Lin & Andrew Chen
  * January 11, 2023
- * ladder is a block that allows knight to climb it 
+ * Chest is a block that makes the game end when touched 
  */
 
 import java.awt.*;
