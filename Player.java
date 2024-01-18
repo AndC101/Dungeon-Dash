@@ -41,7 +41,7 @@ public class Player extends Rectangle {
 
 	public int yVelocity;
 	public static int xVelocity;
-	public final int SPEED = 3; // movement speed
+	public final int SPEED = 4; // movement speed
 	public int fallCounter = 0;
 
 	public static boolean oneScreen = false;
