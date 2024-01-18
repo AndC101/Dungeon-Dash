@@ -5,4 +5,4 @@ kjhkjh: Portal 542 450 -60 75: CrackedStone 414 267 60 40: Turret 168 465 60 60:
 win: Chest 793 485 60 40: Portal 196 450 60 75: Turret 694 465 -60 60: 
 e: Portal 156 450 60 75: Turret 582 465 60 60: 
 testng: Turret 342 465 60 60 1: Portal 145 450 60 75: 
-testing: Turret 592 465 60 60 1: Portal 188 450 60 75: 
+testing: Turret 592 465 60 60 false: Portal 188 450 60 75: Chest 530 485 60 40: 
