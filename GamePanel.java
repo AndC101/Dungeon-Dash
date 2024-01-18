@@ -84,7 +84,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean powerUpUp = true;
 	public boolean checkVertical = false;
 	public boolean win = false;
-	public boolean gameEnd = false;
+	public static boolean gameEnd = false;
 
 	public int indicatorPos = 250; // > symbol for menu
 
@@ -597,6 +597,15 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				}
 
 			}
+			
+			for(Block b: elements) {
+				if(getClass(b).equals("CrackedStone")) {
+					if(((CrackedStone) b).startBreak != -1 && System.currentTimeMillis() - ((CrackedStone) b).startBreak >= CrackedStone.breakTime) {
+						elements.remove(b);
+						break;
+					}
+				}
+			}
 
 		}
 
@@ -851,6 +860,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 	}
+
 
 	// executes when keys are released
 	public void keyReleased(KeyEvent e) {
@@ -1560,6 +1570,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		Player.xVelocity = 0;
 		Block.xVelocity = 0;
 		back.xVelocity = 0;
+		Player.yVelocity = 0;
+		knight.falling = false;
 
 		// checks to see if the player won
 		if (win) {

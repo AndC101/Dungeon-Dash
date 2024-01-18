@@ -158,7 +158,7 @@ public class Goblin extends Block {
 				setXDirection(SPEED);
 			}
 		} 
-
+		System.out.println(xVelocity);
 		x += xVelocity;
 
 		//make goblin move left to right and back again

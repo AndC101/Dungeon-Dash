@@ -39,7 +39,7 @@ public class Player extends Rectangle {
 
 	// has to do with speed
 
-	public int yVelocity;
+	public static int yVelocity;
 	public static int xVelocity;
 	public final int SPEED = 4; // movement speed
 	public int fallCounter = 0;
@@ -179,6 +179,13 @@ public class Player extends Rectangle {
 				falling = false;
 			}
 		}
+		
+		if(under != null && GamePanel.getClass(under).equals("CrackedStone")) {
+			if(((CrackedStone)under).startBreak == -1) {
+				((CrackedStone)under).startBreak = System.currentTimeMillis();
+			}
+		}
+		
 		// moves the player
 		if(x != 0 && x != Integer.MIN_VALUE) {
 			x = x + xVelocity;
