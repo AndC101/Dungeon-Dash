@@ -5,4 +5,4 @@ Test Level 1: Portal 354 450 60 75: Stone 494 471 60 40: Ice 593 429 60 40: Ice 
 >>>>>>> NewEthan
 Speed Test: Portal 44 450 60 75: Chest 1644 485 60 40: SpeedBoost -1 473 45 45: Stone 268 243 60 40: Stone 378 390 60 40: Stone 522 309 60 40: Stone 679 248 60 40: Goblin 257 193 50 50: 
 Powerup Testing: Portal 209 450 60 75: Chest 723 485 60 40: OneUp 450 465 60 60: SpeedBoost 612 480 45 45: SpeedBoost 350 480 45 45: OneUp 541 465 60 60: 
-Goblin Collision: Portal 208 450 60 75: Stone 370 485 60 40: Stone 430 485 60 40: Stone 490 485 60 40: CrackedStone 550 485 60 40: Chest 768 485 60 40: Stone 574 445 60 40: Goblin 362 435 50 50: 
+Goblin Collision: Portal 326 450 60 75: Stone 498 485 60 40: Stone 558 485 60 40: Stone 618 485 60 40: CrackedStone 678 485 60 40: Chest 896 485 60 40: Stone 702 445 60 40: Goblin 490 435 50 50: 
