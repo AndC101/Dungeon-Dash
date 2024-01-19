@@ -46,9 +46,11 @@ public class Player extends Rectangle {
 
 	public static int yVelocity;
 	public static int xVelocity;
-	public final int SPEED = 4; // movement speed
+	public static int SPEED = 4; // movement speed
 	public int fallCounter = 0;
 	public int lives = 1;
+	
+	public long speedStart = -1;
 	
 	public int flashCnt = 0;
 	
@@ -115,6 +117,15 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
+		
+		if(extraSpeed && System.currentTimeMillis() - speedStart >= SpeedBoost.duration) {
+			extraSpeed = false;
+			speedStart = -1;
+		}
+		
+		if(extraSpeed) SPEED = 6;
+		if(!extraSpeed) SPEED = 4;
+		
 		// no need to move if the screen is following the player
 		if (isCentered) {
 			setXDirection(0);

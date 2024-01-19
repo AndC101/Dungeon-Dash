@@ -18,7 +18,7 @@ public class Block extends Rectangle {
 
 	BufferedImage img;
 	public static int xVelocity;
-	public static final int SPEED = 2; // movement speed
+	public static int SPEED = Player.SPEED; // movement speed
 
 	// current keys pressed
 	public static HashSet<Character> keysPressed = new HashSet<Character>();
@@ -75,17 +75,15 @@ public class Block extends Rectangle {
 
 	// moves the block
 	public void move() {
+		SPEED = Player.SPEED;
 		// checks if a movement key is pressed
 		if (keysPressed.contains('d')) {
 			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(-SPEED);
-                System.out.println("d: " + keysPressed);
 			}
 		} else if (keysPressed.contains('a')) {
 			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(SPEED);
-                System.out.println("a: " + keysPressed);
-
 			}
 		} else {
 			setXDirection(0);
