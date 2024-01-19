@@ -185,7 +185,7 @@ public class Goblin extends Block {
 		int botRightX = x + width;
 		int botRightY = y + height;
 		for (Block b : gamePanel.elements) {
-			if (GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
+			if (GamePanel.walkThrough.contains(gamePanel.getClass(b))) continue;
 			
 			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
 					|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 1 && y <= b.y)) {

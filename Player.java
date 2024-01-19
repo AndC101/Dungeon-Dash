@@ -15,6 +15,9 @@ import javax.swing.ImageIcon;
 public class Player extends Rectangle {
 
 	// global variables
+	
+	public static int x;
+	
 	// player animations
 	private Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
 	private Image leftAnimation = new ImageIcon("Images/KnightRunLeft.gif").getImage();
@@ -127,7 +130,7 @@ public class Player extends Rectangle {
 			isLeft = false;
 			lastMoved = 1;
 			if (!isCentered) {
-				setXDirection(SPEED + ((under != null && GamePanel.getClass(under).equals("Ice"))? 2:0));
+				setXDirection(SPEED + ((under != null && gamePanel.getClass(under).equals("Ice"))? 2:0));
 			}
 
 		} else if (keysPressed.contains('a')) {
@@ -135,11 +138,11 @@ public class Player extends Rectangle {
 			isRight = false;
 			lastMoved = -1;
 			if (!isCentered) {
-				setXDirection(-SPEED + ((under != null && GamePanel.getClass(under).equals("Ice"))? -2:0));
+				setXDirection(-SPEED + ((under != null && gamePanel.getClass(under).equals("Ice"))? -2:0));
 			}
 		}
 		else {
-			if(under != null && GamePanel.getClass(under).equals("Ice")) {
+			if(under != null && gamePanel.getClass(under).equals("Ice")) {
 				setXDirection(2*lastMoved);
 			}
 			else {
@@ -200,7 +203,7 @@ public class Player extends Rectangle {
 			if(x <= 0) x = 1;
 		}
 		
-		if(under != null && GamePanel.getClass(under).equals("CrackedStone") && ((CrackedStone)under).startBreak == -1) {
+		if(under != null && gamePanel.getClass(under).equals("CrackedStone") && ((CrackedStone)under).startBreak == -1) {
 			((CrackedStone)under).startBreak = System.currentTimeMillis();
 		}
 		
@@ -243,7 +246,7 @@ public class Player extends Rectangle {
 		int botRightX = x + width;
 		int botRightY = y + height;
 		for (Block b : gamePanel.elements) {
-			if (GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
+			if (GamePanel.walkThrough.contains(gamePanel.getClass(b))) continue;
 			
 			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
 					|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 1 && y <= b.y)) {

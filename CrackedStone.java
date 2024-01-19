@@ -18,8 +18,8 @@ public class CrackedStone extends Block {
 	
 	public BufferedImage i; //image for crackedstone
 	
-	public CrackedStone(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i); //block constructor 
+	public CrackedStone(GamePanel gp, int x, int y, int l, int w, BufferedImage i) throws IOException{
+		super(gp, x,y,l,w,i); //block constructor 
 	}
 	
 	//draw the image from the block class

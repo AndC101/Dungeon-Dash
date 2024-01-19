@@ -34,7 +34,7 @@ public class Turret extends Block {
 
 	public Turret(GamePanel gp, int x, int y, int len, int w, BufferedImage i, boolean left, boolean right,
 			boolean enemy) throws IOException {
-		super(x, y, len, w, i); // block constructor
+		super(gp, x, y, len, w, i); // block constructor
 		l = left;
 		r = right;
 		isEnemy = enemy;

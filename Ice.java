@@ -17,8 +17,8 @@ public class Ice extends Block {
 
 	public BufferedImage i; // ice image
 	
-	public Ice(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i); //block constructor
+	public Ice(GamePanel gp, int x, int y, int l, int w, BufferedImage i) throws IOException{
+		super(gp, x,y,l,w,i); //block constructor
 	}
 	
 	//draw the image from the block class

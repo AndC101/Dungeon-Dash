@@ -16,8 +16,8 @@ public class Stone extends Block {
 	
 	public BufferedImage i; //image for stone
 	
-	public Stone(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i); //block constructor
+	public Stone(GamePanel gp, int x, int y, int l, int w, BufferedImage i) throws IOException{
+		super(gp, x,y,l,w,i); //block constructor
 	}
 	
 	//draw the image from the block class

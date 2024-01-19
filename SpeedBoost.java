@@ -16,8 +16,8 @@ public class SpeedBoost extends Block {
 	
 	public BufferedImage i; //image for the powerup
 	
-	public SpeedBoost(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i); //block constructor
+	public SpeedBoost(GamePanel gp, int x, int y, int l, int w, BufferedImage i) throws IOException{
+		super(gp,x,y,l,w,i); //block constructor
 	}
 	
 	//draw the image from the block class

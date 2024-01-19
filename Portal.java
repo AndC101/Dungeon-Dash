@@ -16,8 +16,8 @@ public class Portal extends Block {
 
 	public BufferedImage i; //image for portal
 	
-	public Portal(int x, int y, int l, int w, BufferedImage i) throws IOException{
-		super(x,y,l,w,i); //block constructor
+	public Portal(GamePanel gp, int x, int y, int l, int w, BufferedImage i) throws IOException{
+		super(gp,x,y,l,w,i); //block constructor
 	}
 	
 	//draw the image from the block class

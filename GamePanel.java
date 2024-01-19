@@ -86,6 +86,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public static boolean spawn = true;
 	public boolean powerUpUp = true;
 	public boolean checkVertical = false;
+	public boolean checkHorizontal = false;
 	public boolean win = false;
 	public boolean gameEnd = false;
 	public boolean running = true;
@@ -213,13 +214,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// if not applicable, prevSavedTitle = "";
 
 		// creates the objects for the sidebar objects
-		tabPortal = new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
-		tabStone = new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
-		tabIce = new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
-		tabLadder = new Ladder(TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
-		tabCrackedStone = new CrackedStone(TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
+		tabPortal = new Portal(this, TAB_X - 110, 20, Portal.width, Portal.height, portalImage);
+		tabStone = new Stone(this, TAB_X - 110, 100, Stone.width, Stone.height, stoneImage);
+		tabIce = new Ice(this, TAB_X - 110, 145, Ice.width, Ice.height, iceImage);
+		tabLadder = new Ladder(this, TAB_X - 90, 190, Ladder.width, Ladder.height, ladderImage);
+		tabCrackedStone = new CrackedStone(this, TAB_X - 110, 240, CrackedStone.width, CrackedStone.height,
 				crackedStoneImage);
-		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
+		tabChest = new Chest(this, TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
 		// enemies
 		tabGoblin = new Goblin(this, TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
@@ -227,8 +228,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabTurretLeft = new Turret(this, TAB_X - 110, 170, Turret.width, Turret.height, turretLeft, true, false, false);
 
 		// powerups
-		tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
-		tabSpeedBoost = new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
+		tabOneUp = new OneUp(this, TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
+		tabSpeedBoost = new SpeedBoost(this, TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height, speedBoostImage);
 
 		// add the sidebar objects to the sidebar ArrayLists
 		blockSidebar.add(tabPortal);
@@ -298,8 +299,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				g.setFont(new Font("Impact", Font.PLAIN, 20));
 				g.drawString("The goal of the game is to reach the treasure chest from the portal.", 20, 250);
 				g.drawImage(afkAnimation, 310, 165, null);
-				(new Chest(350,180,Chest.width,Chest.height,openChestImage)).draw(g);
-				(new Portal(100,145,Portal.width,Portal.height,portalImage)).draw(g);
+				(new Chest(this, 350,180,Chest.width,Chest.height,openChestImage)).draw(g);
+				(new Portal(this, 100,145,Portal.width,Portal.height,portalImage)).draw(g);
 				g.drawImage(afkAnimation, 110, 165, null);
 				g.drawLine(170, 185, 280, 185);
 				g.drawLine(240, 165, 280, 185);
@@ -309,8 +310,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				g.drawImage(goblinRunRight, 500, 325, null);
 				(new Turret(this,600,320,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
 				
-				(new OneUp(100,400,OneUp.width,OneUp.height,oneUpImage)).draw(g);
-				(new SpeedBoost(200,410,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
+				(new OneUp(this, 100,400,OneUp.width,OneUp.height,oneUpImage)).draw(g);
+				(new SpeedBoost(this, 200,410,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
 				g.drawString("and using powerups.", 400, 450);
 				
 			}
@@ -322,22 +323,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				g.setFont(new Font("Impact", Font.PLAIN, 20));
 				
 				g.drawString("Stone acts as a normal block.", 75, 175);
-				(new Stone(150,100,Stone.width,Stone.height,stoneImage)).draw(g);
+				(new Stone(this, 150,100,Stone.width,Stone.height,stoneImage)).draw(g);
 				
 				g.drawString("The player will move faster and slide on ice.", 25, 325);
-				(new Ice(150,250,Ice.width,Ice.height,iceImage)).draw(g);
+				(new Ice(this, 150,250,Ice.width,Ice.height,iceImage)).draw(g);
 				
 				g.drawString("Players are able to climb up ladders.", 500, 175);
-				(new Ladder(640,100,Ladder.width,Ladder.height,ladderImage)).draw(g);
+				(new Ladder(this, 640,100,Ladder.width,Ladder.height,ladderImage)).draw(g);
 				
 				g.drawString("Cracked stone dissapears after the player steps on it.", 430, 325);
-				(new CrackedStone(615,250,CrackedStone.width,CrackedStone.height,crackedStoneImage)).draw(g);
+				(new CrackedStone(this, 615,250,CrackedStone.width,CrackedStone.height,crackedStoneImage)).draw(g);
 				
 				g.drawString("The portal is the spawn point.", 60, 475);
-				(new Portal(150,375,Portal.width,Portal.height,portalImage)).draw(g);
+				(new Portal(this, 150,375,Portal.width,Portal.height,portalImage)).draw(g);
 				
 				g.drawString("The chest is the win condition.", 510, 475);
-				(new Chest(600,400,Chest.width,Chest.height,closedChestImage)).draw(g);
+				(new Chest(this,600,400,Chest.width,Chest.height,closedChestImage)).draw(g);
 			}
 			else if(instructionsPage == 3) {
 				g.setColor(Color.white);
@@ -566,9 +567,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				for (Block b : elements) {
 					if (getClass(b).equals("Goblin") || getClass(b).equals("Turret")) {
 						if (getClass(b).equals("Goblin")) {
-							if (knight.intersects(b)) {
+							if (knight.intersects(b) && knight.invincibleStart == -1) {
 								knight.lives--;
-								if(knight.lives == 0 && knight.invincibleStart == -1) {
+								if(knight.lives == 0) {
 									win = false;
 									gameEnd = true;
 								}
@@ -626,7 +627,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 		} else if (play && !spawn) {
-
+			if(knight.x == 0 || knight.x == Integer.MIN_VALUE) return;
 			// doesn't allow the player to walk off the screen
 			if (knight.x <= 0) {
 				knight.x = 0;
@@ -638,6 +639,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			}
 
 			// checks collisions between the player and the blocks
+			checkHorizontal = false;
 			for (Block b : elements) {
 				checkVertical = false;
 
@@ -670,7 +672,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						knight.isJumping = true;
 						knight.falling = true;
 						checkVertical = true;
-
+						
 					}
 
 				}
@@ -678,7 +680,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				// LEFT COLLISION
 				if (!checkVertical && knight.x <= b.x && knight.x + knight.width >= b.x
 						&& ((knight.y >= b.y && knight.y <= b.y + b.height)
-								|| (knight.y + knight.height > b.y && knight.y + knight.height <= b.y + b.height)
+								|| (knight.y + knight.height > b.y && knight.y + knight.height < b.y + b.height)
 								|| knight.y <= b.y && knight.y + knight.height >= b.y + b.height)) {
 					knight.x = b.x - knight.width - 1;
 					// stops horizontal movement
@@ -687,6 +689,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					} else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
+						checkHorizontal = true;
 					}
 				}
 
@@ -702,10 +705,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					} else {
 						back.xVelocity = 0;
 						Block.xVelocity = 0;
+						checkHorizontal = true;
 					}
 				}
 
 			}
+
+			System.out.println(Player.x + " " + knight.y);
 			
 			for(Block b: elements) {
 				if(getClass(b).equals("CrackedStone") && ((CrackedStone)b).startBreak != -1 && System.currentTimeMillis() - ((CrackedStone)b).startBreak >= CrackedStone.breakTime) {
@@ -1193,7 +1199,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if (tabPressed.equals("blocks")) {
 					if (curDragging.equals(tabPortal)) {
 						try {
-							elements.add(new Portal(TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
+							elements.add(new Portal(this, TAB_X - 110, 20, Portal.width, Portal.height, portalImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1201,7 +1207,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 					else if (curDragging.equals(tabStone)) {
 						try {
-							elements.add(new Stone(TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
+							elements.add(new Stone(this, TAB_X - 110, 100, Stone.width, Stone.height, stoneImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1209,7 +1215,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 					else if (curDragging.equals(tabIce)) {
 						try {
-							elements.add(new Ice(TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
+							elements.add(new Ice(this, TAB_X - 110, 145, Ice.width, Ice.height, iceImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1217,7 +1223,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 					else if (curDragging.equals(tabLadder)) {
 						try {
-							elements.add(new Ladder(TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
+							elements.add(new Ladder(this, TAB_X - 80, 190, Ladder.width, Ladder.height, ladderImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1225,14 +1231,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 					else if (curDragging.equals(tabCrackedStone)) {
 						try {
-							elements.add(new CrackedStone(TAB_X - 110, 230, CrackedStone.width, CrackedStone.height,
+							elements.add(new CrackedStone(this, TAB_X - 110, 230, CrackedStone.width, CrackedStone.height,
 									crackedStoneImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
 					} else if (curDragging.equals(tabChest)) {
 						try {
-							elements.add(new Chest(TAB_X - 110, 340, Chest.width, Chest.height, closedChestImage));
+							elements.add(new Chest(this, TAB_X - 110, 340, Chest.width, Chest.height, closedChestImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
@@ -1266,13 +1272,13 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				} else {
 					if (curDragging.equals(tabOneUp)) {
 						try {
-							elements.add(new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage));
+							elements.add(new OneUp(this, TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage));
 						} catch (IOException IOE) {
 						}
 						curDragging = elements.get(elements.size() - 1);
 					} else if (curDragging.equals(tabSpeedBoost)) {
 						try {
-							elements.add(new SpeedBoost(TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height,
+							elements.add(new SpeedBoost(this, TAB_X - 110, 100, SpeedBoost.width, SpeedBoost.height,
 									speedBoostImage));
 						} catch (IOException IOE) {
 						}
@@ -1590,22 +1596,22 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 							String[] inputs = words[i].split(" "); // splits based on space
 							if (inputs[0].equals("Ice")) {
 
-								elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Ice(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), iceImage));
 							} else if (inputs[0].equals("Stone")) {
-								elements.add(new Stone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Stone(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), stoneImage));
 							} else if (inputs[0].equals("Portal")) {
-								elements.add(new Portal(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Portal(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), portalImage));
 							} else if (inputs[0].equals("Ladder")) {
-								elements.add(new Ladder(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Ladder(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), ladderImage));
 							} else if (inputs[0].equals("CrackedStone")) {
-								elements.add(new CrackedStone(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new CrackedStone(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), crackedStoneImage));
 							} else if (inputs[0].equals("Chest")) {
-								elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Chest(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), closedChestImage));
 
 							} else if (inputs[0].equals("Goblin")) {
@@ -1627,10 +1633,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 								}
 
 							} else if (inputs[0].equals("OneUp")) {
-								elements.add(new OneUp(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new OneUp(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), oneUpImage));
 							} else if (inputs[0].equals("SpeedBoost")) {
-								elements.add(new SpeedBoost(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new SpeedBoost(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), speedBoostImage));
 							}
 						}
@@ -1651,33 +1657,33 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		Class<?> type = b.getClass();
 		String className = type.getName();
 		if (className.equals("Stone")) {
-			return new Stone(x, y, width, height, b.img);
+			return new Stone(this, x, y, width, height, b.img);
 		} else if (className.equals("Ice")) {
-			return new Ice(x, y, width, height, b.img);
+			return new Ice(this, x, y, width, height, b.img);
 		} else if (className.equals("Portal")) {
-			return new Portal(x, y, width, height, b.img);
+			return new Portal(this, x, y, width, height, b.img);
 		} else if (className.equals("Ladder")) {
-			return new Ladder(x, y, width, height, b.img);
+			return new Ladder(this, x, y, width, height, b.img);
 		} else if (className.equals("CrackedStone")) {
-			return new CrackedStone(x, y, width, height, b.img);
+			return new CrackedStone(this, x, y, width, height, b.img);
 		} else if (className.equals("Chest")) {
-			return new Chest(x, y, width, height, b.img);
+			return new Chest(this, x, y, width, height, b.img);
 		} else if (className.equals("Goblin")) {
 			return new Goblin(this, x, y, width, height, goblinRunLeft, goblinRunRight, false);
 			// }
 			// else if (className.equals("Turret")) {
 			// return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
 		} else if (className.equals("OneUp")) {
-			return new OneUp(x, y, width, height, b.img);
+			return new OneUp(this, x, y, width, height, b.img);
 		} else if (className.equals("SpeedBoost")) {
-			return new SpeedBoost(x, y, width, height, b.img);
+			return new SpeedBoost(this, x, y, width, height, b.img);
 		}
 
 		return b;
 	}
 
 	// returns the name of the class of Block b
-	public static String getClass(Block b) {
+	public String getClass(Block b) {
 		Class<?> type = b.getClass();
 		return type.getName();
 	}
