@@ -107,6 +107,7 @@
 	 public int instructionsPage = 1;
 	 public long startTime;
 	 public long endTime = -1;
+	 public int numPowers = 0;
  
 	 public Block curDragging, curSelected;
  
@@ -180,7 +181,7 @@
 		 }
  
 		 // initializes the Player
-		 knight = new Player(this, 0, 0, 43, 53);
+		 knight = new Player(this, 0, 0, 35, 45);
  
 		 // get the title of the save file
 		 prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
@@ -352,10 +353,11 @@
 				 g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
 				 (new Turret(this, 625,110,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
 				 
+				 (new SpeedBoost(175,275,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
 				 g.drawString("Speed up increases the movement speed of the player.", 10, 350);
 		 
 				 
-				 g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
+				 g.drawString("Extra life awards the player with an extra life.", 500,  350);
 				 
 				 
 			 }
@@ -442,7 +444,6 @@
 		 }
  
 		 else if (play) {
- 
 			 // draws the background
 			 back.draw(g);
 			 
@@ -452,28 +453,6 @@
 			 g.drawString("X" + "   " + knight.lives, 800, 60);
  
 			 // loops through all elements
-			 for (Block b : elements) {
-				 // checks if it is a powerup and if so make it bob up and down
-				 if (getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
-					 if (powerUpUp) {
-						 powerUpBob++;
-						 if (powerUpBob % 2 == 0)
-							 b.y++;
-					 } else {
-						 powerUpBob--;
-						 if (powerUpBob % 2 == 0)
-							 b.y--;
-					 }
- 
-					 if (powerUpBob >= 20)
-						 powerUpUp = false;
-					 if (powerUpBob <= -20)
-						 powerUpUp = true;
- 
-				 }
-				 // draws all the Blocks
-				 b.draw(g);
-			 }
  
 			 if (spawn) { // spawns the knight in front of the portal
 				 startTime = System.currentTimeMillis();
@@ -486,6 +465,9 @@
 					 }
 					 if (b.img != null && b.img.equals(closedChestImage)) {
 						 endChest = (Chest) b;
+					 }
+					 if(getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
+						 numPowers++;
 					 }
  
 				 }
@@ -546,7 +528,28 @@
 				 // since a border is reached, the knight no longer needs to be centered
 				 Player.isCentered = false;
 			 }
+ 		 
+			 for (Block b : elements) {
+				 // checks if it is a powerup and if so make it bob up and down
+				 if (getClass(b).equals("SpeedBoost") || getClass(b).equals("OneUp")) {
+					 if (powerUpUp) {
+						 powerUpBob++;
+						 b.y++;
+					 } else {
+						 powerUpBob--;
+						 b.y--;
+					 }
  
+					 if (powerUpBob >= 20 * numPowers)
+						 powerUpUp = false;
+					 if (powerUpBob <= -20 * numPowers)
+						 powerUpUp = true;
+ 
+				 }
+				 // draws all the Blocks
+				 b.draw(g);
+			 }
+			 
 			 // draws the knight
 			 knight.draw(g);
  
@@ -716,11 +719,14 @@
 				 }
 				 else if(getClass(b).equals("SpeedBoost") && knight.intersects(b)) {
 					 knight.extraSpeed = true;
+					 knight.speedStart = System.currentTimeMillis();
 					 remove.add(b);
+					 numPowers--;
 				 }
 				 else if(getClass(b).equals("OneUp") && knight.intersects(b)) {
 					 knight.lives++;
 					 remove.add(b);
+					 numPowers--;
 				 }
 			 }
 			 
@@ -767,6 +773,19 @@
 			 else if(e.getKeyCode() == KeyEvent.VK_RIGHT && instructionsPage != 10) {
 				 instructionsPage++;
 			 }
+			 
+			 if (e.getKeyCode() == 27) {
+				 try {
+					 GameFrame.currentGameFrame.dispose();
+					 new GameFrame(false
+							 , false, false, "");
+					 running = false;
+							 
+				 } catch (IOException e1) {
+					 e1.printStackTrace();
+				 }
+			 }
+			 
 		 }
 		 else if (gameEnd) {
 			 if (e.getKeyCode() == 27) {
