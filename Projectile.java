@@ -91,9 +91,9 @@ public class Projectile extends Rectangle {
 			if (Player.isCentered && Player.isRight) {
 
 				if (r) {
-					setXDirection(0); // good
+					setXDirection(-Block.SPEED+SPEED); // good
 				} else if (l) {
-					setXDirection(-4); // good
+					setXDirection(-Block.SPEED-SPEED); // good
 
 				}
 				// xBorder+=-5;
@@ -111,15 +111,16 @@ public class Projectile extends Rectangle {
 			if (Player.isCentered && Player.isLeft) {
 
 				if (r) {
-					setXDirection(4); // good
+					setXDirection(Block.SPEED+SPEED); // good
 
 				} else if (l) {
-					setXDirection(0);
+					setXDirection(-Block.SPEED-SPEED);
 				}
 				// xBorder+=5;
 			}
 			if(GamePanel.edit){
 				x+=Block.SPEED;
+				
 			}
 
 		}

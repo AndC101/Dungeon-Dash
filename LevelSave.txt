@@ -1,3 +1,0 @@
-
-Test Level 1: Portal 406 450 60 75: Stone 550 471 60 40: Ice 649 429 60 40: Ice 709 429 60 40: Stone 645 283 60 40: Stone 810 376 60 40: Ice 908 319 60 40: Turret 444 344 60 60 false: Stone 441 404 60 40: Stone 381 404 60 40: Stone 585 283 60 40: Stone 525 285 60 40: Stone 465 283 60 40: Stone 405 281 60 40: Stone 345 281 60 40: Stone 705 282 60 40: Turret 1036 246 60 60 true: Ice 1034 306 60 40: Stone 531 191 60 40: Chest 193 224 60 40: Stone 133 224 60 40: CrackedStone 270 465 60 40: CrackedStone 181 429 60 40: Stone 275 338 60 40: Goblin 341 231 50 50: CrackedStone 161 389 60 40: 
-
