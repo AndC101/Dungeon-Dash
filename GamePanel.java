@@ -368,7 +368,7 @@
 		 }
 		 else if (mainMenu) {
 
-
+			g.setColor(Color.white);
 			 g.drawImage(menuBackground, 0, 0, this);
 			 // display text for the title 
  
