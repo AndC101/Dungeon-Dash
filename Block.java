@@ -77,19 +77,21 @@ public class Block extends Rectangle {
 	public void move() {
 		// checks if a movement key is pressed
 		if (keysPressed.contains('d')) {
-			if (Player.isCentered) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(-SPEED);
+                System.out.println("d: " + keysPressed);
 			}
 		} else if (keysPressed.contains('a')) {
-			if (Player.isCentered) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(SPEED);
+                System.out.println("a: " + keysPressed);
 
 			}
 		} else {
 			setXDirection(0);
 		}
 		// if the player is not centered, blocks should not move
-		if (!Player.isCentered)
+		if (!Player.isCentered && !GamePanel.edit)
 			setXDirection(0);
 
 		// move the blocks
