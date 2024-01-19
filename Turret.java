@@ -34,7 +34,7 @@ public class Turret extends Block {
 
 	public Turret(GamePanel gp, int x, int y, int len, int w, BufferedImage i, boolean left, boolean right,
 			boolean enemy) throws IOException {
-		super(gp, x, y, len, w, i); // block constructor
+		super(x, y, len, w, i); // block constructor
 		l = left;
 		r = right;
 		isEnemy = enemy;
@@ -42,7 +42,7 @@ public class Turret extends Block {
 
 		// create first projectile
 		try {
-			ball = new Projectile(x, y - 10, 30, 30, fireballLeft, fireballRight, l, r, true);
+			ball = new Projectile(x, y - 10, Projectile.height, Projectile.width, fireballLeft, fireballRight, l, r, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -130,7 +130,7 @@ public class Turret extends Block {
 		TimerTask task = new TimerTask() {
 			public void run() {
 				try {
-					ballTwo = new Projectile(x, y - 10, 30, 30, fireballLeft, fireballRight, l, r, true);
+					ballTwo = new Projectile(x, y - 10, Projectile.height, Projectile.width, fireballLeft, fireballRight, l, r, true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -139,7 +139,7 @@ public class Turret extends Block {
 		};
 		Timer timer = new Timer("Timer");
 
-		long delay = 1000L;
+		long delay = 1300L;
 		timer.schedule(task, delay);
 	}
 

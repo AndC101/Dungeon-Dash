@@ -22,11 +22,9 @@ public class Block extends Rectangle {
 
 	// current keys pressed
 	public static HashSet<Character> keysPressed = new HashSet<Character>();
-	public static boolean canMove = true;
-	
-	public GamePanel gamePanel;
+
 	// Block constructor
-	public Block(GamePanel gp, int x, int y, int l, int w, BufferedImage i) {
+	public Block(int x, int y, int l, int w, BufferedImage i) {
 		super(x, y, l, w);
 		img = i;
 	}
@@ -77,22 +75,23 @@ public class Block extends Rectangle {
 
 	// moves the block
 	public void move() {
-		
 		// checks if a movement key is pressed
-		if (keysPressed.contains('d') && canMove) {
-			if (Player.isCentered) {
+		if (keysPressed.contains('d')) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(-SPEED);
+                System.out.println("d: " + keysPressed);
 			}
-		} else if (keysPressed.contains('a') && canMove) {
-			if (Player.isCentered) {
+		} else if (keysPressed.contains('a')) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(SPEED);
+                System.out.println("a: " + keysPressed);
 
 			}
 		} else {
 			setXDirection(0);
 		}
 		// if the player is not centered, blocks should not move
-		if (!Player.isCentered)
+		if (!Player.isCentered && !GamePanel.edit)
 			setXDirection(0);
 
 		// move the blocks
