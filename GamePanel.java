@@ -67,7 +67,8 @@
 	 Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
  
 	 public BufferedImage playBackground = ImageIO.read(new File("Images/back.png")); // background
- 
+	 public BufferedImage levelSelectBackground = ImageIO.read(new File("Images/brick.png")); // background
+
 	 // this is the player
 	 public Player knight;
  
@@ -146,6 +147,8 @@
  
 	 // creates the background image
 	 public Background back = new Background(0, 0, playBackground);
+	 public Background backScroll = new Background(0, 0, levelSelectBackground);
+
  
 	 // turret orientation testing
 	 public boolean turLeft = false;
@@ -436,6 +439,7 @@
 			 }
  
 		 } else if (levelSelect) {
+			// backScroll.draw(g);
 			 // to be filled (draw the image background?)
 		 }
  

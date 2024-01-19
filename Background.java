@@ -86,6 +86,8 @@ public class Background {
         for(int i = 0; i < 100; i++) {
             g.drawImage(img, x + i*2000, y, 2000, 550, null);
             g.drawImage(img, x + i*-2000, y, 2000, 550, null);
+            // g.drawImage(img, x, y*2000, 2000, 550, null);
+            // g.drawImage(img, x, y*-2000, 2000, 550, null);
 
         }
     }

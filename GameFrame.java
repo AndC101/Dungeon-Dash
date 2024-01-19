@@ -6,11 +6,14 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
@@ -18,6 +21,9 @@ public class GameFrame extends JFrame implements ActionListener{
     public static GameFrame currentGameFrame; // keeps track of current GameFrame instance
 	GamePanel panel;
 	JPanel mainPanel;
+	BufferedImage myPicture = ImageIO.read(new File("Images/brick.png"));
+	JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 		
 		//dispose old gameframes 
@@ -51,9 +57,10 @@ public class GameFrame extends JFrame implements ActionListener{
 			//layout
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
+			// mainPanel.add(picLabel);
+
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
-
 			
 			int j = 25; // initial y pos
 			for(int i = 0; i < panel.names.size(); i++){ //loops through each level saved ( names.size() )
