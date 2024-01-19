@@ -27,10 +27,13 @@ public class Goblin extends Block {
 	public int xVelocity;
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 	public boolean play = false;
-	// int x, y, l, w;
+	
+	public GamePanel gamePanel;
+	
+	public Block under;
 
 
-	public Goblin(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
+	public Goblin(GamePanel gp, int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
 		super(x,y,l,w);
 		runL = left;
 		runR = right;
@@ -160,7 +163,6 @@ public class Goblin extends Block {
 		} 
 
 		x += xVelocity;
-
 		//make goblin move left to right and back again
 		if(isEnemy) {
 			// System.out.println("new xborder " + (xBorder-GamePanel.shift));
@@ -177,6 +179,30 @@ public class Goblin extends Block {
 				setXDirection(-SPEED);
 			} 	
 		}
+	}
+	
+	public boolean canFall() {
+		int botRightX = x + width;
+		int botRightY = y + height;
+		for (Block b : gamePanel.elements) {
+			if (GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
+			
+			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
+					|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 1 && y <= b.y)) {
+				under = b;
+				return false;
+			}
+		}
+
+		if (botRightY >= GamePanel.FLOOR) {
+			y = GamePanel.FLOOR - height;
+			under = null;
+			return false;
+		}
+
+		under = null;
+		return true;
+
 	}
 
 	

@@ -131,6 +131,7 @@ public class GameFrame extends JFrame implements ActionListener{
                 System.out.println("Play button in row " + title + " pressed!");
 				
 				try {
+					panel.running = false;
 					new GameFrame(false, false, true, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -148,6 +149,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				System.out.println("Edit button in row " + title + " pressed!");
 				
 				try {
+					panel.running = false;
 					new GameFrame(false, true, false, title);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -169,7 +171,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(mainPanel,  "Level deleted!", "Delete Confirmation",
 				JOptionPane.INFORMATION_MESSAGE);
 				try {
-					
+					panel.running = false;
 					new GameFrame(true,false, false, "");
 				} catch (IOException ex) {
 					ex.printStackTrace();
