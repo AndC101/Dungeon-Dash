@@ -367,11 +367,15 @@
 			 
 		 }
 		 else if (mainMenu) {
-			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
+
 			 g.drawImage(menuBackground, 0, 0, this);
-			 g.setColor(Color.white);
-			 // display text for the title
+			 // display text for the title 
+ 
+			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
 			 g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+
 			 g.setColor(new Color(255, 255, 255, alpha));
  
 			 // causes the text to fade in and out by adjusting transparancy value

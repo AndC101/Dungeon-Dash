@@ -21,8 +21,6 @@ public class GameFrame extends JFrame implements ActionListener{
     public static GameFrame currentGameFrame; // keeps track of current GameFrame instance
 	GamePanel panel;
 	JPanel mainPanel;
-	BufferedImage myPicture = ImageIO.read(new File("Images/brick.png"));
-	JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 		
@@ -57,7 +55,6 @@ public class GameFrame extends JFrame implements ActionListener{
 			//layout
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
-			// mainPanel.add(picLabel);
 
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
