@@ -12,8 +12,8 @@ import java.util.HashSet;
 public class Projectile extends Rectangle {
 
 
-	public static int height = 50;
-	public static int width = 50;
+	public static int height = 20;
+	public static int width = 20;
 	public boolean r, l = false;
 	public Image runL;
 	public Image runR;
@@ -114,7 +114,7 @@ public class Projectile extends Rectangle {
 					setXDirection(Block.SPEED+SPEED); // good
 
 				} else if (l) {
-					setXDirection(-Block.SPEED-SPEED);
+					setXDirection(Block.SPEED-SPEED);
 				}
 				// xBorder+=5;
 			}

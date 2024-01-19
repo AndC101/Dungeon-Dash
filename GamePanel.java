@@ -1715,7 +1715,6 @@
 		 Player.yVelocity = 0;
 		 Block.xVelocity = 0;
 		 back.xVelocity = 0;
-		 knight.falling = false;
  
 		 // checks to see if the player won
 		 if (win) {

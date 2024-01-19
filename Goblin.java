@@ -37,7 +37,7 @@
 		 super(x,y,l,w);
 		 runL = left;
 		 runR = right;
-		 
+		 gamePanel=gp;
 		 //if enemy, the goblin starts moving and x border init
 		 xBorder = x;
 
@@ -171,7 +171,6 @@
 			 if(x <= xBorder-GamePanel.shift-GamePanel.adjust) {
 				 x = xBorder-GamePanel.shift-GamePanel.adjust;
 				 r = true;
- 
 				 l = false;
 				 setXDirection(SPEED);
 			 } else if (x >= xBorder-GamePanel.shift-GamePanel.adjust+runDist) {
@@ -179,7 +178,17 @@
 				 l = true;
 				 r = false;
 				 setXDirection(-SPEED);
-			 } 	
+			 } else if (canFall()) {
+				if(l) {
+					r = true;
+					l = false;
+					setXDirection(SPEED);
+				} else if (r) {
+					l = true;
+					r = false;
+					setXDirection(-SPEED);
+				}
+			 }
 		 }
 	 }
 	 
