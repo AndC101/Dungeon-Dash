@@ -62,7 +62,6 @@
  
 	 // imports for sprites
 	 Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
-	 Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
 	 Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
 	 Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
  
@@ -1391,7 +1390,7 @@
  
 					 }
 					 // if the hover is intersecting an existing block it can not be placed
-					 if (hover != null && checkAllIntersection(hover)) {
+					 if (hover != null && (checkAllIntersection(hover)|| hover.y + hover.height >= FLOOR)) {
 						 hover = null;
 					 }
 					 intersected = true;
