@@ -47,12 +47,15 @@ public class Background {
 		
 		//checks if a movement key is pressed
 		if (keysPressed.contains('d')) {
-			if (Player.isCentered) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(-SPEED);
+                // System.out.println("d: " + keysPressed);
 			}
 		} else if (keysPressed.contains('a')) {
-			if (Player.isCentered) {
+			if (Player.isCentered || GamePanel.edit) {
 				setXDirection(SPEED);
+                // System.out.println("a: " + keysPressed);
+
 			}
 		}
 		//if on the play menu and the player isn't centered there is no need to move the background
