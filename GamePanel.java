@@ -57,6 +57,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public BufferedImage turretLeft = ImageIO.read(new File("Images/turLeft.png"));
 	public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
 	public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
+	
+	public BufferedImage lifeImage = ImageIO.read(new File("Images/heart.png"));
 
 	// imports for sprites
 	Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
@@ -78,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean levelSelect = false;
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
+	public boolean instructions = false;
 	public boolean fixed = false;
 	public static boolean play = false;
 	public static boolean spawn = true;
@@ -85,6 +88,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public boolean checkVertical = false;
 	public boolean win = false;
 	public boolean gameEnd = false;
+	public boolean running = true;
 
 	public int indicatorPos = 250; // > symbol for menu
 
@@ -100,7 +104,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	public int powerUpBob = 0;
 	public int buffer = 5;
 	public int gameEndAlpha = 0;
-
+	public int instructionsPage = 1;
 	public long startTime;
 	public long endTime = -1;
 
@@ -125,7 +129,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// all elements are in the elements ArrayList
 	// the sidebar ArrayLists contain the different sidebar objects
-	public static ArrayList<Block> elements, blockSidebar, enemySidebar, powerUpSidebar;
+	public ArrayList<Block> elements;
+	public ArrayList<Block> blockSidebar, enemySidebar, powerUpSidebar, remove;
 	Block hover = null;
 
 	public static HashSet<String> walkThrough;
@@ -174,7 +179,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 
 		// initializes the Player
-		knight = new Player(0, 0, 43, 53);
+		knight = new Player(this, 0, 0, 43, 53);
 
 		// get the title of the save file
 		prevSavedTitle = levelName; // only if the file already exists, otherwise this is ""
@@ -200,6 +205,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		blockSidebar = new ArrayList<Block>();
 		enemySidebar = new ArrayList<Block>();
 		powerUpSidebar = new ArrayList<Block>();
+		remove = new ArrayList<Block>();
 
 		walkThrough = new HashSet<String>();
 
@@ -216,9 +222,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		tabChest = new Chest(TAB_X - 110, 330, Chest.width, Chest.height, closedChestImage);
 
 		// enemies
-		tabGoblin = new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
-		tabTurret = new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft, turRight, false);
-		tabTurretLeft = new Turret(TAB_X - 110, 170, Turret.width, Turret.height, turretLeft, true, false, false);
+		tabGoblin = new Goblin(this, TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft, goblinRunRight, false);
+		tabTurret = new Turret(this, TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft, turRight, false);
+		tabTurretLeft = new Turret(this, TAB_X - 110, 170, Turret.width, Turret.height, turretLeft, true, false, false);
 
 		// powerups
 		tabOneUp = new OneUp(TAB_X - 110, 20, OneUp.width, OneUp.height, oneUpImage);
@@ -265,16 +271,99 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		// double buffering
 		image = createImage(GAME_WIDTH, GAME_HEIGHT); // draw off screen
 		graphics = image.getGraphics();
-		draw((Graphics2D) graphics);// update the positions of everything on the screen
+		try {
+			draw((Graphics2D) graphics);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}// update the positions of everything on the screen
 		g.drawImage(image, 0, 0, this); // move the image on the screen
 
 	}
 
 	// draws everything on the screen
 	// call the draw methods in each class to update positions as things move
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g) throws IOException {
 		// checks which screen should be displayed
-		if (mainMenu) {
+		
+		if(instructions) {
+			g.setColor(Color.black);
+			g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+			
+			
+			
+			if(instructionsPage == 1) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("How to Play?", 350, 50);
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("The goal of the game is to reach the treasure chest from the portal.", 20, 250);
+				g.drawImage(afkAnimation, 310, 165, null);
+				(new Chest(350,180,Chest.width,Chest.height,openChestImage)).draw(g);
+				(new Portal(100,145,Portal.width,Portal.height,portalImage)).draw(g);
+				g.drawImage(afkAnimation, 110, 165, null);
+				g.drawLine(170, 185, 280, 185);
+				g.drawLine(240, 165, 280, 185);
+				g.drawLine(240, 205, 280, 185);
+				
+				g.drawString("Do this while avoiding enemies", 100, 350);
+				g.drawImage(goblinRunRight, 500, 325, null);
+				(new Turret(this,600,320,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
+				
+				(new OneUp(100,400,OneUp.width,OneUp.height,oneUpImage)).draw(g);
+				(new SpeedBoost(200,410,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
+				g.drawString("and using powerups.", 400, 450);
+				
+			}
+			else if(instructionsPage == 2) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("BLOCKS", 375, 50);
+				
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				
+				g.drawString("Stone acts as a normal block.", 75, 175);
+				(new Stone(150,100,Stone.width,Stone.height,stoneImage)).draw(g);
+				
+				g.drawString("The player will move faster and slide on ice.", 25, 325);
+				(new Ice(150,250,Ice.width,Ice.height,iceImage)).draw(g);
+				
+				g.drawString("Players are able to climb up ladders.", 500, 175);
+				(new Ladder(640,100,Ladder.width,Ladder.height,ladderImage)).draw(g);
+				
+				g.drawString("Cracked stone dissapears after the player steps on it.", 430, 325);
+				(new CrackedStone(615,250,CrackedStone.width,CrackedStone.height,crackedStoneImage)).draw(g);
+				
+				g.drawString("The portal is the spawn point.", 60, 475);
+				(new Portal(150,375,Portal.width,Portal.height,portalImage)).draw(g);
+				
+				g.drawString("The chest is the win condition.", 510, 475);
+				(new Chest(600,400,Chest.width,Chest.height,closedChestImage)).draw(g);
+			}
+			else if(instructionsPage == 3) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("ENEMIES & POWERUPS", 275, 50);
+				
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("The goblin walks around on the floor it is on.", 25, 200);
+				g.drawImage(goblinRunRight, 160, 125, null);
+				
+				g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
+				(new Turret(this, 625,110,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
+				
+				g.drawString("Speed up increases the movement speed of the player.", 10, 350);
+		
+				
+				g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
+				
+				
+			}
+			
+			g.setFont(new Font("Impact", Font.PLAIN, 20));
+			g.drawString("USE ARROW KEYS TO MOVE THROUGH PAGES", 275, 525);
+			
+		}
+		else if (mainMenu) {
 			g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			g.drawImage(menuBackground, 0, 0, this);
 			g.setColor(Color.white);
@@ -299,6 +388,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			g.drawString("> ", 300, indicatorPos);
 			g.drawString("Level selection", 325, 250);
 			g.drawString("Create new dungeon", 325, 320);
+			g.drawString("How to Play?", 325, 400);
 
 		} else if (edit) {
 
@@ -353,6 +443,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 			// draws the background
 			back.draw(g);
+			
+			g.drawImage(lifeImage, 750, 30, 40, 40, null);
+			g.setFont(new Font("Impact", Font.PLAIN, 30));
+			g.setColor(Color.white);
+			g.drawString("X" + "   " + knight.lives, 800, 60);
 
 			// loops through all elements
 			for (Block b : elements) {
@@ -456,35 +551,49 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (spawn)
 				spawn = false;
 
+			if (gameEnd)
+				gameEnd(g);
+			
 			// checks if the knight has touched the chest, trigger game end
-			if (endChest != null && knight.intersects(endChest)) {
+			else if (endChest != null && knight.intersects(endChest)) {
 				if (endTime == -1) {
 					endTime = System.currentTimeMillis();
 				}
 				win = true;
 				gameEnd(g);
 			}
+			else {
+				for (Block b : elements) {
+					if (getClass(b).equals("Goblin") || getClass(b).equals("Turret")) {
+						if (getClass(b).equals("Goblin")) {
+							if (knight.intersects(b)) {
+								knight.lives--;
+								if(knight.lives == 0 && knight.invincibleStart == -1) {
+									win = false;
+									gameEnd = true;
+								}
+								knight.invincibleStart = System.currentTimeMillis();
+							}
+						} else if (getClass(b).equals("Turret")) {
 
-			if (gameEnd)
-				gameEnd(g);
-
-			for (Block b : elements) {
-				if (getClass(b).equals("Goblin") || getClass(b).equals("Turret")) {
-					if (getClass(b).equals("Goblin")) {
-						if (knight.intersects(b)) {
-							win = false;
-							gameEnd = true;
-						}
-					} else if (getClass(b).equals("Turret")) {
-
-						if ((((Turret) b).ball != null && knight.intersects(((Turret) b).ball))
-								|| (((Turret) b).ballTwo != null && knight.intersects(((Turret) b).ballTwo))) {
-							win = false;
-							gameEnd = true;
+							if (((((Turret) b).ball != null && knight.intersects(((Turret) b).ball))
+									|| (((Turret) b).ballTwo != null && knight.intersects(((Turret) b).ballTwo))) && knight.invincibleStart == -1) {
+								knight.lives--;
+								if(knight.lives == 0) {
+									win = false;
+									gameEnd = true;
+								}
+								knight.invincibleStart = System.currentTimeMillis();
+							}
 						}
 					}
 				}
 			}
+
+			
+			
+			if(knight.invincibleStart != -1 && System.currentTimeMillis() - knight.invincibleStart >= knight.iFrames) knight.invincibleStart = -1;
+			
 
 		}
 
@@ -597,6 +706,24 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				}
 
 			}
+			
+			for(Block b: elements) {
+				if(getClass(b).equals("CrackedStone") && ((CrackedStone)b).startBreak != -1 && System.currentTimeMillis() - ((CrackedStone)b).startBreak >= CrackedStone.breakTime) {
+					remove.add(b);
+				}
+				else if(getClass(b).equals("SpeedBoost") && knight.intersects(b)) {
+					knight.extraSpeed = true;
+					remove.add(b);
+				}
+				else if(getClass(b).equals("OneUp") && knight.intersects(b)) {
+					knight.lives++;
+					remove.add(b);
+				}
+			}
+			
+			for(Block b: remove) {
+				elements.remove(b);
+			}
 
 		}
 
@@ -612,7 +739,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		double delta = 0;
 		long now;
 
-		while (true) { // this is the infinite game loop
+		while (running) { // this is the infinite game loop
 			now = System.nanoTime();
 			delta = delta + (now - lastTime) / ns;
 			lastTime = now;
@@ -630,12 +757,21 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// handles keyPresses
 	public void keyPressed(KeyEvent e) {
 		// checks which screen is displayed
-		if (gameEnd) {
+		if(instructions) {
+			if(e.getKeyCode() == KeyEvent.VK_LEFT && instructionsPage != 1) {
+				instructionsPage--;
+			}
+			else if(e.getKeyCode() == KeyEvent.VK_RIGHT && instructionsPage != 10) {
+				instructionsPage++;
+			}
+		}
+		else if (gameEnd) {
 			if (e.getKeyCode() == 27) {
 				try {
 					GameFrame.currentGameFrame.dispose();
                     new GameFrame(false
                     		, false, false, "");
+                    running = false;
 							
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -659,14 +795,26 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					GameFrame.currentGameFrame.dispose();
 
 					new GameFrame(true, false, false, "");
+					running = false;
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
 			}
+			else if (e.getKeyCode() == 10 && indicatorPos == 400) {
+				// enter the instructions page
+				instructions = true;
+				mainMenu = false;
+			}
 			// if arrow keys are pressed, move the indicator
-			else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos != 250) {
+			else if (e.getKeyCode() == KeyEvent.VK_UP && indicatorPos == 320) {
 				indicatorPos = 250;
 			} else if (e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 250) {
+				indicatorPos = 320;
+			}
+			else if(e.getKeyCode() == KeyEvent.VK_DOWN && indicatorPos == 320) {
+				indicatorPos = 400;
+			}
+			else if(e.getKeyCode() == KeyEvent.VK_UP && indicatorPos == 400) {
 				indicatorPos = 320;
 			}
 		} else if (edit) {
@@ -696,6 +844,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					GameFrame.currentGameFrame.dispose();
 
                     new GameFrame(true, false, false, "");
+                    running = false;
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -798,6 +947,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						GameFrame.currentGameFrame.dispose();
 
 						new GameFrame(false, false, true, newLevelTitle);
+						running = false;
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -806,6 +956,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						GameFrame.currentGameFrame.dispose();
 
 						new GameFrame(false, false, true, prevSavedTitle);
+						running = false;
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -823,6 +974,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					GameFrame.currentGameFrame.dispose();
 
                     new GameFrame(false, false, false, "");
+                    running = false;
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -844,6 +996,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					GameFrame.currentGameFrame.dispose();
 
                     new GameFrame(false, false, false, "");
+                    running = false;
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -1087,7 +1240,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				} else if (tabPressed.equals("enemies")) {
 					if (curDragging.equals(tabGoblin)) {
 						try {
-							elements.add(new Goblin(TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft,
+							elements.add(new Goblin(this, TAB_X - 110, 20, Goblin.width, Goblin.height, goblinRunLeft,
 									goblinRunRight, false));
 
 						} catch (IOException IOE) {
@@ -1096,7 +1249,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 					if (curDragging.equals(tabTurret)) {
 						try {
-							elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft,
+							elements.add(new Turret(this, TAB_X - 110, 100, Turret.width, Turret.height, turretRight, turLeft,
 									turRight, true));
 						} catch (IOException IOE) {
 						}
@@ -1104,7 +1257,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					}
 					if (curDragging.equals(tabTurretLeft)) {
 						try {
-							elements.add(new Turret(TAB_X - 110, 100, Turret.width, Turret.height, turretLeft, true,
+							elements.add(new Turret(this, TAB_X - 110, 100, Turret.width, Turret.height, turretLeft, true,
 									false, true));
 						} catch (IOException IOE) {
 						}
@@ -1200,10 +1353,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						try {
 							if (hover instanceof Turret) {
 								if (((Turret) hover).l) {
-									hover = new Turret(curDragging.x, b.y + b.height, curDragging.width,
+									hover = new Turret(this, curDragging.x, b.y + b.height, curDragging.width,
 											curDragging.height, turretLeft, true, false, true);
 								} else if (((Turret) hover).r) {
-									hover = new Turret(curDragging.x, b.y + b.height, curDragging.width,
+									hover = new Turret(this, curDragging.x, b.y + b.height, curDragging.width,
 											curDragging.height, turretRight, true, false, true);
 								}
 							} else {
@@ -1456,18 +1609,18 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), closedChestImage));
 
 							} else if (inputs[0].equals("Goblin")) {
-								elements.add(new Goblin(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+								elements.add(new Goblin(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft,
 										goblinRunRight, true));
 								// System.out.println(a);
 							} else if (inputs[0].equals("Turret")) {
 								if (inputs[5].equals("true")) {
-									elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									elements.add(new Turret(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 											Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), turretLeft, true,
 											false, true));
 
 								} else {
-									elements.add(new Turret(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									elements.add(new Turret(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 											Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), turretRight,
 											turLeft, turRight, true));
 
@@ -1510,7 +1663,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		} else if (className.equals("Chest")) {
 			return new Chest(x, y, width, height, b.img);
 		} else if (className.equals("Goblin")) {
-			return new Goblin(x, y, width, height, goblinRunLeft, goblinRunRight, false);
+			return new Goblin(this, x, y, width, height, goblinRunLeft, goblinRunRight, false);
 			// }
 			// else if (className.equals("Turret")) {
 			// return new Turret(x, y, width, height, b.img, turLeft, turRight, true);
@@ -1558,8 +1711,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		back.keysPressed.clear();
 		Block.keysPressed.clear();
 		Player.xVelocity = 0;
+		Player.yVelocity = 0;
 		Block.xVelocity = 0;
 		back.xVelocity = 0;
+		knight.falling = false;
 
 		// checks to see if the player won
 		if (win) {
@@ -1594,4 +1749,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
+	public void reset() {
+		
+	}
+	
 }

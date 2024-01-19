@@ -14,7 +14,7 @@ public class CrackedStone extends Block {
 	public static int width = 60;
 	public static int height = 40;
 	public static final int breakTime = 3000;
-	public static int startBreak;
+	public long startBreak = -1;
 	
 	public BufferedImage i; //image for crackedstone
 	

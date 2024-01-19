@@ -25,6 +25,9 @@ public class Player extends Rectangle {
 	public static boolean isRight = false;
 	public boolean left = false;
 	public static boolean isCentered = true;
+	
+	public AlphaComposite TRANSLUCENT = java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7F);
+	public AlphaComposite OPAQUE = java.awt.AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.0F);
 
 	// has to do with jumping
 	public boolean isJumping = false;
@@ -36,13 +39,23 @@ public class Player extends Rectangle {
 	public double initY = 0;
 	public static boolean canJump = true;
 	public static int lastMoved = 0;
+	public boolean extraSpeed = false;
+	public boolean opaque = true;
 
 	// has to do with speed
 
-	public int yVelocity;
+	public static int yVelocity;
 	public static int xVelocity;
 	public final int SPEED = 4; // movement speed
 	public int fallCounter = 0;
+	public int lives = 1;
+	
+	public int flashCnt = 0;
+	
+	public long invincibleStart = -1;
+	public int iFrames = 2000;
+	
+	public GamePanel gamePanel;
 
 	public static boolean oneScreen = false;
 
@@ -53,8 +66,9 @@ public class Player extends Rectangle {
 
 	// create the player at x, y coordinates on the screen with length, width
 	// (constructor)
-	public Player(int x, int y, int l, int w) throws IOException {
+	public Player(GamePanel gp, int x, int y, int l, int w) throws IOException {
 		super(x, y, l, w);
+		gamePanel = gp;
 	}
 
 	// handles key presses
@@ -168,6 +182,7 @@ public class Player extends Rectangle {
 			if (x != 0 &&!canFall() && falling) {
 				isJumping = false;
 				falling = false;
+				
 				yVelocity = 0;
 			}
 
@@ -185,12 +200,16 @@ public class Player extends Rectangle {
 			if(x <= 0) x = 1;
 		}
 		
+		if(under != null && GamePanel.getClass(under).equals("CrackedStone") && ((CrackedStone)under).startBreak == -1) {
+			((CrackedStone)under).startBreak = System.currentTimeMillis();
+		}
+		
 		y = y + yVelocity;
 
 	}
 
 	// draws the player
-	public void draw(Graphics g) {
+	public void draw(Graphics2D g) {
 		canFall();
 		// if the knight crosses the middle after coming from a side
 
@@ -200,6 +219,17 @@ public class Player extends Rectangle {
 		}
 
 		// draws a different animation depending on the state of the knight
+		if(invincibleStart != -1) {
+			if(opaque && flashCnt % 3 == 0) {
+				g.setComposite(TRANSLUCENT);
+				opaque = !opaque;
+			}
+			else if(!opaque && flashCnt % 3 == 0) {
+				g.setComposite(OPAQUE);
+				opaque = !opaque;
+			}
+			flashCnt++;
+		}
 		if (isLeft) {
 			g.drawImage(leftAnimation, x, y, null);
 		} else if (isRight) {
@@ -212,7 +242,7 @@ public class Player extends Rectangle {
 	public boolean canFall() {
 		int botRightX = x + width;
 		int botRightY = y + height;
-		for (Block b : GamePanel.elements) {
+		for (Block b : gamePanel.elements) {
 			if (GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
 			
 			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
