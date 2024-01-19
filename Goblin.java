@@ -25,13 +25,14 @@ public class Goblin extends Block {
 	public int SPEED = 1;
 	public boolean isEnemy; //makes goblin move
 	public int xVelocity;
+	public int cnt = 0;
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 	public boolean play = false;
 	// int x, y, l, w;
 
 
 	public Goblin(int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException{
-		super(x,y,l,w);
+		super(x,y,l,w);	
 		runL = left;
 		runR = right;
 		
@@ -141,7 +142,6 @@ public class Goblin extends Block {
 				xBorder+=Block.SPEED;
 			}
 			if(GamePanel.edit){
-				System.out.println("hi");
 				x+=Block.SPEED;
 			}
 
@@ -158,8 +158,9 @@ public class Goblin extends Block {
 				setXDirection(SPEED);
 			}
 		} 
-		System.out.println(xVelocity);
 		x += xVelocity;
+		cnt++;
+		System.out.println(cnt);
 
 		//make goblin move left to right and back again
 		if(isEnemy) {

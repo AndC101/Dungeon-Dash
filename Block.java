@@ -94,6 +94,7 @@ public class Block extends Rectangle {
 
 		// move the blocks
 		x = x + xVelocity;
+		
 	}
 
 	// draws the block

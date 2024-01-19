@@ -75,7 +75,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	// for states of the frame
 	public static boolean mainMenu = true;
 	public static boolean edit = false;
-	public boolean levelSelect = false;
+	public static boolean levelSelect = false;
 	public boolean alphaUp = true;
 	public boolean sidebarPressed = false;
 	public boolean fixed = false;
@@ -636,16 +636,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 
-	// handles keyPresses
+	// handles keys pressed
 	public void keyPressed(KeyEvent e) {
 		// checks which screen is displayed
 		if (gameEnd) {
 			if (e.getKeyCode() == 27) {
 				try {
-					GameFrame.currentGameFrame.dispose();
                     new GameFrame(false
                     		, false, false, "");
-							
+                    
+                    JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(this);
+                    frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                    gameThread.interrupt();
+                    System.out.println("Game Thread State: " + gameThread.isInterrupted());
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -666,7 +669,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				// create a new gameframe in the levelSelect menu
 				try {
 					GameFrame.currentGameFrame.dispose();
-
 					new GameFrame(true, false, false, "");
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -703,8 +705,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				edit = false;
 				try {
 					GameFrame.currentGameFrame.dispose();
-
-                    new GameFrame(true, false, false, "");
+					new GameFrame(true, false, false, "");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -805,16 +806,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				if (!newLevelTitle.isEmpty()) {
 					try {
 						GameFrame.currentGameFrame.dispose();
-
-						new GameFrame(false, false, true, newLevelTitle);
+						new GameFrame(false, false, true, "newLevelTitle");
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 				} else {
 					try {
 						GameFrame.currentGameFrame.dispose();
-
-						new GameFrame(false, false, true, prevSavedTitle);
+						new GameFrame(true, false, true, "prevSavedTitle");
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -830,11 +829,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				play = false;
 				try {
 					GameFrame.currentGameFrame.dispose();
-
-                    new GameFrame(false, false, false, "");
+					new GameFrame(false, false, false, "");
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+				return;
 			}
 
 			// checks the knight, Blocks, and the background to see what should change to
@@ -849,10 +848,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 		else if(levelSelect) {
 			if(e.getKeyCode() == 27) {
-				try {
+				try {					
 					GameFrame.currentGameFrame.dispose();
-
-                    new GameFrame(false, false, false, "");
+					new GameFrame(false, false, false, "");
+                    
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
