@@ -184,7 +184,8 @@ public class Goblin extends Block {
 				l = true;
 				r = false;
 				setXDirection(-SPEED);
-			} else if (canFall()) {
+			} 
+			else if (canFall()) {
 				if (l) {
 					r = true;
 					l = false;

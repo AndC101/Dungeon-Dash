@@ -22,6 +22,9 @@ public class GameFrame extends JFrame implements ActionListener{
 	GamePanel panel;
 	JPanel mainPanel;
 
+	MainPanel imgPanel;
+
+	Image background = new ImageIcon("Images/levelSelectBackground.png").getImage();
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
 		
 		//dispose old gameframes 
@@ -55,6 +58,9 @@ public class GameFrame extends JFrame implements ActionListener{
 			//layout
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
+			// imgPanel = 
+			mainPanel.setOpaque( false );
+
 
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
@@ -63,11 +69,17 @@ public class GameFrame extends JFrame implements ActionListener{
 			for(int i = 0; i < panel.names.size(); i++){ //loops through each level saved ( names.size() )
 				
 				//get the level title and make label and buttons for it
+				
 				String title = panel.names.get(i);
 				JLabel label = new JLabel("Title: " + title);
+				label.setForeground(Color.white);
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
 				JButton deleteButton = new JButton("Delete");
+				playButton.setBackground(Color.white);
+				editButton.setBackground(Color.white);
+				deleteButton.setBackground(Color.white);
+
 
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
 
@@ -102,15 +114,33 @@ public class GameFrame extends JFrame implements ActionListener{
 
 				j+=60;
 			}
-
+			JViewport viewport = new JViewport()
+			{
+				@Override
+				protected void paintComponent(Graphics g)
+				{
+					super.paintComponent(g);
+			 
+					g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
+				}
+			};
+			
 
 			//makes scrollpane work
 			mainPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.names.size()*62));
 			scroll.setPreferredSize(new Dimension(GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT));
-			scroll.setViewportView(mainPanel);
-			contentPane.add(scroll);
-			contentPane.add(buttonPanel,BorderLayout.SOUTH);
+			// imgPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.names.size()*62));
 
+			scroll.setViewport(viewport);
+
+			scroll.setViewportView(mainPanel);
+
+			// contentPane.add(imgPanel);
+
+			contentPane.add(scroll);
+
+			contentPane.add(buttonPanel,BorderLayout.SOUTH);
+			buttonPanel.setBackground(Color.DARK_GRAY);
 			//action listener for backButton
 			backButton.addActionListener(this); //return to menu
 
