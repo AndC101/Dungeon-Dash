@@ -128,7 +128,6 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
-
 		Rectangle top = new Rectangle(35, 20);
 		Rectangle bot = new Rectangle(35, 25);
 		boolean fail = false;
