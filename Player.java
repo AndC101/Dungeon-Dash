@@ -128,20 +128,17 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
-		System.out.println(" onladder: " + onLadder + " top: " + onTopLadder);
+		// System.out.println(" onladder: " + onLadder + " top: " + onTopLadder);
 
 		
-		//climb ladders
-
+		//climb ladders, when w or s are pressed
 		if(onLadder && keysPressed.contains('w')){
 			setYDirection(-CLIMB_SPEED);
 		} else if (( onLadder || onTopLadder) && keysPressed.contains('s') ){
 			setYDirection(CLIMB_SPEED);
-			// onTopLadder = false;
-		} else{
+		} 
+		else{
 			setYDirection(0);
-			// onTopLadder = false;
-			// jump();
 		}
 
 

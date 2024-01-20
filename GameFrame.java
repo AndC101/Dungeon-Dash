@@ -6,14 +6,11 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
@@ -22,7 +19,6 @@ public class GameFrame extends JFrame implements ActionListener{
 	GamePanel panel;
 	JPanel mainPanel;
 
-	MainPanel imgPanel;
 
 	Image background = new ImageIcon("Images/levelSelectBackground.png").getImage();
 	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
@@ -58,7 +54,6 @@ public class GameFrame extends JFrame implements ActionListener{
 			//layout
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
-			// imgPanel = 
 			mainPanel.setOpaque( false );
 
 
@@ -114,13 +109,14 @@ public class GameFrame extends JFrame implements ActionListener{
 
 				j+=60;
 			}
+
+
 			JViewport viewport = new JViewport()
 			{
 				@Override
 				protected void paintComponent(Graphics g)
 				{
 					super.paintComponent(g);
-			 
 					g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
 				}
 			};
