@@ -11,7 +11,10 @@
  import java.awt.image.BufferedImage;
  
  import javax.imageio.ImageIO;
- import javax.swing.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.*;
  import java.util.*;
  
  //imports for file io
@@ -157,7 +160,14 @@
 	 // goblin hover
 	 public boolean onTop = false;
 	 
- 
+	File menu = new File("Music/menu.wav");
+	File edit = new File("Music/edit.wav");
+	File play = new File("Music/play.wav");
+	File win = new File("Music/win.wav");
+	AudioInputStream audioStream = AudioSystem.getAudioInputStream(menu);
+	Clip clip = AudioSystem.getClip();
+	
+
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
 		 if (levelSelect) {
@@ -695,7 +705,9 @@
 					 // stops horizontal movement
 					 if (!Player.isCentered) {
 						 Player.setXDirection(0);
+
 					 } else {
+
 						 back.xVelocity = 0;
 						 Block.xVelocity = 0;
 					 }
@@ -709,8 +721,10 @@
 					 knight.x = b.x + b.width + 1;
 					 // stops horizontal movement
 					 if (!Player.isCentered) {
+						System.out.println("yoyo");
 						 Player.setXDirection(0);
 					 } else {
+						System.out.println("hi");
 						 back.xVelocity = 0;
 						 Block.xVelocity = 0;
 					 }
