@@ -41,6 +41,9 @@ public class Player extends Rectangle {
 	public static int lastMoved = 0;
 	public boolean extraSpeed = false;
 	public boolean opaque = true;
+	public int CLIMB_SPEED = 3
+	;
+
 
 	// has to do with speed
 
@@ -62,7 +65,8 @@ public class Player extends Rectangle {
 	public static boolean oneScreen = false;
 
 	public static Block under = null;
-
+	public boolean onLadder = false;
+	public boolean onTopLadder = false;
 	// contains the keys pressed
 	public HashSet<Character> keysPressed = new HashSet<Character>();
 
@@ -95,6 +99,13 @@ public class Player extends Rectangle {
 		} else if (e.getKeyChar() == 'w') {
 			canJump = true;
 		}
+
+		// if(onLadder && e.getKeyChar() ==  'w'){
+		// 	y -= 10;
+		// 	falling = false;
+		// 	onTopLadder = true;
+		// }
+
 	}
 
 	// sets the xVelocity
@@ -117,7 +128,40 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
+
+		System.out.println(onLadder + " " + onTopLadder);
+		Rectangle top = new Rectangle(35, 20);
+		Rectangle bot = new Rectangle(35, 25);
+		boolean fail = false;
+		top.x = x; top.y = y;
+		bot.x = x; bot.y = y + 20;
 		
+		if(onLadder) {
+			for(Block b: gamePanel.elements) {
+				if(top.intersects(b)) {
+					onTopLadder = false; fail = true;
+				}
+			}
+			
+			if(!fail) {
+				onTopLadder = true;
+				canJump = true;
+				falling = false;
+				isJumping = false;
+			}
+			else onTopLadder = false;
+		}
+		else onTopLadder = false;
+		
+		if(onLadder && keysPressed.contains('w') && !onTopLadder){
+			setYDirection(-CLIMB_SPEED);
+		} else if (( onLadder || onTopLadder) && keysPressed.contains('s') ){
+			setYDirection(CLIMB_SPEED);
+		} else{
+			setYDirection(0);
+		}
+
+
 		if(extraSpeed && System.currentTimeMillis() - speedStart >= SpeedBoost.duration) {
 			extraSpeed = false;
 			speedStart = -1;
@@ -158,7 +202,7 @@ public class Player extends Rectangle {
 			}
 		}
 
-		if (keysPressed.contains('w') && !isJumping && canJump && !falling) {
+		if (keysPressed.contains('w') && !isJumping && canJump && !falling && (!onLadder || (onLadder && onTopLadder))) {
 			// Only allow jumping if not already jumping
 			jump();
 			canJump = false;
@@ -180,6 +224,8 @@ public class Player extends Rectangle {
 			}
 			// if reached the peak of jump, start falling
 			else {
+
+				//code to make knight fall
 				falling = true;
 				jumpCount++;
 				yVelocity = JUMP_SPEED; // Start falling
@@ -189,6 +235,14 @@ public class Player extends Rectangle {
 					isJumping = false;
 					falling = false;
 				}
+								//force knight on top of ladder
+								// if(onLadder) {
+								// 	System.out.println("hey");
+								// 	y-=50;
+								// 	onTopLadder =true;
+								// 	falling = false;
+								// }
+				
 			}
 			if (x != 0 &&!canFall() && falling) {
 				isJumping = false;
@@ -197,10 +251,11 @@ public class Player extends Rectangle {
 				yVelocity = 0;
 			}
 
-		} else {
+		} else if (!onLadder && !onTopLadder){
 			if (x != 0 && canFall()) {
 				y += 8;
 				falling = true;
+				
 			} else {
 				falling = false;
 			}

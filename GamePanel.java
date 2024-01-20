@@ -62,7 +62,6 @@
  
 	 // imports for sprites
 	 Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
-	 Image runningAnimation = new ImageIcon("Images/KnightRunning.gif").getImage();
 	 Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
 	 Image goblinRunRight = new ImageIcon("Images/GoblinRunRight.gif").getImage();
  
@@ -157,6 +156,7 @@
  
 	 // goblin hover
 	 public boolean onTop = false;
+	 
  
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
@@ -367,11 +367,15 @@
 			 
 		 }
 		 else if (mainMenu) {
-			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
+			g.setColor(Color.white);
 			 g.drawImage(menuBackground, 0, 0, this);
-			 g.setColor(Color.white);
-			 // display text for the title
+			 // display text for the title 
+ 
+			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
 			 g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+
 			 g.setColor(new Color(255, 255, 255, alpha));
  
 			 // causes the text to fade in and out by adjusting transparancy value
@@ -648,8 +652,9 @@
 				 checkVertical = false;
  
 				 // skips it if the block doesn't need collision
-				 if (walkThrough.contains(getClass(b)))
-					 continue;
+				 if (walkThrough.contains(getClass(b))){
+					continue;
+				 }
  
 				 // TOP COLLISION
 				 if (((knight.x > b.x && knight.x < b.x + b.width)
@@ -673,7 +678,7 @@
 					 if (b.y + b.height + knight.height + 1 <= FLOOR) {
 						 // stops any jumping
 						 knight.y = b.y + b.height + 1;
-						 knight.isJumping = true;
+						 knight.isJumping = false;
 						 knight.falling = true;
 						 checkVertical = true;
  
@@ -712,7 +717,7 @@
 				 }
  
 			 }
-			 
+			 knight.onLadder = false;
 			 for(Block b: elements) {
 				 if(getClass(b).equals("CrackedStone") && ((CrackedStone)b).startBreak != -1 && System.currentTimeMillis() - ((CrackedStone)b).startBreak >= CrackedStone.breakTime) {
 					 remove.add(b);
@@ -727,9 +732,15 @@
 					 knight.lives++;
 					 remove.add(b);
 					 numPowers--;
-				 }
+				 } 
+				 else if (getClass(b).equals("Ladder") && knight.intersects(b)) {
+					knight.onLadder = true;
+
+					
+
+				 } 
 			 }
-			 
+
 			 for(Block b: remove) {
 				 elements.remove(b);
 			 }
@@ -1391,7 +1402,7 @@
  
 					 }
 					 // if the hover is intersecting an existing block it can not be placed
-					 if (hover != null && checkAllIntersection(hover)) {
+					 if (hover != null && (checkAllIntersection(hover)|| hover.y + hover.height >= FLOOR)) {
 						 hover = null;
 					 }
 					 intersected = true;
