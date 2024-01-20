@@ -128,20 +128,37 @@ public class Player extends Rectangle {
 
 	// moves the player
 	public void move() {
-		System.out.println(" onladder: " + onLadder + " top: " + onTopLadder);
 
+		System.out.println(onLadder + " " + onTopLadder);
+		Rectangle top = new Rectangle(35, 20);
+		Rectangle bot = new Rectangle(35, 25);
+		boolean fail = false;
+		top.x = x; top.y = y;
+		bot.x = x; bot.y = y + 20;
 		
-		//climb ladders
-
-		if(onLadder && keysPressed.contains('w')){
+		if(onLadder) {
+			for(Block b: gamePanel.elements) {
+				if(top.intersects(b)) {
+					onTopLadder = false; fail = true;
+				}
+			}
+			
+			if(!fail) {
+				onTopLadder = true;
+				canJump = true;
+				falling = false;
+				isJumping = false;
+			}
+			else onTopLadder = false;
+		}
+		else onTopLadder = false;
+		
+		if(onLadder && keysPressed.contains('w') && !onTopLadder){
 			setYDirection(-CLIMB_SPEED);
 		} else if (( onLadder || onTopLadder) && keysPressed.contains('s') ){
 			setYDirection(CLIMB_SPEED);
-			// onTopLadder = false;
 		} else{
 			setYDirection(0);
-			// onTopLadder = false;
-			// jump();
 		}
 
 
@@ -185,7 +202,7 @@ public class Player extends Rectangle {
 			}
 		}
 
-		if (keysPressed.contains('w') && !isJumping && canJump && !falling && !onLadder) {
+		if (keysPressed.contains('w') && !isJumping && canJump && !falling && (!onLadder || (onLadder && onTopLadder))) {
 			// Only allow jumping if not already jumping
 			jump();
 			canJump = false;

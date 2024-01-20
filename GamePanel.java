@@ -678,7 +678,7 @@
 					 if (b.y + b.height + knight.height + 1 <= FLOOR) {
 						 // stops any jumping
 						 knight.y = b.y + b.height + 1;
-						 knight.isJumping = true;
+						 knight.isJumping = false;
 						 knight.falling = true;
 						 checkVertical = true;
  
