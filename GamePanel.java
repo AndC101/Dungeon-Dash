@@ -14,6 +14,8 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
  import java.util.*;
  
@@ -160,34 +162,75 @@ import javax.swing.*;
 	 // goblin hover
 	 public boolean onTop = false;
 	 
-	File menu = new File("Music/menu.wav");
-	File edit = new File("Music/edit.wav");
-	File play = new File("Music/play.wav");
-	File win = new File("Music/win.wav");
-	AudioInputStream audioStream = AudioSystem.getAudioInputStream(menu);
-	Clip clip = AudioSystem.getClip();
-	
+	File menuMusic = new File("Music/menu.wav");
+	File editMusic = new File("Music/edit.wav");
+	File playMusic = new File("Music/play.wav");
+	File winMusic = new File("Music/win.wav");
+	File deathMusic = new File("Music/dietest.wav");
 
-	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
-		 // initializes the variables handling the different screens
+	AudioInputStream menuStream;
+	AudioInputStream editStream;
+	AudioInputStream winStream;
+	AudioInputStream playStream;
+	AudioInputStream dieStream;
+
+	Clip menuClip;
+	Clip editClip;
+	Clip playClip;
+	Clip winClip;
+	Clip dieClip;
+
+	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+		menuStream = AudioSystem.getAudioInputStream(menuMusic);
+		 editStream = AudioSystem.getAudioInputStream(editMusic);
+		 winStream = AudioSystem.getAudioInputStream(winMusic);
+		 playStream = AudioSystem.getAudioInputStream(playMusic);
+		 dieStream = AudioSystem.getAudioInputStream(deathMusic);
+
+		menuClip = AudioSystem.getClip();
+		editClip = AudioSystem.getClip();
+		playClip = AudioSystem.getClip();
+		winClip = AudioSystem.getClip();
+		dieClip = AudioSystem.getClip();
+
+		menuClip.open(menuStream);
+		editClip.open(editStream);
+		playClip.open(playStream);
+		winClip.open(winStream);
+		dieClip.open(dieStream);
+		dieClip.loop(Clip.LOOP_CONTINUOUSLY);
+		// dieClip.start();
+		// editClip.loop(Clip.LOOP_CONTINUOUSLY);
+		// winClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+
+		// initializes the variables handling the different screens
 		 if (levelSelect) {
 			 this.levelSelect = true;
 			 mainMenu = false;
 			 this.edit = false;
 			 this.play = false;
+
 		 } else if (edit) {
+			editClip.start();			
 			 this.levelSelect = false;
 			 mainMenu = false;
 			 this.edit = true;
 			 this.play = false;
 		 } else if (play) {
-			 spawn = true;
+
+			playClip.loop(Clip.LOOP_CONTINUOUSLY);
+			playClip.start();
+
+			spawn = true;
 			 this.levelSelect = false;
 			 mainMenu = false;
 			 this.edit = false;
 			 this.play = true;
 		 } else {
-			 mainMenu = true;
+			// menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+			// menuClip.start();
+			mainMenu = true;
 		 }
  
 		 // initializes the Player
@@ -786,6 +829,12 @@ import javax.swing.*;
 				 delta--;
 			 }
 		 }
+		 //close old music from previous state
+		 menuClip.close();
+		 editClip.close();
+		 playClip.close();
+		 winClip.close();
+
 	 }
  
 	 // handles keyPresses
@@ -1795,8 +1844,7 @@ import javax.swing.*;
  
 	 }
  
-	 public void reset() {
-		 
-	 }
+
+
 	 
- }
+}

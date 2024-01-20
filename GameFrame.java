@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
@@ -31,7 +33,11 @@ public class GameFrame extends JFrame implements ActionListener{
         currentGameFrame = this; // Set the current GameFrame to this instance
 
 
-		panel = new GamePanel(levelSelect, edit, play, levelTitle); //run GamePanel constructor
+		try {
+			panel = new GamePanel(levelSelect, edit, play, levelTitle);
+		} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+			e.printStackTrace();
+		} //run GamePanel constructor
 		this.add(panel);
 		this.setTitle("Dungeon Dash"); //set title for frame
 		this.setResizable(false); //frame can't change size
