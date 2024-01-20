@@ -9,7 +9,7 @@ import java.io.IOException;
 class Main {
   public static void main(String[] args) throws IOException {
 
-    new GameFrame(false, false, false, "");
+    new GameFrame(false, false, false, "", 0);
 
   }
 }

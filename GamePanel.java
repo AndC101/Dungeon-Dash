@@ -14,6 +14,7 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -180,7 +181,9 @@ import javax.swing.*;
 	Clip winClip;
 	Clip dieClip;
 
-	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+	long menuMusicStart = 0;
+
+	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName, long ms) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
 		menuStream = AudioSystem.getAudioInputStream(menuMusic);
 		 editStream = AudioSystem.getAudioInputStream(editMusic);
 		 winStream = AudioSystem.getAudioInputStream(winMusic);
@@ -198,7 +201,15 @@ import javax.swing.*;
 		playClip.open(playStream);
 		winClip.open(winStream);
 		dieClip.open(dieStream);
-		dieClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+		menuClip.addLineListener(event -> {
+			if (event.getType() == LineEvent.Type.STOP) {
+				menuClip.setFramePosition(0); // Set frame position to the beginning for looping
+				menuClip.start(); // Start playing again
+			}
+		});
+
+
 		// dieClip.start();
 		// editClip.loop(Clip.LOOP_CONTINUOUSLY);
 		// winClip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -206,13 +217,17 @@ import javax.swing.*;
 
 		// initializes the variables handling the different screens
 		 if (levelSelect) {
+			// menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+			menuClip.setMicrosecondPosition(ms);
+			menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+
 			 this.levelSelect = true;
 			 mainMenu = false;
 			 this.edit = false;
 			 this.play = false;
 
 		 } else if (edit) {
-			editClip.start();			
+			editClip.loop(Clip.LOOP_CONTINUOUSLY);			
 			 this.levelSelect = false;
 			 mainMenu = false;
 			 this.edit = true;
@@ -220,7 +235,6 @@ import javax.swing.*;
 		 } else if (play) {
 
 			playClip.loop(Clip.LOOP_CONTINUOUSLY);
-			playClip.start();
 
 			spawn = true;
 			 this.levelSelect = false;
@@ -228,8 +242,11 @@ import javax.swing.*;
 			 this.edit = false;
 			 this.play = true;
 		 } else {
-			// menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+			menuClip.setMicrosecondPosition(ms);
+
+			menuClip.loop(Clip.LOOP_CONTINUOUSLY);
 			// menuClip.start();
+
 			mainMenu = true;
 		 }
  
@@ -764,10 +781,8 @@ import javax.swing.*;
 					 knight.x = b.x + b.width + 1;
 					 // stops horizontal movement
 					 if (!Player.isCentered) {
-						System.out.println("yoyo");
 						 Player.setXDirection(0);
 					 } else {
-						System.out.println("hi");
 						 back.xVelocity = 0;
 						 Block.xVelocity = 0;
 					 }
@@ -820,7 +835,9 @@ import javax.swing.*;
 			 now = System.nanoTime();
 			 delta = delta + (now - lastTime) / ns;
 			 lastTime = now;
- 
+
+			 menuMusicStart = menuClip.getMicrosecondPosition(); //get the current time of the music
+
 			 // only move objects around and update screen if enough time has passed
 			 if (delta >= 1) {
 				 move();
@@ -830,11 +847,14 @@ import javax.swing.*;
 			 }
 		 }
 		 //close old music from previous state
-		 menuClip.close();
-		 editClip.close();
-		 playClip.close();
-		 winClip.close();
+		menuClip.close();
+		editClip.close();
+		playClip.close();
+		winClip.close();
+		dieClip.close();
 
+
+		
 	 }
  
 	 // handles keyPresses
@@ -851,9 +871,10 @@ import javax.swing.*;
 			 if (e.getKeyCode() == 27) {
 				 try {
 					 GameFrame.currentGameFrame.dispose();
-					 new GameFrame(false
-							 , false, false, "");
 					 running = false;
+
+					 new GameFrame(false
+							 , false, false, "", menuMusicStart);
 							 
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
@@ -864,10 +885,12 @@ import javax.swing.*;
 		 else if (gameEnd) {
 			 if (e.getKeyCode() == 27) {
 				 try {
+
 					 GameFrame.currentGameFrame.dispose();
-					 new GameFrame(false
-							 , false, false, "");
 					 running = false;
+
+					 new GameFrame(false
+							 , false, false, "", menuMusicStart);
 							 
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
@@ -877,9 +900,15 @@ import javax.swing.*;
 			 // checks which option is being selected
  
 			 if (e.getKeyCode() == 10 && indicatorPos == 320) {
-				 levelSelect = false;
-				 edit = true;
-				 mainMenu = false;
+				 try {
+					play = false;
+					levelSelect = false;
+					edit = true;
+					running = false;
+					new GameFrame(false, true, false, "", menuMusicStart);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			 } else if (e.getKeyCode() == 10 && indicatorPos == 250) {
 				 // enter the levelSelect menu
  
@@ -887,11 +916,15 @@ import javax.swing.*;
 				 edit = false;
 				 levelSelect = true;
 				 // create a new gameframe in the levelSelect menu
+
 				 try {
 					 GameFrame.currentGameFrame.dispose();
- 
-					 new GameFrame(true, false, false, "");
+					 play = false;
+					 levelSelect = true;
+					 edit = false;
 					 running = false;
+
+					 new GameFrame(true, false, false, "", menuMusicStart);
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
 				 }
@@ -938,9 +971,12 @@ import javax.swing.*;
 				 edit = false;
 				 try {
 					 GameFrame.currentGameFrame.dispose();
- 
-					 new GameFrame(true, false, false, "");
+					 play = false;
+					 levelSelect = true;
+					 edit = false;
 					 running = false;
+
+					 new GameFrame(true, false, false, "", menuMusicStart);
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
 				 }
@@ -1013,7 +1049,6 @@ import javax.swing.*;
 						 updatedSave += b.toString() + ": ";
 					 }
 					 levelSaved = true;
-					 // System.out.println(elements + " " + updatedSave);
 					 replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
 																 // ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
 																 // THEIR NEW DUNGEON
@@ -1041,18 +1076,24 @@ import javax.swing.*;
 				 if (!newLevelTitle.isEmpty()) {
 					 try {
 						 GameFrame.currentGameFrame.dispose();
- 
-						 new GameFrame(false, false, true, newLevelTitle);
+						 play = true;
+						 levelSelect = false;
+						 edit = false;
 						 running = false;
+
+						 new GameFrame(false, false, true, newLevelTitle, menuMusicStart);
 					 } catch (IOException e1) {
 						 e1.printStackTrace();
 					 }
 				 } else {
 					 try {
 						 GameFrame.currentGameFrame.dispose();
- 
-						 new GameFrame(false, false, true, prevSavedTitle);
-						 running = false;
+						play = true;
+						levelSelect = false;
+						edit = false;
+						running = false;
+
+						 new GameFrame(false, false, true, prevSavedTitle, menuMusicStart);
 					 } catch (IOException e1) {
 						 e1.printStackTrace();
 					 }
@@ -1068,9 +1109,9 @@ import javax.swing.*;
 				 play = false;
 				 try {
 					 GameFrame.currentGameFrame.dispose();
- 
-					 new GameFrame(false, false, false, "");
 					 running = false;
+
+					 new GameFrame(false, false, false, "", menuMusicStart);
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
 				 }
@@ -1090,9 +1131,9 @@ import javax.swing.*;
 			 if(e.getKeyCode() == 27) {
 				 try {
 					 GameFrame.currentGameFrame.dispose();
- 
-					 new GameFrame(false, false, false, "");
 					 running = false;
+
+					 new GameFrame(false, false, false, "", menuMusicStart);
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
 				 }
@@ -1782,7 +1823,6 @@ import javax.swing.*;
 	 public Block hFlip(Block b) throws IOException {
 		 if (b instanceof Turret) {
 			 turFlipNum++; // used to account for turret flips
-			 System.out.println("hi " + turFlipNum);
 		 }
 		 if (b instanceof Goblin) {
 			 goblinFlipNum++;
