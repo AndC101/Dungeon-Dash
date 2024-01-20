@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 public class GameFrame extends JFrame implements ActionListener{
@@ -21,7 +23,7 @@ public class GameFrame extends JFrame implements ActionListener{
 
 
 	Image background = new ImageIcon("Images/levelSelectBackground.png").getImage();
-	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle) throws IOException{
+	public GameFrame(boolean levelSelect, boolean edit, boolean play, String levelTitle, long ms) throws IOException{
 		
 		//dispose old gameframes 
         if (currentGameFrame != null) {
@@ -31,7 +33,11 @@ public class GameFrame extends JFrame implements ActionListener{
         currentGameFrame = this; // Set the current GameFrame to this instance
 
 
-		panel = new GamePanel(levelSelect, edit, play, levelTitle); //run GamePanel constructor
+		try {
+			panel = new GamePanel(levelSelect, edit, play, levelTitle, ms);
+		} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+			e.printStackTrace();
+		} //run GamePanel constructor
 		this.add(panel);
 		this.setTitle("Dungeon Dash"); //set title for frame
 		this.setResizable(false); //frame can't change size
@@ -44,6 +50,8 @@ public class GameFrame extends JFrame implements ActionListener{
 
 			//back button
 			JButton backButton = new JButton("Back to menu");
+			backButton.setBackground(Color.DARK_GRAY);
+			backButton.setForeground(Color.white);
 			JPanel buttonPanel = new JPanel();
 			buttonPanel.add(backButton);
 
@@ -161,8 +169,10 @@ public class GameFrame extends JFrame implements ActionListener{
                 System.out.println("Play button in row " + title + " pressed!");
 				
 				try {
+					panel.play = true;
+					panel.levelSelect = false;
 					panel.running = false;
-					new GameFrame(false, false, true, title);
+					new GameFrame(false, false, true, title, panel.menuMusicStart);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -179,8 +189,10 @@ public class GameFrame extends JFrame implements ActionListener{
 				System.out.println("Edit button in row " + title + " pressed!");
 				
 				try {
+					panel.edit=true;
+					panel.levelSelect = false;
 					panel.running = false;
-					new GameFrame(false, true, false, title);
+					new GameFrame(false, true, false, title, panel.menuMusicStart);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
@@ -202,7 +214,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				JOptionPane.INFORMATION_MESSAGE);
 				try {
 					panel.running = false;
-					new GameFrame(true,false, false, "");
+					new GameFrame(true,false, false, "", panel.menuMusicStart);
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -223,7 +235,8 @@ public class GameFrame extends JFrame implements ActionListener{
 
             //opens new frame back to the main menu
             try {
-                new GameFrame(false,false, false, "");
+				panel.running= false;
+                new GameFrame(false,false, false, "", panel.menuMusicStart);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
