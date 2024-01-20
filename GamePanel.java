@@ -159,14 +159,6 @@ import javax.swing.*;
  
 	 // goblin hover
 	 public boolean onTop = false;
-	 
-	File menu = new File("Music/menu.wav");
-	File edit = new File("Music/edit.wav");
-	File play = new File("Music/play.wav");
-	File win = new File("Music/win.wav");
-	AudioInputStream audioStream = AudioSystem.getAudioInputStream(menu);
-	Clip clip = AudioSystem.getClip();
-	
 
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
@@ -580,6 +572,7 @@ import javax.swing.*;
 				 }
 				 win = true;
 				 gameEnd(g);
+				 gameEnd = true;
 			 }
 			 else {
 				 for (Block b : elements) {
@@ -620,7 +613,8 @@ import javax.swing.*;
 	 }
  
 	 // calls the move method of all other methods
-	 public void move() {
+	 public void move(){
+		 if(gameEnd) return;
 		 knight.move();
 		 for (Block b : elements) {
 			 b.move();
@@ -816,7 +810,7 @@ import javax.swing.*;
 			 if (e.getKeyCode() == 27) {
 				 try {
 					 GameFrame.currentGameFrame.dispose();
-					 new GameFrame(false
+					 new GameFrame(true
 							 , false, false, "");
 					 running = false;
 							 
@@ -1014,13 +1008,13 @@ import javax.swing.*;
 		 }
  
 		 else if (play) {
-			 
+			 if(gameEnd) return;
 			 if(e.getKeyCode() == 27) {
 				 play = false;
 				 try {
 					 GameFrame.currentGameFrame.dispose();
  
-					 new GameFrame(false, false, false, "");
+					 new GameFrame(true, false, false, "");
 					 running = false;
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
