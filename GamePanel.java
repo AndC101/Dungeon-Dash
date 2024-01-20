@@ -156,6 +156,7 @@
  
 	 // goblin hover
 	 public boolean onTop = false;
+	 
  
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName) throws IOException {
 		 // initializes the variables handling the different screens
@@ -366,11 +367,15 @@
 			 
 		 }
 		 else if (mainMenu) {
-			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
+			g.setColor(Color.white);
 			 g.drawImage(menuBackground, 0, 0, this);
-			 g.setColor(Color.white);
-			 // display text for the title
+			 // display text for the title 
+ 
+			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
+
 			 g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+
 			 g.setColor(new Color(255, 255, 255, alpha));
  
 			 // causes the text to fade in and out by adjusting transparancy value
@@ -647,8 +652,9 @@
 				 checkVertical = false;
  
 				 // skips it if the block doesn't need collision
-				 if (walkThrough.contains(getClass(b)))
-					 continue;
+				 if (walkThrough.contains(getClass(b))){
+					continue;
+				 }
  
 				 // TOP COLLISION
 				 if (((knight.x > b.x && knight.x < b.x + b.width)
@@ -711,7 +717,7 @@
 				 }
  
 			 }
-			 
+			 knight.onLadder = false;
 			 for(Block b: elements) {
 				 if(getClass(b).equals("CrackedStone") && ((CrackedStone)b).startBreak != -1 && System.currentTimeMillis() - ((CrackedStone)b).startBreak >= CrackedStone.breakTime) {
 					 remove.add(b);
@@ -726,9 +732,15 @@
 					 knight.lives++;
 					 remove.add(b);
 					 numPowers--;
-				 }
+				 } 
+				 else if (getClass(b).equals("Ladder") && knight.intersects(b)) {
+					knight.onLadder = true;
+
+					
+
+				 } 
 			 }
-			 
+
 			 for(Block b: remove) {
 				 elements.remove(b);
 			 }
