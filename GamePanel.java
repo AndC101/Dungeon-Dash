@@ -162,12 +162,12 @@ import javax.swing.*;
  
 	 // goblin hover
 	 public boolean onTop = false;
-	 
 	File menuMusic = new File("Music/menu.wav");
 	File editMusic = new File("Music/edit.wav");
 	File playMusic = new File("Music/play.wav");
 	File winMusic = new File("Music/win.wav");
 	File deathMusic = new File("Music/dietest.wav");
+
 
 	AudioInputStream menuStream;
 	AudioInputStream editStream;
@@ -640,6 +640,7 @@ import javax.swing.*;
 				 }
 				 win = true;
 				 gameEnd(g);
+				 gameEnd = true;
 			 }
 			 else {
 				 for (Block b : elements) {
@@ -680,7 +681,8 @@ import javax.swing.*;
 	 }
  
 	 // calls the move method of all other methods
-	 public void move() {
+	 public void move(){
+		 if(gameEnd) return;
 		 knight.move();
 		 for (Block b : elements) {
 			 b.move();
@@ -887,10 +889,11 @@ import javax.swing.*;
 				 try {
 
 					 GameFrame.currentGameFrame.dispose();
+
+					 new GameFrame(true
+							 , false, false, "", menuMusicStart);
 					 running = false;
 
-					 new GameFrame(false
-							 , false, false, "", menuMusicStart);
 							 
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
@@ -1104,14 +1107,15 @@ import javax.swing.*;
 		 }
  
 		 else if (play) {
-			 
+			 if(gameEnd) return;
 			 if(e.getKeyCode() == 27) {
 				 play = false;
 				 try {
 					 GameFrame.currentGameFrame.dispose();
+
+					 new GameFrame(true, false, false, "", menuMusicStart);
 					 running = false;
 
-					 new GameFrame(false, false, false, "", menuMusicStart);
 				 } catch (IOException e1) {
 					 e1.printStackTrace();
 				 }
