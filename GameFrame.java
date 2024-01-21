@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -79,9 +81,11 @@ public class GameFrame extends JFrame implements ActionListener{
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
 				JButton deleteButton = new JButton("Delete");
+				JButton hsButton = new JButton("High Scores");
 				playButton.setBackground(Color.white);
 				editButton.setBackground(Color.white);
 				deleteButton.setBackground(Color.white);
+				hsButton.setBackground(Color.white);
 
 
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
@@ -91,6 +95,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				mainPanel.add(playButton);
 				mainPanel.add(editButton);
 				mainPanel.add(deleteButton);
+				mainPanel.add(hsButton);
 				layout.putConstraint(SpringLayout.WEST, label, 20, SpringLayout.WEST,
 								contentPane);
 				layout.putConstraint(SpringLayout.NORTH, label, j, SpringLayout.NORTH,
@@ -107,6 +112,11 @@ public class GameFrame extends JFrame implements ActionListener{
 				contentPane);
 				layout.putConstraint(SpringLayout.WEST, deleteButton, 20, SpringLayout.EAST,
 				editButton);
+				layout.putConstraint(SpringLayout.NORTH, hsButton, j, SpringLayout.NORTH,
+				contentPane);
+				layout.putConstraint(SpringLayout.WEST, hsButton, 20, SpringLayout.EAST,
+				deleteButton);
+
 
 
 
@@ -114,7 +124,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				addPlayButtonListener(playButton, title); //when play/edit/delete button is pressed, the title of the level is sent to gamepanel for processing
 				addEditButtonListener(editButton, title);
 				addDeleteButtonListener(deleteButton, title);
-
+				addHSButtonListener(hsButton, title);
 				j+=60;
 			}
 
@@ -224,6 +234,80 @@ public class GameFrame extends JFrame implements ActionListener{
         });
     }
 
+	private void addHSButtonListener(JButton hsButton, String title) {
+        hsButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+                // debug for play button pressed
+                System.out.println("hs button in row " + title + " pressed!");
+				JDialog popup = new JDialog(currentGameFrame, title + " High Scores", true);
+				popup.setSize(300, 200);
+				popup.setLayout(new BorderLayout());
+		
+				String highScoresText = getHighScores(title);
+
+				// Create a JTextArea to be placed inside the JScrollPane
+				JTextArea textArea = new JTextArea(highScoresText);
+				textArea.setEditable(false);
+				
+				// Create a JScrollPane and add the JTextArea to it
+				JScrollPane scrollPane = new JScrollPane(textArea);
+		
+				// Add the JScrollPane to the popup
+				popup.add(scrollPane, BorderLayout.CENTER);
+		
+		
+				// Set the location of the popup relative to the parent frame
+				popup.setLocationRelativeTo(currentGameFrame);
+		
+				// Make the popup visible
+				popup.setVisible(true);
+		
+
+            }
+        });
+    }
+
+	public String getHighScores(String title) {
+		String scores = "";
+        PriorityQueue<Pair> scorePairs = new PriorityQueue<>();
+		int idx = 1;
+
+		if (title.equals("")) {
+			return "No scores yet.";
+		} else {
+			String filePath = "HighScores.txt"; // Provide the path to your text file
+			try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					// Split the line into words using space as the delimiter
+					if (line.startsWith(title)) {
+						String[] words = line.split(": ");
+						for (int i = 1; i < words.length; i++) {
+							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
+							// in the title itself
+							String[] inputs = words[i].split(" "); // splits based on space
+							scorePairs.add(new Pair(inputs[0], Integer.parseInt(inputs[1])));
+							
+
+						}
+					}
+
+				}
+
+				while(!scorePairs.isEmpty()) {
+					Pair x = scorePairs.poll();
+					scores += "#" + idx + ".  "  + "USER: " + x.name + "\tTIME: " + x.time + "\n\n";
+					idx++;
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return scores;
+		}
+   }
 
 
 	//checks if a button is pressed (back button only)
@@ -251,7 +335,11 @@ public class GameFrame extends JFrame implements ActionListener{
 		try {
 			// input the (modified) file content to the StringBuffer "input"
 			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			BufferedReader hsFile = new BufferedReader(new FileReader("HighScores.txt"));
+
 			StringBuffer inputBuffer = new StringBuffer();
+			StringBuffer inputBufferHS = new StringBuffer();
+
 			String line;
 
 			//read and append each line except title
@@ -262,13 +350,26 @@ public class GameFrame extends JFrame implements ActionListener{
 					inputBuffer.append('\n');
 				} 
 			}
+			while ((line = hsFile.readLine()) != null) {
+
+				if (!line.startsWith(title)) {
+					inputBufferHS.append(line);
+					inputBufferHS.append('\n');
+				} 
+			}
 
 			file.close();
+			hsFile.close();
 
 			// write the new string with the replaced line OVER the same file
 			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
 			fileOut.write(inputBuffer.toString().getBytes());
 			fileOut.close();
+
+			FileOutputStream fileOutHS = new FileOutputStream("HighScores.txt");
+			fileOutHS.write(inputBufferHS.toString().getBytes());
+			fileOutHS.close();
+
 
 		} catch (Exception e) {
 			System.out.println("Problem reading file.");
