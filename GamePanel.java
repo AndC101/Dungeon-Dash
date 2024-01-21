@@ -162,6 +162,7 @@ import java.util.Timer;
  
 	 // goblin hover
 	 public boolean onTop = false;
+	 public boolean goblinOnFloor = false;
 	File menuMusic = new File("Music/menu.wav");
 	File editMusic = new File("Music/edit.wav");
 	File playMusic = new File("Music/play.wav");
@@ -696,20 +697,22 @@ import java.util.Timer;
  
 	 // handles all collision detection and responds accordingly
 	 public void checkCollision() {
- 
+
 		 if (edit) {
 			 // doesn't allow blocks to be dragged off the screen
+			 goblinOnFloor = false;
 			 if (curSelected != null) {
- 
+				
 				 if (curSelected.x <= 0)
 					 curSelected.x = 0;
 				 if (curSelected.x + curSelected.width >= GAME_WIDTH)
 					 curSelected.x = GAME_WIDTH - curSelected.width;
 				 if (curSelected.y <= 0)
 					 curSelected.y = 0;
-				 if (curSelected.y + curSelected.height >= FLOOR)
-					 curSelected.y = FLOOR - curSelected.height;
-					 onTop = true;
+				 if (curSelected.y + curSelected.height >= FLOOR){
+					curSelected.y = FLOOR - curSelected.height;
+					goblinOnFloor = true;
+				 }
 			 }
  
 		 } else if (play && !spawn) {
@@ -1229,7 +1232,7 @@ import java.util.Timer;
 					 if (works) {
 						 elements.remove(curDragging);
 						 elements.add(hover);
-						 if (hover instanceof Goblin && !onTop) {
+						 if (hover instanceof Goblin && !onTop && !goblinOnFloor) {
 							 elements.remove(hover);
 						 }
  
@@ -1240,7 +1243,7 @@ import java.util.Timer;
 					 elements.remove(curDragging);
 					 curSelected = null;
 				 } else {
-					 if (hover == null && curDragging instanceof Goblin) {
+					 if (hover == null && curDragging instanceof Goblin && !goblinOnFloor) {
 						 elements.remove(curDragging);
 					 }
 				 }
@@ -1692,12 +1695,17 @@ import java.util.Timer;
 							 } else if (inputs[0].equals("Chest")) {
 								 elements.add(new Chest(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
 										 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), closedChestImage));
- 
 							 } else if (inputs[0].equals("Goblin")) {
-								 elements.add(new Goblin(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
-										 Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft,
-										 goblinRunRight, true));
-								 // System.out.println(a);
+								if(play) {
+									elements.add(new Goblin(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft,
+									goblinRunRight, true));
+								} else {
+									elements.add(new Goblin(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
+									Integer.parseInt(inputs[3]), Integer.parseInt(inputs[4]), goblinRunLeft,
+									goblinRunRight, false));
+
+								}
 							 } else if (inputs[0].equals("Turret")) {
 								 if (inputs[5].equals("true")) {
 									 elements.add(new Turret(this, Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
