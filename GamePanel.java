@@ -19,8 +19,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
  import java.util.*;
- 
- //imports for file io
+import java.util.Timer;
+//imports for file io
  import java.io.File;
  import java.io.FileOutputStream;
  import java.io.FileReader;
@@ -641,6 +641,15 @@ import javax.swing.*;
 				 win = true;
 				 gameEnd(g);
 				 gameEnd = true;
+				 displaySave();
+				//  if(gameEndAlpha >=455) {
+				// 	System.out.println(gameEndAlpha);
+				// 	saveHighScore( (int)((endTime - startTime) / 1000) );
+
+				//  }
+	
+				 
+	
 			 }
 			 else {
 				 for (Block b : elements) {
@@ -1008,73 +1017,11 @@ import javax.swing.*;
 				 // check if file is saved OR saved and played
 			 } else if (e.getKeyCode() == KeyEvent.VK_1) {
 				 // save the file
-				 updatedSave = "";
-				 if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is created a fresh new level
-					 // Create a JTextField for user input
-					 JTextField textField = new JTextField();
- 
-					 // Show an input dialog with the text field
-					 int option = JOptionPane.showOptionDialog(this, textField, "Name your level!",
-							 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
- 
-					 // Check if the user clicked OK
-					 if (option == JOptionPane.OK_OPTION) {
-						 // Get the entered name from the text field
-						 newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without
-																				 // whitespace
- 
-						 // add the new level title
-						 if (!names.contains(newLevelTitle)) {
-							 for (Block b : elements) {
-								 updatedSave += b.toString() + ": ";
-							 }
-							 replaceLine(newLevelTitle, updatedSave);
- 
-							 addTitle(newLevelTitle); // add the title
- 
-							 // Display a message indicating that the level has been saved
-							 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-									 JOptionPane.INFORMATION_MESSAGE);
-							 levelSaved = true;
-						 } else {
-							 // Display a message indicating that the level has not been saved
-							 JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
-									 "Invalid Save", JOptionPane.INFORMATION_MESSAGE);
-						 }
-					 } else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-						 // if user exits trigger cancellation message
-						 JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save",
-								 JOptionPane.INFORMATION_MESSAGE);
-					 }
-				 } else if (levelSaved && prevSavedTitle.isEmpty()) {
-					 // if previously saved, then update the entry
-					 for (Block b : elements) {
-						 updatedSave += b.toString() + ": ";
-					 }
-					 levelSaved = true;
-					 replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
-																 // ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
-																 // THEIR NEW DUNGEON
- 
-					 // display saved
-					 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-							 JOptionPane.INFORMATION_MESSAGE);
-				 } else if (!prevSavedTitle.isEmpty() && !levelSaved) {
-					 // if from a previous save file, then execute this
-					 for (Block b : elements) {
-						 updatedSave += b.toString() + ": ";
-					 }
-					 replaceLine(prevSavedTitle, updatedSave); // replace line with the given title
- 
-					 // display saved
-					 JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
-							 JOptionPane.INFORMATION_MESSAGE);
- 
-				 }
+				 saveLevel();
 			 } else if (e.getKeyCode() == KeyEvent.VK_2) {
 				 // enter play mode from the level editor
 				 edit = false;
- 
+				saveLevel();
 				 // Intake elements from file io and start game
 				 if (!newLevelTitle.isEmpty()) {
 					 try {
@@ -1637,6 +1584,30 @@ import javax.swing.*;
 			 System.out.println("Problem adding name.");
 		 }
 	 }
+	 
+	 //writes a new title to each level
+	 public void addTitleHS(String title) {
+		try {
+			// input the (modified) file content to the StringBuffer "input"
+			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+			while ((line = file.readLine()) != null) {
+				inputBuffer.append(line);
+				inputBuffer.append('\n');
+			}
+			inputBuffer.append(title + ":");
+			inputBuffer.append("\n");
+			file.close();
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("HighScores.txt");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
+
+	 }
  
 	 // rewrites the LevelSave.txt file into a temp input stream and then overwrites
 	 // the previous save file to
@@ -1870,10 +1841,10 @@ import javax.swing.*;
 			 g.setColor(new Color(0, 0, 0, gameEndAlpha < 200 ? 0 : gameEndAlpha - 200));
 			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			 g.drawString("Time: " + (endTime - startTime) / 1000, 380, 350);
+
 			 if (gameEndAlpha < 455){
 				gameEndAlpha++;
 			 }
-			//  saveHighScore( (int)((endTime - startTime) / 1000) );
 
 
 
@@ -1892,25 +1863,29 @@ import javax.swing.*;
 				 gameEndAlpha++;
  
 		 }
+		 
  
+	 }
+
+	 private void fileHighScore() {
+
 	 }
 
 	 public void saveHighScore(int time) {
 		JTextField textField = new JTextField();
 		String userName;
 		// Show an input dialog with the text field
-		int option = JOptionPane.showOptionDialog(this, textField, "Save!",
+		int option = JOptionPane.showOptionDialog(this, textField, "Enter your username!",
 				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
-
 		// Check if the user clicked OK
 		if (option == JOptionPane.OK_OPTION) {
 			// Get the entered name from the text field
 			userName = textField.getText().stripTrailing(); // get the info from text box without
 																	// whitespac
 				// Display a message indicating that the level has been saved
-				JOptionPane.showMessageDialog(this, "Congratulations + " + userName , "Save Confirmation",
+				JOptionPane.showMessageDialog(this, "Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!", "Score Save Confirmation",
 						JOptionPane.INFORMATION_MESSAGE);
-			
+				fileHighScore();
 		} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
 			// if user exits trigger cancellation message
 			JOptionPane.showMessageDialog(this, "Your score was not saved.", "Invalid Save",
@@ -1919,7 +1894,104 @@ import javax.swing.*;
 
 	 }
  
+	 //prompts user for their username after a set amt of time
+	 public void displaySave(){
+			TimerTask task = new TimerTask() {
+			public void run() {
+				if(play) {
+					saveHighScore( (int)((endTime - startTime) / 1000) );
+				}
+			}
+		};
+		Timer timer = new Timer("Timer");
 
+		long delay = 3100L;
+		timer.schedule(task, delay);
+
+	 }
+
+	 //saves level logic
+	 public void saveLevel() {
+		updatedSave = "";
+		if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is creating a fresh new level
+			// Create a JTextField for user input
+			JTextField textField = new JTextField();
+
+			// Show an input dialog with the text field
+			int option = JOptionPane.showOptionDialog(this, textField, "Name your level!",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
+			// Check if the user clicked OK
+			if (option == JOptionPane.OK_OPTION) {
+				// Get the entered name from the text field
+				newLevelTitle = textField.getText().stripTrailing(); // get the info from text box without
+																		// whitespace
+
+				// add the new level title
+				if (!names.contains(newLevelTitle)) {
+					for (Block b : elements) {
+						updatedSave += b.toString() + ": ";
+					}
+					replaceLine(newLevelTitle, updatedSave);
+
+					addTitle(newLevelTitle); // add the title
+
+					addTitleHS(newLevelTitle); //adds title to HS save file
+
+					if(edit) {
+						// Display a message indicating that the level has been saved
+						JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+								JOptionPane.INFORMATION_MESSAGE);
+						levelSaved = true;
+
+					}
+				} else {
+					// Display a message indicating that the level has not been saved
+					if(edit) {
+						JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
+						"Invalid Save", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+			} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+				// if user exits trigger cancellation message
+				if(edit) {
+					JOptionPane.showMessageDialog(this, "Save cancelled.", "Invalid Save",
+					JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		} else if (levelSaved && prevSavedTitle.isEmpty()) {
+			// if previously saved, then update the entry
+			for (Block b : elements) {
+				updatedSave += b.toString() + ": ";
+			}
+			levelSaved = true;
+			replaceLine(newLevelTitle, updatedSave); // replace line with the entered title --> THIS CASAE AND
+														// ABOVE CASE ONLY OCCUR IF THE USER DIRECTLY CREATES
+														// THEIR NEW DUNGEON
+
+			if (edit) {
+			// display saved
+			JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+					JOptionPane.INFORMATION_MESSAGE);
+
+			}
+		} else if (!prevSavedTitle.isEmpty() && !levelSaved) {
+			// if from a previous save file, then execute this
+			for (Block b : elements) {
+				updatedSave += b.toString() + ": ";
+			}
+			replaceLine(prevSavedTitle, updatedSave); // replace line with the given title
+
+			if(edit) {
+			// display saved
+			JOptionPane.showMessageDialog(this, "Level saved!", "Save Confirmation",
+					JOptionPane.INFORMATION_MESSAGE);
+
+			}
+
+		}
+
+	 }
 
 	 
 }
