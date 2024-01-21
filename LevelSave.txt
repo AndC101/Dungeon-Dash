@@ -6,3 +6,4 @@ Ladder Testing: Portal 54 450 60 75: Stone 288 485 60 40: Stone 395 485 60 40: O
 y\y: Portal 201 450 60 75: Chest 821 485 60 40: 
 high score testing: Portal 229 450 60 75: Chest 773 485 60 40: Goblin 358 475 50 50: 
 kjhkjh: Stone 264 485 60 40: Portal 468 450 60 75: Chest 716 485 60 40: 
+test: Portal 391 450 60 75: Chest 732 485 60 40: Goblin 183 475 50 50: 

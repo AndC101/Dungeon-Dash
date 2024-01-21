@@ -63,9 +63,15 @@ import java.util.Timer;
 	 public BufferedImage turretLeft = ImageIO.read(new File("Images/turLeft.png"));
 	 public BufferedImage oneUpImage = ImageIO.read(new File("Images/oneUp.png"));
 	 public BufferedImage speedBoostImage = ImageIO.read(new File("Images/SpeedBoost.png"));
-	 
 	 public BufferedImage lifeImage = ImageIO.read(new File("Images/heart.png"));
  
+	 public BufferedImage title = ImageIO.read(new File("Images/title.png"));
+	 public BufferedImage levelSelectText = ImageIO.read(new File("Images/LevelSelect.png"));
+	 public BufferedImage newDungeonText = ImageIO.read(new File("Images/newDungeon.png"));
+	 public BufferedImage indicatorImage = ImageIO.read(new File("Images/indicator.png"));
+	 public BufferedImage howToPlayText = ImageIO.read(new File("Images/howToPlay.png"));
+
+
 	 // imports for sprites
 	 Image afkAnimation = new ImageIcon("Images/KnightAfk.gif").getImage();
 	 Image goblinRunLeft = new ImageIcon("Images/GoblinRunLeft.gif").getImage();
@@ -445,7 +451,9 @@ import java.util.Timer;
  
 			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 
-			 g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
+			 g.drawImage(title, GAME_WIDTH / 2 - 280, 15, this);
+
+			//  g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
 
 			 g.setColor(new Color(255, 255, 255, alpha));
  
@@ -463,11 +471,19 @@ import java.util.Timer;
 			 // display text for the menu
 			 // indicator pos allows user to use up and down keys to position their choice in
 			 // the menu
-			 g.drawString("> ", 300, indicatorPos);
-			 g.drawString("Level selection", 325, 250);
-			 g.drawString("Create new dungeon", 325, 320);
-			 g.drawString("How to Play?", 325, 400);
- 
+			//  g.drawString("> ", 300, indicatorPos);
+			 
+			 g.drawImage(indicatorImage, 280, indicatorPos-20, this);
+			 
+			 g.drawImage(levelSelectText, 325, 250-30, this);
+			 g.drawImage(newDungeonText, 315, 320-30, this);
+			 g.drawImage(howToPlayText, 325, 400-30, this);
+			//  g.drawImage(levelSelectText, 325, 400, this);
+
+			//  g.drawString("Level selection", 325, 250);
+			//  g.drawString("Create new dungeon", 325, 320);
+			//  g.drawString("How to Play?", 325, 400);
+		
 		 } else if (edit) {
  
 			 // draw the background
@@ -514,8 +530,6 @@ import java.util.Timer;
 			 }
  
 		 } else if (levelSelect) {
-			// backScroll.draw(g);
-			 // to be filled (draw the image background?)
 		 }
  
 		 else if (play) {
