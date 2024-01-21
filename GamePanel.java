@@ -161,6 +161,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	// goblin hover
 	public boolean onTop = false;
+	public boolean goblinOnFloor = false;
+
 	File menuMusic = new File("Music/menu.wav");
 	File editMusic = new File("Music/edit.wav");
 	File playMusic = new File("Music/play.wav");
@@ -667,6 +669,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						if (getClass(b).equals("Goblin")) {
 							if (knight.intersects(b) && knight.invincibleStart == -1) {
 								knight.lives--;
+
 								if (knight.lives == 0) {
 
 									win = false;
@@ -696,16 +699,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		}
 
-		if (mainMenu) {
-			g.setColor(Color.white);
-			g.setFont(new Font("Impact", Font.PLAIN, 20));
-			g.drawString("Press esc to leave", GAME_WIDTH - 150, GAME_HEIGHT - 10);
-		} else {
-			g.setColor(Color.white);
-			g.setFont(new Font("Impact", Font.PLAIN, 20));
-			g.drawString("Press esc to go back", GAME_WIDTH - 175, GAME_HEIGHT - 5);
-		}
-
 	}
 
 	// calls the move method of all other methods
@@ -724,6 +717,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 		if (edit) {
 			// doesn't allow blocks to be dragged off the screen
+			goblinOnFloor = false;
 			if (curSelected != null) {
 
 				if (curSelected.x <= 0)
@@ -732,8 +726,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					curSelected.x = GAME_WIDTH - curSelected.width;
 				if (curSelected.y <= 0)
 					curSelected.y = 0;
-				if (curSelected.y + curSelected.height >= FLOOR)
+				if (curSelected.y + curSelected.height >= FLOOR) {
 					curSelected.y = FLOOR - curSelected.height;
+					goblinOnFloor = true;
+				}
 			}
 
 		} else if (play && !spawn) {
@@ -1102,7 +1098,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					JOptionPane.showMessageDialog(this, "Please have exactly one chest and one portal", "Level Error",
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
-				} 
+				}
 				// enter play mode from the level editor
 				edit = false;
 
@@ -1127,54 +1123,50 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 						edit = false;
 						running = false;
 
-						new GameFrame(false, false, true, prevSavedTitle, menuMusicStart);
+						new GameFrame(false, false, true, "", menuMusicStart);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
 				}
-				play = true;
 			}
-
 		}
-
 		else if (play) {
-			if (gameEnd)
-				return;
-			if (e.getKeyCode() == 27) {
-				play = false;
-				try {
-					GameFrame.currentGameFrame.dispose();
+			 if(gameEnd) return;
+			 if(e.getKeyCode() == 27) {
+				 play = false;
+				 try {
+					 GameFrame.currentGameFrame.dispose();
 
-					new GameFrame(true, false, false, "", menuMusicStart);
-					running = false;
+					 new GameFrame(true, false, false, "", menuMusicStart);
+					 running = false;
 
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
+				 } catch (IOException e1) {
+					 e1.printStackTrace();
+				 }
+			 }
 
-			// checks the knight, Blocks, and the background to see what should change to
-			// each one
-			knight.keyPressed(e);
-			back.keyPressed(e);
+			 // checks the knight, Blocks, and the background to see what should change to
+			 // each one
+			 knight.keyPressed(e);
+			 back.keyPressed(e);
 
-			for (Block b : elements) {
-				b.keyPressed(e);
-			}
-			// a.keyPressed(e);`
-		} else if (levelSelect) {
-			if (e.getKeyCode() == 27) {
-				try {
-					GameFrame.currentGameFrame.dispose();
-					running = false;
+			 for (Block b : elements) {
+				 b.keyPressed(e);
+			 }
+			 // a.keyPressed(e);`
+		 }
+		 else if(levelSelect) {
+			 if(e.getKeyCode() == 27) {
+				 try {
+					 GameFrame.currentGameFrame.dispose();
+					 running = false;
 
-					new GameFrame(false, false, false, "", menuMusicStart);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
-
+					 new GameFrame(false, false, false, "", menuMusicStart);
+				 } catch (IOException e1) {
+					 e1.printStackTrace();
+				 }
+			 }
+		 }
 	}
 
 	// executes when keys are released
@@ -1668,8 +1660,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 		}
 	}
 
-
-
 	// rewrites the LevelSave.txt file into a temp input stream and then overwrites
 	// the previous save file to
 	// imitate the effect of "overwritting" a save level. (this is the only viable
@@ -1906,26 +1896,25 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			if (gameEndAlpha < 455) {
 				gameEndAlpha++;
 			}
+		} else {
+			g.setColor(new Color(255, 0, 0, 150));
+			g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+			repaint();
+
+			g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
+			g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
+			g.drawString("YOU DIED", 250, 300);
+			g.setColor(new Color(0, 0, 0, gameEndAlpha));
+			if (gameEndAlpha < 255)
+				gameEndAlpha++;
+
 		}
-		 else {
-			 g.setColor(new Color(255, 0, 0, 150));
-			 g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-			 repaint();
- 
-			 g.setFont(new Font("Impact", Font.PLAIN, TITLE_SIZE));
-			 g.setColor(new Color(0, 0, 0, gameEndAlpha > 255 ? 255 : gameEndAlpha));
-			 g.drawString("YOU DIED", 250, 300);
-			 g.setColor(new Color(0, 0, 0, gameEndAlpha));
-			 if (gameEndAlpha < 255)
-				 gameEndAlpha++;
- 
-		 }
 	}
 
-	 //*** HIGH SCORE and FILE IO LOGIC METHODS BELOW ***
+	// *** HIGH SCORE and FILE IO LOGIC METHODS BELOW ***
 
-	 //adds a new high score to the highscores file -- helper method
-	 private void fileHighScore(String title, String user, int time) {
+	// adds a new high score to the highscores file -- helper method
+	private void fileHighScore(String title, String user, int time) {
 
 		try {
 			// input the (modified) file content to the StringBuffer "input"
@@ -1960,40 +1949,39 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
-
-	 //displays and saves the high score when the user wins. prompts through optionpane.
-	 public void saveHighScore(int time) {
+	// displays and saves the high score when the user wins. prompts through
+	// optionpane.
+	public void saveHighScore(int time) {
 		JTextField textField = new JTextField();
 		String userName;
 		// ask for username with the text field
-		int option = JOptionPane.showOptionDialog(this, textField, "Enter your username!",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+		int option = JOptionPane.showOptionDialog(this, textField, "Enter your username!", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, null, null, null);
 		// Check if the user clicked OK
 		if (option == JOptionPane.OK_OPTION) {
 			// Get the entered name from the text field
 			userName = textField.getText().stripTrailing(); // get the info from text box without whitespace
-				// Display a message indicating that the level has been saved
-				JOptionPane.showMessageDialog(this, "Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!", "Score Save Confirmation",
-						JOptionPane.INFORMATION_MESSAGE);
+			// Display a message indicating that the level has been saved
+			JOptionPane.showMessageDialog(this,
+					"Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!",
+					"Score Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 
-				fileHighScore(prevSavedTitle, userName, time); // save the high score in the file of the correct level
+			fileHighScore(prevSavedTitle, userName, time); // save the high score in the file of the correct level
 		} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
 			// if user exits trigger cancellation message
 			JOptionPane.showMessageDialog(this, "Your score was not saved.", "Invalid Save",
 					JOptionPane.INFORMATION_MESSAGE);
 		}
 
+	}
 
-
-	 }
- 
-	 //prompts user for their username after a set amt of time when the user wins
-	 public void displaySave(){
+	// prompts user for their username after a set amt of time when the user wins
+	public void displaySave() {
 		TimerTask task = new TimerTask() {
 			public void run() {
-				//if the user has already quit, don't display the dialogue pane
-				if(play) {
-					saveHighScore( (int)((endTime - startTime) / 1000) );
+				// if the user has already quit, don't display the dialogue pane
+				if (play) {
+					saveHighScore((int) ((endTime - startTime) / 1000));
 
 				}
 			}
@@ -2005,10 +1993,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 
 	}
 
-	 //writes a new title to each level for the high scores
-	 public void addTitleHS(String title) {
+	// writes a new title to each level for the high scores
+	public void addTitleHS(String title) {
 		try {
-			// input the (modified) file content to the StringBuffer 
+			// input the (modified) file content to the StringBuffer
 			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
@@ -2016,7 +2004,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
 			}
-			inputBuffer.append(title + ": "); //append the title at the end
+			inputBuffer.append(title + ": "); // append the title at the end
 			inputBuffer.append("\n");
 			file.close();
 			// write the new string with the replaced line OVER the same file
@@ -2027,10 +2015,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 			System.out.println("Problem reading file.");
 		}
 
-	 }
+	}
 
-	 //save level file IO logic
-	 public void saveLevel() {
+	// save level file IO logic
+	public void saveLevel() {
 		updatedSave = "";
 		// newLevelTitle = "";
 		// prevSavedTitle = "";
