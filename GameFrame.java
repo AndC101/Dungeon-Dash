@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -267,12 +269,45 @@ public class GameFrame extends JFrame implements ActionListener{
     }
 
 	public String getHighScores(String title) {
-		String ret = "";
-		for(int i = 0; i < 100; i++) {
-			ret += "hi \n";
+		String scores = "";
+        PriorityQueue<Pair> scorePairs = new PriorityQueue<>();
+		int idx = 1;
+
+		if (title.equals("")) {
+			return "No scores yet.";
+		} else {
+			String filePath = "HighScores.txt"; // Provide the path to your text file
+			try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+				String line;
+
+				while ((line = reader.readLine()) != null) {
+					// Split the line into words using space as the delimiter
+					if (line.startsWith(title)) {
+						String[] words = line.split(": ");
+						for (int i = 1; i < words.length; i++) {
+							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
+							// in the title itself
+							String[] inputs = words[i].split(" "); // splits based on space
+							scorePairs.add(new Pair(inputs[0], Integer.parseInt(inputs[1])));
+							
+
+						}
+					}
+
+				}
+
+				while(!scorePairs.isEmpty()) {
+					Pair x = scorePairs.poll();
+					scores += "#" + idx + ".  "  + "USER: " + x.name + "\tTIME: " + x.time + "\n\n";
+					idx++;
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return scores;
 		}
-		return ret;
-	}
+   }
 
 
 	//checks if a button is pressed (back button only)
@@ -300,7 +335,11 @@ public class GameFrame extends JFrame implements ActionListener{
 		try {
 			// input the (modified) file content to the StringBuffer "input"
 			BufferedReader file = new BufferedReader(new FileReader("LevelSave.txt"));
+			BufferedReader hsFile = new BufferedReader(new FileReader("HighScores.txt"));
+
 			StringBuffer inputBuffer = new StringBuffer();
+			StringBuffer inputBufferHS = new StringBuffer();
+
 			String line;
 
 			//read and append each line except title
@@ -311,13 +350,26 @@ public class GameFrame extends JFrame implements ActionListener{
 					inputBuffer.append('\n');
 				} 
 			}
+			while ((line = hsFile.readLine()) != null) {
+
+				if (!line.startsWith(title)) {
+					inputBufferHS.append(line);
+					inputBufferHS.append('\n');
+				} 
+			}
 
 			file.close();
+			hsFile.close();
 
 			// write the new string with the replaced line OVER the same file
 			FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
 			fileOut.write(inputBuffer.toString().getBytes());
 			fileOut.close();
+
+			FileOutputStream fileOutHS = new FileOutputStream("HighScores.txt");
+			fileOutHS.write(inputBufferHS.toString().getBytes());
+			fileOutHS.close();
+
 
 		} catch (Exception e) {
 			System.out.println("Problem reading file.");

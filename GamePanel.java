@@ -642,11 +642,6 @@ import java.util.Timer;
 				 gameEnd(g);
 				 gameEnd = true;
 				 displaySave();
-				//  if(gameEndAlpha >=455) {
-				// 	System.out.println(gameEndAlpha);
-				// 	saveHighScore( (int)((endTime - startTime) / 1000) );
-
-				//  }
 	
 				 
 	
@@ -1596,7 +1591,7 @@ import java.util.Timer;
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
 			}
-			inputBuffer.append(title + ":");
+			inputBuffer.append(title + ": ");
 			inputBuffer.append("\n");
 			file.close();
 			// write the new string with the replaced line OVER the same file
@@ -1845,10 +1840,6 @@ import java.util.Timer;
 			 if (gameEndAlpha < 455){
 				gameEndAlpha++;
 			 }
-
-
-
-
 			
 		 } else {
 			 g.setColor(new Color(255, 0, 0, 150));
@@ -1867,7 +1858,37 @@ import java.util.Timer;
  
 	 }
 
-	 private void fileHighScore() {
+	 private void fileHighScore(String title, String user, int time) {
+		try {
+			// input the (modified) file content to the StringBuffer "input"
+			String newEntry = user + " " + time + ": ";
+			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
+			StringBuffer inputBuffer = new StringBuffer();
+			String line;
+
+			while ((line = file.readLine()) != null) {
+
+				if (line.startsWith(title)) {
+					line += newEntry; // replace the line here
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				} else {
+					inputBuffer.append(line);
+					inputBuffer.append('\n');
+				}
+
+			}
+
+			file.close();
+
+			// write the new string with the replaced line OVER the same file
+			FileOutputStream fileOut = new FileOutputStream("HighScores.txt");
+			fileOut.write(inputBuffer.toString().getBytes());
+			fileOut.close();
+
+		} catch (Exception e) {
+			System.out.println("Problem reading file.");
+		}
 
 	 }
 
@@ -1885,7 +1906,8 @@ import java.util.Timer;
 				// Display a message indicating that the level has been saved
 				JOptionPane.showMessageDialog(this, "Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!", "Score Save Confirmation",
 						JOptionPane.INFORMATION_MESSAGE);
-				fileHighScore();
+
+				fileHighScore(prevSavedTitle, userName, time);
 		} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
 			// if user exits trigger cancellation message
 			JOptionPane.showMessageDialog(this, "Your score was not saved.", "Invalid Save",
@@ -1896,7 +1918,7 @@ import java.util.Timer;
  
 	 //prompts user for their username after a set amt of time
 	 public void displaySave(){
-			TimerTask task = new TimerTask() {
+		TimerTask task = new TimerTask() {
 			public void run() {
 				if(play) {
 					saveHighScore( (int)((endTime - startTime) / 1000) );
@@ -1913,6 +1935,8 @@ import java.util.Timer;
 	 //saves level logic
 	 public void saveLevel() {
 		updatedSave = "";
+		// newLevelTitle = "";
+		// prevSavedTitle = "";
 		if (!levelSaved && prevSavedTitle.isEmpty()) { // if user is creating a fresh new level
 			// Create a JTextField for user input
 			JTextField textField = new JTextField();
