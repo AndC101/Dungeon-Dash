@@ -1102,11 +1102,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 					JOptionPane.showMessageDialog(this, "Please have exactly one chest and one portal", "Level Error",
 							JOptionPane.INFORMATION_MESSAGE);
 					return;
-				} else if (!levelSaved) {
-					JOptionPane.showMessageDialog(this, "Please save the level first", "Level Error",
-							JOptionPane.INFORMATION_MESSAGE);
-					return;
-				}
+				} 
 				// enter play mode from the level editor
 				edit = false;
 
