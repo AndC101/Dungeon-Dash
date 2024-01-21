@@ -36,7 +36,8 @@ public class GameFrame extends JFrame implements ActionListener{
 
 
 		try {
-			panel = new GamePanel(levelSelect, edit, play, levelTitle, ms);
+			panel = new GamePanel(levelSelect, edit, play, levelTitle, ms); //ms refers to the current time stamp of the menu music.
+			//this causes the menu music to play uniformly throughout levelselect, mainmenu and instruction states
 		} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
 			e.printStackTrace();
 		} //run GamePanel constructor
@@ -61,10 +62,10 @@ public class GameFrame extends JFrame implements ActionListener{
 			JScrollPane scroll = new JScrollPane();
 			Container contentPane = this.getContentPane();
 
-			//layout
+			//layout for buttons and label
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
-			mainPanel.setOpaque( false );
+			mainPanel.setOpaque( false ); //enables the background image to be seen
 
 
 			mainPanel.setLayout(layout);
@@ -116,7 +117,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				contentPane);
 				layout.putConstraint(SpringLayout.WEST, hsButton, 20, SpringLayout.EAST,
 				deleteButton);
-
+				//spring layout allows you to have greater control over the placement of components relative to one another.
 
 
 
@@ -125,10 +126,10 @@ public class GameFrame extends JFrame implements ActionListener{
 				addEditButtonListener(editButton, title);
 				addDeleteButtonListener(deleteButton, title);
 				addHSButtonListener(hsButton, title);
-				j+=60;
+				j+=60; //increases the vertical distance between each level
 			}
 
-
+			//sets viewport to make background cave image "static"
 			JViewport viewport = new JViewport()
 			{
 				@Override
@@ -143,29 +144,26 @@ public class GameFrame extends JFrame implements ActionListener{
 			//makes scrollpane work
 			mainPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.names.size()*62));
 			scroll.setPreferredSize(new Dimension(GamePanel.GAME_WIDTH, GamePanel.GAME_HEIGHT));
-			// imgPanel.setPreferredSize(new Dimension(mainPanel.getWidth(), panel.names.size()*62));
 
-			scroll.setViewport(viewport);
+			scroll.setViewport(viewport); //displays background "static" image
 
-			scroll.setViewportView(mainPanel);
+			scroll.setViewportView(mainPanel); 
 
-			// contentPane.add(imgPanel);
+			contentPane.add(scroll); //adds the scrollpane
 
-			contentPane.add(scroll);
-
-			contentPane.add(buttonPanel,BorderLayout.SOUTH);
+			contentPane.add(buttonPanel,BorderLayout.SOUTH); //return to menu
 			buttonPanel.setBackground(Color.DARK_GRAY);
+
 			//action listener for backButton
 			backButton.addActionListener(this); //return to menu
 
-			this.setSize(900, 550);
 
 		
 		} 
-			this.setSize(900, 550);
-			this.pack();//makes components fit in window - don't need to set JFrame size, as it will adjust accordingly
-			this.setVisible(true); //makes window visible to user
-			this.setLocationRelativeTo(null);//set window in middle of screen
+		this.setSize(900, 550);
+		this.pack();//makes components fit in window - don't need to set JFrame size, as it will adjust accordingly
+		this.setVisible(true); //makes window visible to user
+		this.setLocationRelativeTo(null);//set window in middle of screen
 
 
 	}
@@ -175,9 +173,7 @@ public class GameFrame extends JFrame implements ActionListener{
         playButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-                // debug for play button pressed
-                System.out.println("Play button in row " + title + " pressed!");
-				
+				//sets states and makes new gameframe				
 				try {
 					panel.play = true;
 					panel.levelSelect = false;
@@ -195,9 +191,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		editButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// Perform actions when any "Play" button is pressed
-				System.out.println("Edit button in row " + title + " pressed!");
-				
+				//sets states and makes new gameframe for edit mode
 				try {
 					panel.edit=true;
 					panel.levelSelect = false;
@@ -215,8 +209,6 @@ public class GameFrame extends JFrame implements ActionListener{
         deleteButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-                // debug for play button pressed
-                System.out.println("Delete button in row " + title + " pressed!");
 				deleteLevel(title);
 				deleteLevelName(title);
 
@@ -234,17 +226,16 @@ public class GameFrame extends JFrame implements ActionListener{
         });
     }
 
+	//adds button listener to the high score button
 	private void addHSButtonListener(JButton hsButton, String title) {
         hsButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-                // debug for play button pressed
-                System.out.println("hs button in row " + title + " pressed!");
-				JDialog popup = new JDialog(currentGameFrame, title + " High Scores", true);
+				JDialog popup = new JDialog(currentGameFrame, title + " High Scores", true); //popup for the high score frame
 				popup.setSize(300, 200);
 				popup.setLayout(new BorderLayout());
 		
-				String highScoresText = getHighScores(title);
+				String highScoresText = getHighScores(title); //retrieves all high scores and formats it nicely
 
 				// Create a JTextArea to be placed inside the JScrollPane
 				JTextArea textArea = new JTextArea(highScoresText);
@@ -263,43 +254,45 @@ public class GameFrame extends JFrame implements ActionListener{
 				// Make the popup visible
 				popup.setVisible(true);
 		
-
             }
         });
     }
 
+
+	//returns the high scores for the level from the HighScores.txt file 
 	public String getHighScores(String title) {
 		String scores = "";
-        PriorityQueue<Pair> scorePairs = new PriorityQueue<>();
+        PriorityQueue<Pair> scorePairs = new PriorityQueue<>(); //priority queue for automatic sorting 
 		int idx = 1;
 
 		if (title.equals("")) {
-			return "No scores yet.";
+			return "Invalid.";
 		} else {
-			String filePath = "HighScores.txt"; // Provide the path to your text file
+			String filePath = "HighScores.txt"; 
+			//reads information from txt file
 			try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 				String line;
 
 				while ((line = reader.readLine()) != null) {
-					// Split the line into words using space as the delimiter
+					// Split the line into words using : 
 					if (line.startsWith(title)) {
 						String[] words = line.split(": ");
 						for (int i = 1; i < words.length; i++) {
 							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
 							// in the title itself
 							String[] inputs = words[i].split(" "); // splits based on space
-							scorePairs.add(new Pair(inputs[0], Integer.parseInt(inputs[1])));
+							scorePairs.add(new Pair(inputs[0], Integer.parseInt(inputs[1]))); //sorts the pairs by lowest time when added
 							
-
 						}
 					}
 
 				}
 
+				//loops through the priority queue and removes the top node each time for the lowest time scorer
 				while(!scorePairs.isEmpty()) {
 					Pair x = scorePairs.poll();
 					scores += "#" + idx + ".  "  + "USER: " + x.name + "\tTIME: " + x.time + "\n\n";
-					idx++;
+					idx++; //index of the winner
 				}
 
 			} catch (IOException e) {
@@ -350,6 +343,8 @@ public class GameFrame extends JFrame implements ActionListener{
 					inputBuffer.append('\n');
 				} 
 			}
+
+			//deletes the title from the high score file as well
 			while ((line = hsFile.readLine()) != null) {
 
 				if (!line.startsWith(title)) {
