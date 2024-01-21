@@ -79,9 +79,11 @@ public class GameFrame extends JFrame implements ActionListener{
 				JButton playButton = new JButton("Play");
 				JButton editButton = new JButton("Edit");
 				JButton deleteButton = new JButton("Delete");
+				JButton hsButton = new JButton("High Scores");
 				playButton.setBackground(Color.white);
 				editButton.setBackground(Color.white);
 				deleteButton.setBackground(Color.white);
+				hsButton.setBackground(Color.white);
 
 
 				label.setFont(new Font("Impact", Font.PLAIN, 18));
@@ -91,6 +93,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				mainPanel.add(playButton);
 				mainPanel.add(editButton);
 				mainPanel.add(deleteButton);
+				mainPanel.add(hsButton);
 				layout.putConstraint(SpringLayout.WEST, label, 20, SpringLayout.WEST,
 								contentPane);
 				layout.putConstraint(SpringLayout.NORTH, label, j, SpringLayout.NORTH,
@@ -107,6 +110,11 @@ public class GameFrame extends JFrame implements ActionListener{
 				contentPane);
 				layout.putConstraint(SpringLayout.WEST, deleteButton, 20, SpringLayout.EAST,
 				editButton);
+				layout.putConstraint(SpringLayout.NORTH, hsButton, j, SpringLayout.NORTH,
+				contentPane);
+				layout.putConstraint(SpringLayout.WEST, hsButton, 20, SpringLayout.EAST,
+				deleteButton);
+
 
 
 
@@ -114,7 +122,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				addPlayButtonListener(playButton, title); //when play/edit/delete button is pressed, the title of the level is sent to gamepanel for processing
 				addEditButtonListener(editButton, title);
 				addDeleteButtonListener(deleteButton, title);
-
+				addHSButtonListener(hsButton, title);
 				j+=60;
 			}
 
@@ -224,6 +232,47 @@ public class GameFrame extends JFrame implements ActionListener{
         });
     }
 
+	private void addHSButtonListener(JButton hsButton, String title) {
+        hsButton.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+                // debug for play button pressed
+                System.out.println("hs button in row " + title + " pressed!");
+				JDialog popup = new JDialog(currentGameFrame, title + " High Scores", true);
+				popup.setSize(300, 200);
+				popup.setLayout(new BorderLayout());
+		
+				String highScoresText = getHighScores(title);
+
+				// Create a JTextArea to be placed inside the JScrollPane
+				JTextArea textArea = new JTextArea(highScoresText);
+				textArea.setEditable(false);
+				
+				// Create a JScrollPane and add the JTextArea to it
+				JScrollPane scrollPane = new JScrollPane(textArea);
+		
+				// Add the JScrollPane to the popup
+				popup.add(scrollPane, BorderLayout.CENTER);
+		
+		
+				// Set the location of the popup relative to the parent frame
+				popup.setLocationRelativeTo(currentGameFrame);
+		
+				// Make the popup visible
+				popup.setVisible(true);
+		
+
+            }
+        });
+    }
+
+	public String getHighScores(String title) {
+		String ret = "";
+		for(int i = 0; i < 100; i++) {
+			ret += "hi \n";
+		}
+		return ret;
+	}
 
 
 	//checks if a button is pressed (back button only)

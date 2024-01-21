@@ -1866,8 +1866,15 @@ import javax.swing.*;
 			 g.setColor(new Color(0, 0, 0, gameEndAlpha < 200 ? 0 : gameEndAlpha - 200));
 			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 			 g.drawString("Time: " + (endTime - startTime) / 1000, 380, 350);
-			 if (gameEndAlpha < 455)
-				 gameEndAlpha++;
+			 if (gameEndAlpha < 455){
+				gameEndAlpha++;
+			 }
+			//  saveHighScore( (int)((endTime - startTime) / 1000) );
+
+
+
+
+			
 		 } else {
 			 g.setColor(new Color(255, 0, 0, 150));
 			 g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
@@ -1882,6 +1889,30 @@ import javax.swing.*;
  
 		 }
  
+	 }
+
+	 public void saveHighScore(int time) {
+		JTextField textField = new JTextField();
+		String userName;
+		// Show an input dialog with the text field
+		int option = JOptionPane.showOptionDialog(this, textField, "Save!",
+				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+
+		// Check if the user clicked OK
+		if (option == JOptionPane.OK_OPTION) {
+			// Get the entered name from the text field
+			userName = textField.getText().stripTrailing(); // get the info from text box without
+																	// whitespac
+				// Display a message indicating that the level has been saved
+				JOptionPane.showMessageDialog(this, "Congratulations + " + userName , "Save Confirmation",
+						JOptionPane.INFORMATION_MESSAGE);
+			
+		} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
+			// if user exits trigger cancellation message
+			JOptionPane.showMessageDialog(this, "Your score was not saved.", "Invalid Save",
+					JOptionPane.INFORMATION_MESSAGE);
+		}
+
 	 }
  
 
