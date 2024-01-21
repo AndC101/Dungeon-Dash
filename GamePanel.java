@@ -709,6 +709,7 @@ import java.util.Timer;
 					 curSelected.y = 0;
 				 if (curSelected.y + curSelected.height >= FLOOR)
 					 curSelected.y = FLOOR - curSelected.height;
+					 onTop = true;
 			 }
  
 		 } else if (play && !spawn) {
