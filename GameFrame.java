@@ -291,7 +291,7 @@ public class GameFrame extends JFrame implements ActionListener{
 				//loops through the priority queue and removes the top node each time for the lowest time scorer
 				while(!scorePairs.isEmpty()) {
 					Pair x = scorePairs.poll();
-					scores += "#" + idx + ".  "  + "USER: " + x.name + "\tTIME: " + x.time + "\n\n";
+					scores += "#" + idx + ".  "  + "USER: " + x.name + "     TIME: " + x.time + "\n\n";
 					idx++; //index of the winner
 				}
 
