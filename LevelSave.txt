@@ -5,3 +5,4 @@ Goblin Collision: Portal 210 450 60 75: Stone 382 485 60 40: Stone 442 485 60 40
 Ladder Testing: Portal 54 450 60 75: Stone 288 485 60 40: Stone 395 485 60 40: OneUp 288 425 60 60: SpeedBoost 188 480 45 45: Chest 1298 485 60 40: Ladder 557 485 20 40: Ladder 557 445 20 40: Ladder 556 405 20 40: Ladder 556 365 20 40: Ladder 550 297 20 40: Ladder 554 218 20 40: Stone 579 246 60 40: Stone 639 247 60 40: Ladder 697 485 20 40: Ladder 699 445 20 40: Ladder 698 405 20 40: Ladder 700 365 20 40: Ladder 700 325 20 40: 
 y\y: Portal 201 450 60 75: Chest 821 485 60 40: 
 high score testing: Portal 229 450 60 75: Chest 773 485 60 40: Goblin 358 475 50 50: 
+kjhkjh: Stone 264 485 60 40: Portal 468 450 60 75: Chest 716 485 60 40: 
