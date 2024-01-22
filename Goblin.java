@@ -26,14 +26,17 @@ public class Goblin extends Block {
 	public boolean play = false;
 
 	public GamePanel gamePanel;
+	public Player player;
 
 	public Block under;
 
-	public Goblin(GamePanel gp, int x, int y, int l, int w, Image left, Image right, boolean enemy) throws IOException {
+	public Goblin(GamePanel gp, Player p, int x, int y, int l, int w, Image left, Image right, boolean enemy)
+			throws IOException {
 		super(x, y, l, w);
 		runL = left;
 		runR = right;
 		gamePanel = gp;
+		player = p;
 		// if enemy, the goblin starts moving and x border init
 		xBorder = x;
 
@@ -103,100 +106,110 @@ public class Goblin extends Block {
 	}
 
 	public void move() {
-		if (keysPressed.contains('d')) {
-			if (Player.isCentered && Player.isRight) {
-				// updates the relative speed to blocks to make it appear like its moving
-				if (r) {
-					setXDirection(-Block.SPEED + SPEED); // good
-				} else if (l) {
-					setXDirection(-Block.SPEED - SPEED); // good
+		//if the player is blocked the goblin moves at the default speed
+		if(Player.blocked != 0 && l) setXDirection(-SPEED);
+		else if(Player.blocked != 0 && r) setXDirection(SPEED);
+		else {
+			if (keysPressed.contains('d')) {
+				
+				if (Player.isCentered && Player.isRight) {
+					// updates the relative speed to blocks to make it appear like its moving
+					if (r) {
+						setXDirection(-Block.SPEED + SPEED); // good
+					} else if (l) {
+						setXDirection(-Block.SPEED - SPEED); // good
+					}
 				}
-				// xBorder-=Block.SPEED;
-			}
-			if (Player.isCentered) {
-				xBorder -= Block.SPEED;
-			}
-
-			// in edit the speed is adjusted like the blocks
-			if (GamePanel.edit) {
-				x -= Block.SPEED;
-			}
-
-			// same as above but for left movement
-		} else if (keysPressed.contains('a')) {
-			if (Player.isCentered && Player.isLeft) {
-
-				if (r) {
-					setXDirection(Block.SPEED + SPEED); // good
-				} else if (l) {
-					setXDirection(Block.SPEED - SPEED);
+				if (Player.isCentered && Player.blocked == 0) {
+					xBorder -= Block.SPEED;
 				}
-			}
-			if (Player.isCentered || GamePanel.edit) {
-				xBorder += Block.SPEED;
-			}
-			if (GamePanel.edit) {
-				x += Block.SPEED;
-			}
 
-		}
+				// in edit the speed is adjusted like the blocks
+				if (GamePanel.edit) {
+					x -= Block.SPEED;
+				}
 
-		// if knight not centered
-		if (!Player.isCentered) {
+				// same as above but for left movement
+			} else if (keysPressed.contains('a')) {
+				if (Player.isCentered && Player.isLeft && Player.blocked == 0) {
 
-			if (l) {
-				setXDirection(-SPEED);
-			} else if (r) {
-				setXDirection(SPEED);
+					if (r) {
+						setXDirection(Block.SPEED + SPEED); // good
+					} else if (l) {
+						setXDirection(Block.SPEED - SPEED);
+					}
+				}
+				if (Player.isCentered) {
+					xBorder += Block.SPEED;
+				}
+				if (GamePanel.edit && Player.blocked == 0) {
+					x += Block.SPEED;
+				}
+
 			}
-		}
+			// if knight not centered
+			if (!player.isCentered) {
 
-		x += xVelocity;
-		// make goblin move left to right and back again
-		if (isEnemy) {
-			// System.out.println("new xborder " + (xBorder-GamePanel.shift));
-			
-			for (Block b : gamePanel.elements) {
-				if(GamePanel.walkThrough.contains(GamePanel.getClass(b))) continue;
-				if (x <= b.x && x + width >= b.x
-						&& ((y >= b.y && y <= b.y + b.height) || (y + height > b.y && y + height <= b.y + b.height)
-								|| y <= b.y && y + height >= b.y + b.height)) {
-					l = true;
-					r = false;
+				if (l) {
 					setXDirection(-SPEED);
-				}
-				if (x <= b.x + b.width && x + width >= b.x + b.width
-						&& ((y >= b.y && y <= b.y + b.height) || (y + height > b.y && y + height <= b.y + b.height)
-								|| y <= b.y && y + height >= b.y + b.height)) {
-					r = true;
-					l = false;
+				} else if (r) {
 					setXDirection(SPEED);
 				}
 			}
-			
-			if (x <= xBorder - GamePanel.shift - GamePanel.adjust) {
-				x = xBorder - GamePanel.shift - GamePanel.adjust;
-				r = true;
-				l = false;
-				setXDirection(SPEED);
-			} else if (x >= xBorder - GamePanel.shift - GamePanel.adjust + runDist) {
-				x = xBorder - GamePanel.shift - GamePanel.adjust + runDist;
+		}
+		
+
+	
+	
+
+	x+=xVelocity;
+	// make goblin move left to right and back again
+	if(isEnemy)
+
+	{
+		// System.out.println("new xborder " + (xBorder-GamePanel.shift));
+
+		for (Block b : gamePanel.elements) {
+			if (GamePanel.walkThrough.contains(GamePanel.getClass(b)))
+				continue;
+			if (x <= b.x && x + width >= b.x
+					&& ((y >= b.y && y <= b.y + b.height) || (y + height > b.y && y + height <= b.y + b.height)
+							|| y <= b.y && y + height >= b.y + b.height)) {
 				l = true;
 				r = false;
 				setXDirection(-SPEED);
-			} 
-			else if (canFall()) {
-				if (l) {
-					r = true;
-					l = false;
-					setXDirection(SPEED);
-				} else if (r) {
-					l = true;
-					r = false;
-					setXDirection(-SPEED);
-				}
-			} 
+			}
+			if (x <= b.x + b.width && x + width >= b.x + b.width
+					&& ((y >= b.y && y <= b.y + b.height) || (y + height > b.y && y + height <= b.y + b.height)
+							|| y <= b.y && y + height >= b.y + b.height)) {
+				r = true;
+				l = false;
+				setXDirection(SPEED);
+			}
 		}
+
+		if (x <= xBorder - GamePanel.shift - GamePanel.adjust) {
+			x = xBorder - GamePanel.shift - GamePanel.adjust;
+			r = true;
+			l = false;
+			setXDirection(SPEED);
+		} else if (x >= xBorder - GamePanel.shift - GamePanel.adjust + runDist) {
+			x = xBorder - GamePanel.shift - GamePanel.adjust + runDist;
+			l = true;
+			r = false;
+			setXDirection(-SPEED);
+		} else if (canFall()) {
+			if (l) {
+				r = true;
+				l = false;
+				setXDirection(SPEED);
+			} else if (r) {
+				l = true;
+				r = false;
+				setXDirection(-SPEED);
+			}
+		}
+	}
 	}
 
 	public boolean canFall() {

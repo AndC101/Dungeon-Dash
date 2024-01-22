@@ -42,6 +42,8 @@ public class Projectile extends Rectangle {
 	}
 
 	public void keyReleased(KeyEvent e) {
+		
+		
 		// check for errors
 		keysPressed.remove(e.getKeyChar());
 
@@ -86,54 +88,60 @@ public class Projectile extends Rectangle {
 	}
 
 	public void move() {
-		//moves the projectile at a relative speed to blocks which makes it seem like moving
-		if (keysPressed.contains('d')) {
-			if (Player.isCentered && Player.isRight) {
+		//if the player is blocked, projectiles move at the default speed
+		if(Player.blocked != 0 && l) setXDirection(-SPEED);
+		else if(Player.blocked != 0 && r) setXDirection(SPEED);
+		else {
+			//moves the projectile at a relative speed to blocks which makes it seem like moving
+			if (keysPressed.contains('d')) {
+				if (Player.isCentered && Player.isRight) {
 
-				if (r) {
-					setXDirection(-Block.SPEED+SPEED); // good
-				} else if (l) {
-					setXDirection(-Block.SPEED-SPEED); // good
+					if (r) {
+						setXDirection(-Block.SPEED+SPEED); // good
+					} else if (l) {
+						setXDirection(-Block.SPEED-SPEED); // good
 
+					}
+					// xBorder+=-5;
+		
 				}
-				// xBorder+=-5;
-	
-			}
 
 
-			//if edit, it moves at block speed
-			if(GamePanel.edit){
-				x-=Block.SPEED;
-			}
-
-			//same logic but for left key
-		} else if (keysPressed.contains('a')) {
-			if (Player.isCentered && Player.isLeft) {
-
-				if (r) {
-					setXDirection(Block.SPEED+SPEED); // good
-
-				} else if (l) {
-					setXDirection(Block.SPEED-SPEED);
+				//if edit, it moves at block speed
+				if(GamePanel.edit){
+					x-=Block.SPEED;
 				}
-				// xBorder+=5;
+
+				//same logic but for left key
+			} else if (keysPressed.contains('a')) {
+				if (Player.isCentered && Player.isLeft) {
+
+					if (r) {
+						setXDirection(Block.SPEED+SPEED); // good
+
+					} else if (l) {
+						setXDirection(Block.SPEED-SPEED);
+					}
+					// xBorder+=5;
+				}
+				if(GamePanel.edit){
+					x+=Block.SPEED;
+					
+				}
+
 			}
-			if(GamePanel.edit){
-				x+=Block.SPEED;
-				
+
+			if (!Player.isCentered) {
+				if (l) {
+					setXDirection(-SPEED);
+
+				} else if (r) {
+					setXDirection(SPEED);
+				}
 			}
 
 		}
-
-		if (!Player.isCentered) {
-			if (l) {
-				setXDirection(-SPEED);
-
-			} else if (r) {
-				setXDirection(SPEED);
-			}
-		}
-
+		
 		x += xVelocity;
 
 		//makes projectile move left to right or vice versa. makes it appear to shoot from turret
