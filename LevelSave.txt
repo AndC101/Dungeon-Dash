@@ -3,3 +3,4 @@ Speed Test: Portal 44 450 60 75: Chest 1644 485 60 40: SpeedBoost -1 473 45 45: 
 Goblin Collision: Portal 210 450 60 75: Stone 382 485 60 40: Stone 442 485 60 40: Stone 502 485 60 40: CrackedStone 562 485 60 40: Chest 780 485 60 40: Goblin 374 435 50 50: Stone 622 485 60 40: 
 y\y: Portal 201 450 60 75: Chest 821 485 60 40: 
 high score testing: Portal 229 450 60 75: Chest 803 485 60 40: Ice 436 485 60 40: Stone 498 485 60 40: Goblin 438 435 50 50: 
+joe: Portal 556 450 60 75: Chest 1062 485 60 40: Stone 658 485 60 40: Stone 758 485 60 40: Stone 396 485 60 40: Goblin 919 475 50 50: 

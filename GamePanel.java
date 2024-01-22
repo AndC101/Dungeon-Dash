@@ -20,6 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
  import java.util.*;
 import java.util.Timer;
+
 //imports for file io
  import java.io.File;
  import java.io.FileOutputStream;
@@ -89,7 +90,6 @@ import java.util.Timer;
 	 public static boolean mainMenu = true;
 	 public static boolean edit = false;
 	 public boolean levelSelect = false;
-	 public boolean alphaUp = true;
 	 public boolean sidebarPressed = false;
 	 public boolean instructions = false;
 	 public boolean fixed = false;
@@ -176,6 +176,7 @@ import java.util.Timer;
 	File deathMusic = new File("Music/dietest.wav");
 
 
+	//imports for audio
 	AudioInputStream menuStream;
 	AudioInputStream editStream;
 	AudioInputStream winStream;
@@ -188,9 +189,10 @@ import java.util.Timer;
 	Clip winClip;
 	Clip dieClip;
 
-	long menuMusicStart = 0;
+	long menuMusicStart = 0; //keeps track of where the music left off
 
 	 public GamePanel(boolean levelSelect, boolean edit, boolean play, String levelName, long ms) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+		//music
 		menuStream = AudioSystem.getAudioInputStream(menuMusic);
 		 editStream = AudioSystem.getAudioInputStream(editMusic);
 		 winStream = AudioSystem.getAudioInputStream(winMusic);
@@ -209,6 +211,7 @@ import java.util.Timer;
 		winClip.open(winStream);
 		dieClip.open(dieStream);
 
+		//makes the menuClip always loop back from 0
 		menuClip.addLineListener(event -> {
 			if (event.getType() == LineEvent.Type.STOP) {
 				menuClip.setFramePosition(0); // Set frame position to the beginning for looping
@@ -217,28 +220,23 @@ import java.util.Timer;
 		});
 
 
-		// dieClip.start();
-		// editClip.loop(Clip.LOOP_CONTINUOUSLY);
-		// winClip.loop(Clip.LOOP_CONTINUOUSLY);
-
-
-		// initializes the variables handling the different screens
+		// initializes the variables handling the different screens/modes
 		 if (levelSelect) {
-			// menuClip.loop(Clip.LOOP_CONTINUOUSLY);
+			//start menu music from last position
 			menuClip.setMicrosecondPosition(ms);
 			menuClip.loop(Clip.LOOP_CONTINUOUSLY);
 
 			 this.levelSelect = true;
 			 mainMenu = false;
-			 this.edit = false;
-			 this.play = false;
+			 GamePanel.edit = false;
+			 GamePanel.play = false;
 
 		 } else if (edit) {
 			editClip.loop(Clip.LOOP_CONTINUOUSLY);			
 			 this.levelSelect = false;
 			 mainMenu = false;
-			 this.edit = true;
-			 this.play = false;
+			 GamePanel.edit = true;
+			 GamePanel.play = false;
 		 } else if (play) {
 
 			playClip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -246,13 +244,11 @@ import java.util.Timer;
 			spawn = true;
 			 this.levelSelect = false;
 			 mainMenu = false;
-			 this.edit = false;
-			 this.play = true;
+			 GamePanel.edit = false;
+			 GamePanel.play = true;
 		 } else {
 			menuClip.setMicrosecondPosition(ms);
-
 			menuClip.loop(Clip.LOOP_CONTINUOUSLY);
-			// menuClip.start();
 
 			mainMenu = true;
 		 }
@@ -286,7 +282,7 @@ import java.util.Timer;
 		 powerUpSidebar = new ArrayList<Block>();
 		 remove = new ArrayList<Block>();
  
-		 walkThrough = new HashSet<String>();
+		 walkThrough = new HashSet<String>(); // for blocks that you can "walk through" (i.e. ladders)
  
 		 readData(prevSavedTitle); // populates the elements ArrayList with the blocks for the save level
 		 // if not applicable, prevSavedTitle = "";
@@ -369,7 +365,7 @@ import java.util.Timer;
 			 g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 			 
 			 
-			 
+			 //displays the instructions for the page that the user is on
 			 if(instructionsPage == 1) {
 				 g.setColor(Color.white);
 				 g.setFont(new Font("Impact", Font.PLAIN, 40));
@@ -443,46 +439,30 @@ import java.util.Timer;
 			 g.drawString("USE ARROW KEYS TO MOVE THROUGH PAGES", 275, 525);
 			 
 		 }
+
+		 //in the main menu
 		 else if (mainMenu) {
 
 			g.setColor(Color.white);
 			 g.drawImage(menuBackground, 0, 0, this);
+
 			 // display text for the title 
- 
 			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 
 			 g.drawImage(title, GAME_WIDTH / 2 - 280, 15, this);
 
-			//  g.drawString("Dungeon Dash", GAME_WIDTH / 2 - 100, 60);
 
-			 g.setColor(new Color(255, 255, 255, alpha));
  
-			 // causes the text to fade in and out by adjusting transparancy value
-			 if (alphaUp)
-				 alpha += 2;
-			 else
-				 alpha -= 2;
- 
-			 if (alpha >= 250)
-				 alphaUp = false;
-			 if (alpha <= 100)
-				 alphaUp = true;
  
 			 // display text for the menu
 			 // indicator pos allows user to use up and down keys to position their choice in
 			 // the menu
-			//  g.drawString("> ", 300, indicatorPos);
 			 
 			 g.drawImage(indicatorImage, 280, indicatorPos-20, this);
 			 
 			 g.drawImage(levelSelectText, 325, 250-30, this);
 			 g.drawImage(newDungeonText, 315, 320-30, this);
 			 g.drawImage(howToPlayText, 325, 400-30, this);
-			//  g.drawImage(levelSelectText, 325, 400, this);
-
-			//  g.drawString("Level selection", 325, 250);
-			//  g.drawString("Create new dungeon", 325, 320);
-			//  g.drawString("How to Play?", 325, 400);
 		
 		 } else if (edit) {
  
