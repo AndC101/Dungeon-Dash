@@ -6,5 +6,3 @@ Ladder Testing:
 y\y: andrew 4: drew 3: 
 high score testing: andrew 2: 
 
-kjhkjh: 
-test: joe 2: 
