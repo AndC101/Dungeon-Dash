@@ -1,3 +1,3 @@
-Sample Level #1: Andrew 104: Ethan 3: 
+Sample Level #1: Andrew, 104: Ethan Lin, 3: 
 Sample Level #2: 
-Sample Level #3:  
+Sample Level #3: 

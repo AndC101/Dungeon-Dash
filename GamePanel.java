@@ -1867,7 +1867,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 	private void fileHighScore(String title, String user, int time) {
 		try {
 			// input the (modified) file content to the StringBuffer "input"
-			String newEntry = user + " " + time + ": ";
+			String newEntry = user + ", " + time + ": ";
 			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
