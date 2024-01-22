@@ -4,10 +4,9 @@
  * Pair is a generic class that creates a data structure with two values.
  */
 
-
 public class Pair implements Comparable<Pair> {
-        String name;
-        int time;
+        public String name; 
+        public int time;
 
         //constructor
         public Pair(String name, int time) {
@@ -30,8 +29,5 @@ public class Pair implements Comparable<Pair> {
             return time;
         }
 
-        public String toString() {
-            return name + " (" + time + " minutes)";
-        }
 
 }

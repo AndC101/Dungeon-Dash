@@ -206,8 +206,8 @@ public class Goblin extends Block {
 			if (GamePanel.walkThrough.contains(GamePanel.getClass(b)))
 				continue;
 
-			if ((((x >= b.x && x <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width)
-					|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 6 && y <= b.y)) {
+			if ((( (x >= b.x && botRightX-10 <= b.x + b.width) || (botRightX >= b.x && botRightX <= b.x + b.width) 
+			|| (x >= b.x && botRightX <= b.x + b.width)) && botRightY >= b.y - 6 && y <= b.y)) {
 				under = b;
 				return false;
 			}
