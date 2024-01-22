@@ -358,94 +358,126 @@ import java.util.Timer;
 	 // draws everything on the screen
 	 // call the draw methods in each class to update positions as things move
 	 public void draw(Graphics2D g) throws IOException {
-		 // checks which screen should be displayed
-		 
-		 if(instructions) {
-			 g.setColor(Color.black);
-			 g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-			 
-			 
-			 //displays the instructions for the page that the user is on
-			 if(instructionsPage == 1) {
-				 g.setColor(Color.white);
-				 g.setFont(new Font("Impact", Font.PLAIN, 40));
-				 g.drawString("How to Play?", 350, 50);
-				 g.setFont(new Font("Impact", Font.PLAIN, 20));
-				 g.drawString("The goal of the game is to reach the treasure chest from the portal.", 20, 250);
-				 g.drawImage(afkAnimation, 310, 165, null);
-				 (new Chest(350,180,Chest.width,Chest.height,openChestImage)).draw(g);
-				 (new Portal(100,145,Portal.width,Portal.height,portalImage)).draw(g);
-				 g.drawImage(afkAnimation, 110, 165, null);
-				 g.drawLine(170, 185, 280, 185);
-				 g.drawLine(240, 165, 280, 185);
-				 g.drawLine(240, 205, 280, 185);
-				 
-				 g.drawString("Do this while avoiding enemies", 100, 350);
-				 g.drawImage(goblinRunRight, 500, 325, null);
-				 (new Turret(this,600,320,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
-				 
-				 (new OneUp(100,400,OneUp.width,OneUp.height,oneUpImage)).draw(g);
-				 (new SpeedBoost(200,410,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
-				 g.drawString("and using powerups.", 400, 450);
-				 
-			 }
-			 else if(instructionsPage == 2) {
-				 g.setColor(Color.white);
-				 g.setFont(new Font("Impact", Font.PLAIN, 40));
-				 g.drawString("BLOCKS", 375, 50);
-				 
-				 g.setFont(new Font("Impact", Font.PLAIN, 20));
-				 
-				 g.drawString("Stone acts as a normal block.", 75, 175);
-				 (new Stone(150,100,Stone.width,Stone.height,stoneImage)).draw(g);
-				 
-				 g.drawString("The player will move faster and slide on ice.", 25, 325);
-				 (new Ice(150,250,Ice.width,Ice.height,iceImage)).draw(g);
-				 
-				 g.drawString("Players are able to climb up ladders.", 500, 175);
-				 (new Ladder(640,100,Ladder.width,Ladder.height,ladderImage)).draw(g);
-				 
-				 g.drawString("Cracked stone dissapears after the player steps on it.", 430, 325);
-				 (new CrackedStone(615,250,CrackedStone.width,CrackedStone.height,crackedStoneImage)).draw(g);
-				 
-				 g.drawString("The portal is the spawn point.", 60, 475);
-				 (new Portal(150,375,Portal.width,Portal.height,portalImage)).draw(g);
-				 
-				 g.drawString("The chest is the win condition.", 510, 475);
-				 (new Chest(600,400,Chest.width,Chest.height,closedChestImage)).draw(g);
-			 }
-			 else if(instructionsPage == 3) {
-				 g.setColor(Color.white);
-				 g.setFont(new Font("Impact", Font.PLAIN, 40));
-				 g.drawString("ENEMIES & POWERUPS", 275, 50);
-				 
-				 g.setFont(new Font("Impact", Font.PLAIN, 20));
-				 g.drawString("The goblin walks around on the floor it is on.", 25, 200);
-				 g.drawImage(goblinRunRight, 160, 125, null);
-				 
-				 g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
-				 (new Turret(this, 625,110,Turret.width,Turret.height, turretLeft, true, false, true)).draw(g);
-				 
-				 (new SpeedBoost(175,275,SpeedBoost.width,SpeedBoost.height,speedBoostImage)).draw(g);
-				 g.drawString("Speed up increases the movement speed of the player.", 10, 350);
-		 
-				 
-				 g.drawString("Extra life awards the player with an extra life.", 500,  350);
-				 
-				 
-			 }
-			 
-			 g.setFont(new Font("Impact", Font.PLAIN, 20));
-			 g.drawString("USE ARROW KEYS TO MOVE THROUGH PAGES", 275, 525);
-			 
-		 }
+		Graphics2D g2d;
+		AlphaComposite ac;
 
+
+		 // checks which screen should be displayed
+		 if (instructions) {
+			g.setColor(Color.black);
+			g.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+			g.setColor(Color.white);
+
+			g.drawString("Press ESC to return to main menu / level select at ANY point. ** Remember to save your levels!", 5, 545);
+   
+			if (instructionsPage == 1) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("How to Play?", 350, 50);
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("The goal of the game is to reach the treasure chest from the portal.", 20, 250);
+				g.drawImage(afkAnimation, 310, 165, null);
+				(new Chest(350, 180, Chest.width, Chest.height, openChestImage)).draw(g);
+				(new Portal(100, 145, Portal.width, Portal.height, portalImage)).draw(g);
+				g.drawImage(afkAnimation, 110, 165, null);
+				g.drawLine(170, 185, 280, 185);
+				g.drawLine(240, 165, 280, 185);
+				g.drawLine(240, 205, 280, 185);
+
+				g.drawString("Do this while avoiding enemies", 100, 350);
+				g.drawImage(goblinRunRight, 500, 325, null);
+				(new Turret(this, 600, 320, Turret.width, Turret.height, turretLeft, true, false, true)).draw(g);
+
+				(new OneUp(100, 400, OneUp.width, OneUp.height, oneUpImage)).draw(g);
+				(new SpeedBoost(200, 410, SpeedBoost.width, SpeedBoost.height, speedBoostImage)).draw(g);
+				g.drawString("and using powerups.", 400, 450);
+
+			} else if (instructionsPage == 2) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("BLOCKS", 375, 50);
+
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+
+				g.drawString("Stone acts as a normal block.", 75, 175);
+				(new Stone(150, 100, Stone.width, Stone.height, stoneImage)).draw(g);
+
+				g.drawString("The player will move faster and slide on ice.", 25, 325);
+				(new Ice(150, 250, Ice.width, Ice.height, iceImage)).draw(g);
+
+				g.drawString("Players are able to climb up ladders.", 500, 175);
+				(new Ladder(640, 100, Ladder.width, Ladder.height, ladderImage)).draw(g);
+
+				g.drawString("Cracked stone dissapears after the player steps on it.", 430, 325);
+				(new CrackedStone(615, 250, CrackedStone.width, CrackedStone.height, crackedStoneImage)).draw(g);
+
+				g.drawString("The portal is the spawn point.", 60, 475);
+				(new Portal(150, 375, Portal.width, Portal.height, portalImage)).draw(g);
+
+				g.drawString("The chest is the win condition.", 510, 475);
+				(new Chest(600, 400, Chest.width, Chest.height, closedChestImage)).draw(g);
+			} else if (instructionsPage == 3) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("ENEMIES & POWERUPS", 275, 50);
+
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("The goblin walks around on the floor it is on.", 25, 200);
+				g.drawImage(goblinRunRight, 160, 125, null);
+
+				g.drawString("The turret shoots fireballs in a straight line.", 475, 200);
+				(new Turret(this, 625, 110, Turret.width, Turret.height, turretLeft, true, false, true)).draw(g);
+
+				(new SpeedBoost(175, 275, SpeedBoost.width, SpeedBoost.height, speedBoostImage)).draw(g);
+				g.drawString("Speed up increases the movement speed of the player.", 10, 350);
+
+				(new OneUp(650, 250, OneUp.width, OneUp.height, oneUpImage)).draw(g);
+				g.drawString("Extra life awards the player with an extra life.", 500, 350);
+
+			} else if (instructionsPage == 4) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("Edit Menu", 350, 50);
+
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("Drag and drop game elements to place them.", 20, 150);
+				g.drawString("Use A and D keys to move the screen.", 20, 190);
+				g.drawString("Arrow keys move blocks more precisely.", 20, 230);
+				g.drawString("Backspace deletes an element.", 20, 270);
+				g.drawString("Goblins can only be placed ontop of surfaces.", 20, 310);
+				g.drawString("SAVE YOUR LEVEL BEFORE PLAYING", 20, 390);
+			} else if (instructionsPage == 5) {
+				g.setColor(Color.white);
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("Playing the Game", 300, 50);
+
+				g.setFont(new Font("Impact", Font.PLAIN, 20));
+				g.drawString("W - Jump/ Move up ladders", 20, 150);
+				g.drawString("A - Move left", 20, 190);
+				g.drawString("D - Move right", 20, 230);
+				g.drawString("S - Move down ladders", 20, 270);
+
+				g.drawString("The screen with follow the player.", 20, 350);
+
+			} else {
+				g.setFont(new Font("Impact", Font.PLAIN, 40));
+				g.drawString("GOOD LUCK CHALLENGER", 270, 300);
+
+			}
+
+			g.setFont(new Font("Impact", Font.PLAIN, 20));
+			g.drawString("USE ARROW KEYS TO MOVE THROUGH PAGES", 275, 525);
+
+		} 
 		 //in the main menu
 		 else if (mainMenu) {
 
 			g.setColor(Color.white);
 			 g.drawImage(menuBackground, 0, 0, this);
+			 g.setColor(Color.white);
 
+			 g.drawString("Press ESC to return to main menu / level select at ANY point in the game. ** Remember to save your levels!", 5, 545);
+ 
 			 // display text for the title 
 			 g.setFont(new Font("Impact", Font.PLAIN, FONT_SIZE));
 
@@ -457,7 +489,6 @@ import java.util.Timer;
 			 // display text for the menu
 			 // indicator pos allows user to use up and down keys to position their choice in
 			 // the menu
-			 
 			 g.drawImage(indicatorImage, 280, indicatorPos-20, this);
 			 
 			 g.drawImage(levelSelectText, 325, 250-30, this);
@@ -465,13 +496,13 @@ import java.util.Timer;
 			 g.drawImage(howToPlayText, 325, 400-30, this);
 		
 		 } else if (edit) {
- 
+
 			 // draw the background
 			 back.draw(g);
  
 			 // draw strings for user instruction for save and play
 			 g.setColor(Color.white);
-			 g.drawString("Enter \"1\" to SAVE level.", 200, 10);
+			 g.drawString("Enter \"1\" to SAVE level. ESC to EXIT.", 200, 10);
 			 g.drawString("Enter \"2\" to PLAY level.", 200, 25);
  
 			 g.setColor(Color.black);
@@ -482,11 +513,11 @@ import java.util.Timer;
 			 }
 			 // draws the sidebar
 			 drawSidebar(g);
- 
+
 			 // check if its being hovered and makes it like transparent
 			 if (hover != null) {
-				 Graphics2D g2d = (Graphics2D) g;
-				 AlphaComposite ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+				 g2d = (Graphics2D) g;
+				 ac = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
 				 g2d.setComposite(ac);
 				 hover.draw(g2d);
 			 }
@@ -530,7 +561,7 @@ import java.util.Timer;
 				 for (Block b : elements) {
 					 if (b.img != null && b.img.equals(portalImage)) {
 						 spawnPortal = (Portal) b;
-						 shift = spawnPortal.x - GAME_WIDTH / 2 + spawnPortal.width / 2;
+						 shift = spawnPortal.x - GAME_WIDTH / 2 + Portal.width / 2;
 					 }
 					 if (b.img != null && b.img.equals(closedChestImage)) {
 						 endChest = (Chest) b;
@@ -739,7 +770,7 @@ import java.util.Timer;
 					 knight.y = b.y - knight.height - 1;
 					 knight.isJumping = false;
 					 knight.falling = false;
-					 knight.yVelocity = 0;
+					 Player.yVelocity = 0;
 					 checkVertical = true;
 				 }
  
@@ -811,9 +842,6 @@ import java.util.Timer;
 				 } 
 				 else if (getClass(b).equals("Ladder") && knight.intersects(b)) {
 					knight.onLadder = true;
-
-					
-
 				 } 
 			 }
 
@@ -985,21 +1013,6 @@ import java.util.Timer;
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-			} else if (e.getKeyCode() == 70 && curSelected != null) {
-				// if the objected is flipped, we replace the original object with a flipped
-				// version
-				elements.remove(curSelected);
-				if (curSelected instanceof Goblin || curSelected instanceof Turret) {
-					try {
-						// adds the flipped image
-						elements.add(hFlip(curSelected));
-					} catch (IOException e1) {
-					}
-
-				}
-				// changes the selected and dragging accordingly
-				curSelected = elements.get(elements.size() - 1);
-				curDragging = curSelected;
 			} else if (e.getKeyCode() == 8) {
 				// if backspace is pressed, delete the selected block
 				if (curSelected != null) {
@@ -1131,10 +1144,11 @@ import java.util.Timer;
  
 	 // handles mousePresses
 	 public void mousePressed(MouseEvent e) {
+		boolean chosen;
 		 // checks which screen is displayed`
 		 if (edit) {
 			 // checks if an existing block is pressed
-			 boolean chosen = false;
+			 chosen = false;
 			 for (Block b : elements) {
 				 if (mousePressedBlock(b, e)) {
 					 // calls the block's mousePressed, the block can now be dragged, is selected,
@@ -1202,7 +1216,7 @@ import java.util.Timer;
  
 	 // handles when the mouse is released
 	 public void mouseReleased(MouseEvent e) {
- 
+		boolean works;
 		 if (edit) {
  
 			 // if there IS a block being dragged
@@ -1215,7 +1229,7 @@ import java.util.Timer;
 				 } else if (hover != null) { // if there IS a block being hovered over b the curDragging block
  
 					 // loops through all the blocks
-					 boolean works = true;
+					 works = true;
 					 for (int i = 0; i < elements.size(); i++) {
 						 Block b = elements.get(i);
 						 // if its the one that is already being dragged continue (no point on checking
@@ -1550,6 +1564,7 @@ import java.util.Timer;
 	 // checks if a block is intersecting with the Block block
 	 public boolean checkAllIntersection(Block block) {
 		 // loops all elements
+		 
 		 for (int i = 0; i < elements.size() - 1; i++) {
 			 Block b = elements.get(i);
 			 // if intersecting return true
@@ -1577,8 +1592,9 @@ import java.util.Timer;
 	 public void addTitle(String title) {
 		 // adds a title to the names.txt file for easy checking if there are any
 		 // duplicate names (bad)
+		 BufferedWriter writer;
 		 try {
-			 BufferedWriter writer = new BufferedWriter(new FileWriter("names.txt", true));
+			 writer = new BufferedWriter(new FileWriter("names.txt", true));
 			 writer.write(title + ", ");
 			 writer.close();
 		 } catch (Exception e) {
@@ -1599,7 +1615,8 @@ import java.util.Timer;
 			 StringBuffer inputBuffer = new StringBuffer();
 			 String line;
 			 boolean containedTitle = false;
- 
+			 FileOutputStream fileOut;
+
 			 while ((line = file.readLine()) != null) {
  
 				 if (line.startsWith(title)) {
@@ -1623,7 +1640,7 @@ import java.util.Timer;
 			 file.close();
  
 			 // write the new string with the replaced line OVER the same file
-			 FileOutputStream fileOut = new FileOutputStream("LevelSave.txt");
+			 fileOut = new FileOutputStream("LevelSave.txt");
 			 fileOut.write(inputBuffer.toString().getBytes());
 			 fileOut.close();
  
@@ -1640,12 +1657,13 @@ import java.util.Timer;
 		 // read titles to check for no duplicates
  
 		 String filePath = "names.txt"; // Provide the path to your text file
+		 String[] words;
 		 try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 			 String line;
  
 			 while ((line = reader.readLine()) != null) {
 				 // Split the line into words using space as the delimiter
-				 String[] words = line.split(", ");
+				 words = line.split(", ");
 				 for (String name : words) {
 					 names.add(name);
 				 }
@@ -1662,7 +1680,8 @@ import java.util.Timer;
 	 // so the level can be loaded and played/edited
 	 public void readData(String title) {
 		 // if the title is not found or there is no title
- 
+		String[] words;
+		String[] inputs;
 		 if (title.equals("")) {
 			 return;
 		 } else {
@@ -1673,11 +1692,11 @@ import java.util.Timer;
 				 while ((line = reader.readLine()) != null) {
 					 // Split the line into words using space as the delimiter
 					 if (line.startsWith(title)) {
-						 String[] words = line.split(": ");
+						 words = line.split(": ");
 						 for (int i = 1; i < words.length; i++) {
 							 // i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
 							 // in the title itself
-							 String[] inputs = words[i].split(" "); // splits based on space
+							 inputs = words[i].split(" "); // splits based on space
 							 if (inputs[0].equals("Ice")) {
  
 								 elements.add(new Ice(Integer.parseInt(inputs[1]), Integer.parseInt(inputs[2]),
@@ -1777,16 +1796,6 @@ import java.util.Timer;
 		 return type.getName();
 	 }
  
-	 // returns a Block that is horizontally flipped compared to b
-	 public Block hFlip(Block b) throws IOException {
-		 if (b instanceof Turret) {
-			 turFlipNum++; // used to account for turret flips
-		 }
-		 if (b instanceof Goblin) {
-			 goblinFlipNum++;
-		 }
-		 return decipherBlock(b, b.x, b.y, b.width, b.height);
-	 }
  
 	 // checks if the mouse is on a block, flip is counted for
 	 public boolean mousePressedBlock(Block b, MouseEvent e) {
@@ -1857,7 +1866,7 @@ import java.util.Timer;
 			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
-
+			FileOutputStream fileOut;
 			while ((line = file.readLine()) != null) {
 
 				if (line.startsWith(title)) {
@@ -1874,7 +1883,7 @@ import java.util.Timer;
 			file.close();
 
 			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream("HighScores.txt");
+			fileOut = new FileOutputStream("HighScores.txt");
 			fileOut.write(inputBuffer.toString().getBytes());
 			fileOut.close();
 
@@ -1933,6 +1942,7 @@ import java.util.Timer;
 			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
+			FileOutputStream fileOut;
 			while ((line = file.readLine()) != null) {
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
@@ -1941,7 +1951,7 @@ import java.util.Timer;
 			inputBuffer.append("\n");
 			file.close();
 			// write the new string with the replaced line OVER the same file
-			FileOutputStream fileOut = new FileOutputStream("HighScores.txt");
+			fileOut = new FileOutputStream("HighScores.txt");
 			fileOut.write(inputBuffer.toString().getBytes());
 			fileOut.close();
 		} catch (Exception e) {

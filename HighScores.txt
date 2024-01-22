@@ -1,4 +1,4 @@
-Test Level 1: andrew 2: andrew 3: ethan 2: NOTJING 2: drew 5: 
+Test Level 1: andrew 2: andrew 3: ethan 2: NOTJING 2: drew 5: hi 2: 
 Speed Test: andrew 5: notjing8 6: 
 Goblin Collision: 
 y\y: 

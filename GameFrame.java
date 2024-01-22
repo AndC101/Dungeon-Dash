@@ -65,7 +65,6 @@ public class GameFrame extends JFrame implements ActionListener{
 			mainPanel = new JPanel();
 			mainPanel.setOpaque( false ); //enables the background image to be seen
 
-
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
 			
@@ -173,7 +172,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//sets states and makes new gameframe				
 				try {
-					panel.play = true;
+					GamePanel.play = true;
 					panel.levelSelect = false;
 					panel.running = false;
 					new GameFrame(false, false, true, title, panel.menuMusicStart);
@@ -191,7 +190,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//sets states and makes new gameframe for edit mode
 				try {
-					panel.edit=true;
+					GamePanel.edit=true;
 					panel.levelSelect = false;
 					panel.running = false;
 					new GameFrame(false, true, false, title, panel.menuMusicStart);
