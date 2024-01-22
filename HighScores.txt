@@ -1,8 +1,5 @@
-Test Level 1: andrew 2: andrew 3: ethan 2: andrew 2: bob 2: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb 2: ger 3: 
-Speed Test: andrew 5: 
-Powerup Testing: 11 2: 
+Test Level 1: andrew 2: andrew 3: ethan 2: NOTJING 2: drew 5: 
+Speed Test: andrew 5: notjing8 6: 
 Goblin Collision: 
-Ladder Testing: 
-y\y: andrew 4: drew 3: 
+y\y: 
 high score testing: andrew 2: 
-

@@ -1,1 +1,1 @@
-Test Level 1, Speed Test, Powerup Testing, Goblin Collision, Ladder Testing, y\y, high score testing, 
+Test Level 1, Speed Test, Goblin Collision, y\y, high score testing, 
