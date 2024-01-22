@@ -10,9 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.PriorityQueue;
-
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
@@ -66,7 +64,6 @@ public class GameFrame extends JFrame implements ActionListener{
 			SpringLayout layout = new SpringLayout();
 			mainPanel = new JPanel();
 			mainPanel.setOpaque( false ); //enables the background image to be seen
-
 
 			mainPanel.setLayout(layout);
 			contentPane.setLayout(new BorderLayout());
@@ -175,7 +172,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//sets states and makes new gameframe				
 				try {
-					panel.play = true;
+					GamePanel.play = true;
 					panel.levelSelect = false;
 					panel.running = false;
 					new GameFrame(false, false, true, title, panel.menuMusicStart);
@@ -193,7 +190,7 @@ public class GameFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//sets states and makes new gameframe for edit mode
 				try {
-					panel.edit=true;
+					GamePanel.edit=true;
 					panel.levelSelect = false;
 					panel.running = false;
 					new GameFrame(false, true, false, title, panel.menuMusicStart);
