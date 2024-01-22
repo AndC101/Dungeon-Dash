@@ -1001,48 +1001,56 @@ import java.util.Timer;
 					 edit = false;
 					 running = false;
 
-					 new GameFrame(true, false, false, "", menuMusicStart);
-				 } catch (IOException e1) {
-					 e1.printStackTrace();
-				 }
-			 } else if (e.getKeyCode() == 70 && curSelected != null) {
-				 // if the objected is flipped, we replace the original object with a flipped
-				 // version
-				 elements.remove(curSelected);
-				 if (curSelected instanceof Goblin || curSelected instanceof Turret) {
-					 try {
-						 // adds the flipped image
-						 elements.add(hFlip(curSelected));
-					 } catch (IOException e1) {
-					 }
- 
-				 }
-				 // changes the selected and dragging accordingly
-				 curSelected = elements.get(elements.size() - 1);
-				 curDragging = curSelected;
-			 } else if (e.getKeyCode() == 8) {
-				 // if backspace is pressed, delete the selected block
-				 if (curSelected != null) {
-					 elements.remove(curSelected);
-					 curSelected = null;
-				 }
- 
-				 // check if file is saved OR saved and played
-			 } else if (e.getKeyCode() == KeyEvent.VK_1) {
-				 // save the file
-				 saveLevel();
-			 } else if (e.getKeyCode() == KeyEvent.VK_2) {
-				 // enter play mode from the level editor
-				 edit = false;
-				saveLevel();
-				 // Intake elements from file io and start game
-				 if (!newLevelTitle.isEmpty()) {
-					 try {
-						 GameFrame.currentGameFrame.dispose();
-						 play = true;
-						 levelSelect = false;
-						 edit = false;
-						 running = false;
+					new GameFrame(true, false, false, "", menuMusicStart);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			} else if (e.getKeyCode() == 70 && curSelected != null) {
+				// if the objected is flipped, we replace the original object with a flipped
+				// version
+				elements.remove(curSelected);
+				if (curSelected instanceof Goblin || curSelected instanceof Turret) {
+					try {
+						// adds the flipped image
+						elements.add(hFlip(curSelected));
+					} catch (IOException e1) {
+					}
+
+				}
+				// changes the selected and dragging accordingly
+				curSelected = elements.get(elements.size() - 1);
+				curDragging = curSelected;
+			} else if (e.getKeyCode() == 8) {
+				// if backspace is pressed, delete the selected block
+				if (curSelected != null) {
+					elements.remove(curSelected);
+					curSelected = null;
+				}
+
+				// check if file is saved OR saved and played
+			} else if (e.getKeyCode() == KeyEvent.VK_1) {
+				// save the file
+				if (!saveLevel()) {
+					JOptionPane.showMessageDialog(this, "Please have exactly one portal and one chest.", "Invalid Save",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			} else if (e.getKeyCode() == KeyEvent.VK_2) {
+				// enter play mode from the level editor
+
+				if (!saveLevel()) {
+					JOptionPane.showMessageDialog(this, "Please have exactly one portal and one chest.", "Invalid Save",
+							JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}
+				edit = false;
+				// Intake elements from file io and start game
+				if (!newLevelTitle.isEmpty()) {
+					try {
+						GameFrame.currentGameFrame.dispose();
+						play = true;
+						levelSelect = false;
+						edit = false;
+						running = false;
 
 						 new GameFrame(false, false, true, newLevelTitle, menuMusicStart);
 					 } catch (IOException e1) {
@@ -1859,7 +1867,7 @@ import java.util.Timer;
 	 }
 
 
-	 //*** HIGH SCORE and FILE IO LOGIC METHODS BELOW ***
+	// *** HIGH SCORE and FILE IO LOGIC METHODS BELOW ***
 
 	 //adds a new high score to the highscores file -- helper method
 	 private void fileHighScore(String title, String user, int time) {
@@ -1901,17 +1909,18 @@ import java.util.Timer;
 		JTextField textField = new JTextField();
 		String userName;
 		// ask for username with the text field
-		int option = JOptionPane.showOptionDialog(this, textField, "Enter your username!",
-				JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
+		int option = JOptionPane.showOptionDialog(this, textField, "Enter your username!", JOptionPane.OK_CANCEL_OPTION,
+				JOptionPane.INFORMATION_MESSAGE, null, null, null);
 		// Check if the user clicked OK
 		if (option == JOptionPane.OK_OPTION) {
 			// Get the entered name from the text field
 			userName = textField.getText().stripTrailing(); // get the info from text box without whitespace
-				// Display a message indicating that the level has been saved
-				JOptionPane.showMessageDialog(this, "Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!", "Score Save Confirmation",
-						JOptionPane.INFORMATION_MESSAGE);
+			// Display a message indicating that the level has been saved
+			JOptionPane.showMessageDialog(this,
+					"Congratulations " + userName + " on your time of " + (endTime - startTime) / 1000 + " seconds!",
+					"Score Save Confirmation", JOptionPane.INFORMATION_MESSAGE);
 
-				fileHighScore(prevSavedTitle, userName, time); // save the high score in the file of the correct level
+			fileHighScore(prevSavedTitle, userName, time); // save the high score in the file of the correct level
 		} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
 			// if user exits trigger cancellation message
 			JOptionPane.showMessageDialog(this, "Your score was not saved.", "Invalid Save",
@@ -1924,9 +1933,9 @@ import java.util.Timer;
 	 public void displaySave(){
 		TimerTask task = new TimerTask() {
 			public void run() {
-				//if the user has already quit, don't display the dialogue pane
-				if(play) {
-					saveHighScore( (int)((endTime - startTime) / 1000) );
+				// if the user has already quit, don't display the dialogue pane
+				if (play) {
+					saveHighScore((int) ((endTime - startTime) / 1000));
 				}
 			}
 		};
@@ -1937,10 +1946,10 @@ import java.util.Timer;
 
 	 }
 
-	 //writes a new title to each level for the high scores
-	 public void addTitleHS(String title) {
+	// writes a new title to each level for the high scores
+	public void addTitleHS(String title) {
 		try {
-			// input the (modified) file content to the StringBuffer 
+			// input the (modified) file content to the StringBuffer
 			BufferedReader file = new BufferedReader(new FileReader("HighScores.txt"));
 			StringBuffer inputBuffer = new StringBuffer();
 			String line;
@@ -1948,7 +1957,7 @@ import java.util.Timer;
 				inputBuffer.append(line);
 				inputBuffer.append('\n');
 			}
-			inputBuffer.append(title + ": "); //append the title at the end
+			inputBuffer.append(title + ": "); // append the title at the end
 			inputBuffer.append("\n");
 			file.close();
 			// write the new string with the replaced line OVER the same file
@@ -1959,10 +1968,14 @@ import java.util.Timer;
 			System.out.println("Problem reading file.");
 		}
 
-	 }
+	}
 
-	 //save level file IO logic
-	 public void saveLevel() {
+	// save level file IO logic
+	public boolean saveLevel() {
+
+		if (!checkValid())
+			return false;
+
 		updatedSave = "";
 		// newLevelTitle = "";
 		// prevSavedTitle = "";
@@ -1981,7 +1994,17 @@ import java.util.Timer;
 																		// whitespace
 
 				// add the new level title
-				if (!names.contains(newLevelTitle)) {
+				if (names.contains(newLevelTitle)) {
+					// Display a message indicating that the level has not been saved
+
+					JOptionPane.showMessageDialog(this, "Title already in use. Please try again.", "Invalid Save",
+							JOptionPane.INFORMATION_MESSAGE);
+					return false;
+				} else if (newLevelTitle.isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Please enter a name.", "Invalid Save",
+							JOptionPane.INFORMATION_MESSAGE);
+					return false;
+				} else {
 					for (Block b : elements) {
 						updatedSave += b.toString() + ": ";
 					}
@@ -1997,12 +2020,6 @@ import java.util.Timer;
 								JOptionPane.INFORMATION_MESSAGE);
 						levelSaved = true;
 
-					}
-				} else {
-					// Display a message indicating that the level has not been saved
-					if(edit) {
-						JOptionPane.showMessageDialog(this, "Title already in use. Please try again.",
-						"Invalid Save", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
 			} else if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
@@ -2043,8 +2060,27 @@ import java.util.Timer;
 			}
 
 		}
+		return true;
 
 	 }
 
-	 
+	public boolean checkValid() {
+		boolean hasChest = false;
+		boolean hasPortal = false;
+
+		for (Block b : elements) {
+			if (getClass(b).equals("Chest")) {
+				if (hasChest)
+					return false;
+				hasChest = true;
+			} else if (getClass(b).equals("Portal")) {
+				if (hasPortal)
+					return false;
+				hasPortal = true;
+			}
+		}
+
+		return hasChest && hasPortal;
+
+	}
 }
