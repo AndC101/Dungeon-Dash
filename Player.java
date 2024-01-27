@@ -41,8 +41,7 @@ public class Player extends Rectangle {
 	public static int lastMoved = 0;
 	public boolean extraSpeed = false;
 	public boolean opaque = true;
-	public int CLIMB_SPEED = 3
-	;
+	public int CLIMB_SPEED = 3;
 
 
 	// has to do with speed
@@ -63,6 +62,8 @@ public class Player extends Rectangle {
 	public GamePanel gamePanel;
 
 	public static boolean oneScreen = false;
+	
+	public static int blocked = 0;
 
 	public static Block under = null;
 	public boolean onLadder = false;
@@ -277,9 +278,9 @@ public class Player extends Rectangle {
 		canFall();
 		// if the knight crosses the middle after coming from a side
 
-		if (!oneScreen && ((left && isRight && x >= 420) || (!left && isLeft && x <= 420))) {
+		if (!oneScreen && ((left && isRight && x >= 450) || (!left && isLeft && x <= 450))) {
 			isCentered = true;
-			x = 420; // force the knight centered
+			x = 450; // force the knight centered
 		}
 
 		// draws a different animation depending on the state of the knight
