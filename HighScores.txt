@@ -1,6 +1,3 @@
-Test Level 1: andrew 2: andrew 3: ethan 2: NOTJING 2: drew 5: hi 2: 
-Speed Test: andrew 5: notjing8 6: 
-Goblin Collision: 
-y\y: 
-high score testing: andrew 2: andrewchen 3: 
-joe: 
+Sample Level #1: Andrew, 104: Ethan Lin, 3: 
+Sample Level #2: 
+Sample Level #3: 

@@ -277,7 +277,7 @@ public class GameFrame extends JFrame implements ActionListener{
 						for (int i = 1; i < words.length; i++) {
 							// i = 1 skip over the title of the thing ASSUMES THAT the user doesn't enter :
 							// in the title itself
-							String[] inputs = words[i].split(" "); // splits based on space
+							String[] inputs = words[i].split(", "); // splits based on space
 							scorePairs.add(new Pair(inputs[0], Integer.parseInt(inputs[1]))); //sorts the pairs by lowest time when added
 							
 						}

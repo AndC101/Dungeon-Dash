@@ -20,6 +20,7 @@ public class Block extends Rectangle {
 	public static int xVelocity;
 	public static int SPEED = Player.SPEED; // movement speed
 
+
 	// current keys pressed
 	public static HashSet<Character> keysPressed = new HashSet<Character>();
 
@@ -88,10 +89,13 @@ public class Block extends Rectangle {
 		} else {
 			setXDirection(0);
 		}
+		
 		// if the player is not centered, blocks should not move
 		if (!Player.isCentered && !GamePanel.edit)
 			setXDirection(0);
 
+		if(Player.blocked == -1 && Player.isRight) setXDirection(0);
+		if(Player.blocked == 1 && Player.isLeft) setXDirection(0);
 		// move the blocks
 		x = x + xVelocity;
 	}
