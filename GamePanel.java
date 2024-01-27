@@ -625,7 +625,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener, MouseLis
 				}
 
 				// since a border is reached, the knight no longer needs to be centered
-				knight.isCentered = false;
+				Player.isCentered = false;
 			}
 
 			for (Block b : elements) {

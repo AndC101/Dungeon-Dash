@@ -148,7 +148,7 @@ public class Goblin extends Block {
 
 			}
 			// if knight not centered
-			if (!player.isCentered) {
+			if (!Player.isCentered) {
 
 				if (l) {
 					setXDirection(-SPEED);
