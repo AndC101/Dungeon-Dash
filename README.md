@@ -4,6 +4,12 @@ Platformer game with a built in level editor to create and save your own levels.
 
 Built using Java GUI.
 
+# Demo
+**Note: Pop-ups for high score saving and username prompts were not captured in this video.
+
+https://youtu.be/FGzImJ4xzJY
+
+
 # Gameplay
 
 ![image](https://github.com/AndC101/Dungeon-Dash/assets/81173499/90639b1e-9d82-4a48-82ae-22aaddb9da43)
