@@ -7,7 +7,7 @@ Built using Java GUI.
 # Demo
 **Note: Pop-ups for high score saving and username prompts were not captured in this video.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FGzImJ4xzJY?si=wCVuwwxJkW4yaBOj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+https://youtu.be/FGzImJ4xzJY?si=jb-cofqJp9uQIRy6
 
 # Gameplay
 
