@@ -2,7 +2,7 @@
 
 Platformer game with a built in level editor to create and save your own levels.
 
-Built using Java GUI.
+Built using solely Java GUI. Implemented threading, OOP, file IO for save functionality, high scores, collision detection, sprites, enemies.
 
 # Demo
 **Note: Pop-ups for high score saving and username prompts were not captured in this video.
